@@ -125,8 +125,8 @@ describe("Home", () => {
       renderHome();
 
       const links = screen.getAllByRole("link");
-      // 6 quick links + 1 email link in "Help us improve" alert
-      expect(links).toHaveLength(7);
+      // 6 quick links + 1 email link + 1 GitHub link in "Help us improve" alert
+      expect(links).toHaveLength(8);
     });
 
     it("each quick link card is focusable", () => {

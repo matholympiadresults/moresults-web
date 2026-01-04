@@ -186,7 +186,15 @@ export function Data() {
               >
                 <IconMail size={20} />
               </ActionIcon>
-              <ActionIcon variant="subtle" size="lg" aria-label="GitHub">
+              <ActionIcon
+                component="a"
+                href="https://github.com/matholympiadresults/moresults-web"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="subtle"
+                size="lg"
+                aria-label="GitHub"
+              >
                 <IconBrandGithub size={20} />
               </ActionIcon>
             </Group>

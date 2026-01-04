@@ -1,6 +1,8 @@
-# moresults-web
+# Explore Consolidated Math Olympiad Results
 
-A web application providing a consolidated view of international math olympiad results across multiple competitions.
+A high-performance web application providing a consolidated view of international math olympiad results across multiple competitions.
+
+**Live site:** https://moresults.org/
 
 ## About
 

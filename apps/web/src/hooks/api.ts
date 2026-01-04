@@ -1,11 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import type {
-  Database,
-  Country,
-  Competition,
-  Person,
-  Participation,
-} from "@/schemas/base";
+import type { Database, Country, Competition, Person, Participation } from "@/schemas/base";
 
 const DATA_URL = "/data/olympiad_data.json.gz";
 
@@ -119,10 +113,7 @@ export function useDatabase(): UseQueryResult<Database> {
 
 export function useCountries(): UseCountriesResult {
   const { data, loading, error } = useDatabase();
-  const countries = useMemo(
-    () => (data ? Object.values(data.countries) : []),
-    [data]
-  );
+  const countries = useMemo(() => (data ? Object.values(data.countries) : []), [data]);
   return { data: countries, countries, loading, error };
 }
 
@@ -134,10 +125,7 @@ export function useCountry(id: string): UseCountryResult {
 
 export function useCompetitions(): UseCompetitionsResult {
   const { data, loading, error } = useDatabase();
-  const competitions = useMemo(
-    () => (data ? Object.values(data.competitions) : []),
-    [data]
-  );
+  const competitions = useMemo(() => (data ? Object.values(data.competitions) : []), [data]);
   return { data: competitions, competitions, loading, error };
 }
 
@@ -149,10 +137,7 @@ export function useCompetition(id: string): UseCompetitionResult {
 
 export function usePeople(): UsePeopleResult {
   const { data, loading, error } = useDatabase();
-  const people = useMemo(
-    () => (data ? Object.values(data.people) : []),
-    [data]
-  );
+  const people = useMemo(() => (data ? Object.values(data.people) : []), [data]);
   return { data: people, people, loading, error };
 }
 
@@ -164,22 +149,14 @@ export function usePerson(id: string): UsePersonResult {
 
 export function useParticipations(): UseParticipationsResult {
   const { data, loading, error } = useDatabase();
-  const participations = useMemo(
-    () => (data ? Object.values(data.participations) : []),
-    [data]
-  );
+  const participations = useMemo(() => (data ? Object.values(data.participations) : []), [data]);
   return { data: participations, participations, loading, error };
 }
 
 export function useParticipationsByPerson(personId: string): UseParticipationsResult {
   const { data, loading, error } = useDatabase();
   const participations = useMemo(
-    () =>
-      data
-        ? Object.values(data.participations).filter(
-            (p) => p.person_id === personId
-          )
-        : [],
+    () => (data ? Object.values(data.participations).filter((p) => p.person_id === personId) : []),
     [data, personId]
   );
   return { data: participations, participations, loading, error };
@@ -190,9 +167,7 @@ export function useParticipationsByCompetition(competitionId: string): UsePartic
   const participations = useMemo(
     () =>
       data
-        ? Object.values(data.participations).filter(
-            (p) => p.competition_id === competitionId
-          )
+        ? Object.values(data.participations).filter((p) => p.competition_id === competitionId)
         : [],
     [data, competitionId]
   );
@@ -203,11 +178,7 @@ export function useParticipationsByCountry(countryId: string): UseParticipations
   const { data, loading, error } = useDatabase();
   const participations = useMemo(
     () =>
-      data
-        ? Object.values(data.participations).filter(
-            (p) => p.country_id === countryId
-          )
-        : [],
+      data ? Object.values(data.participations).filter((p) => p.country_id === countryId) : [],
     [data, countryId]
   );
   return { data: participations, participations, loading, error };

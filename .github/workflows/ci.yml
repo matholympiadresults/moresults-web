@@ -25,6 +25,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Check formatting
+        run: yarn format:check
+        working-directory: .
+
       - name: Run ESLint
         run: yarn lint
 

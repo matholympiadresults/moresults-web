@@ -64,11 +64,7 @@ describe("calculateCountryStandings", () => {
       }),
     ];
 
-    const result = calculateCountryStandings(
-      participations,
-      createCountryMap(),
-      6
-    );
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
 
     expect(result).toHaveLength(1);
     expect(result[0].countryId).toBe("country-gbr");
@@ -99,11 +95,7 @@ describe("calculateCountryStandings", () => {
       }),
     ];
 
-    const result = calculateCountryStandings(
-      participations,
-      createCountryMap(),
-      6
-    );
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
 
     expect(result).toHaveLength(3);
     expect(result[0].countryId).toBe("country-usa");
@@ -154,11 +146,7 @@ describe("calculateCountryStandings", () => {
       }),
     ];
 
-    const result = calculateCountryStandings(
-      participations,
-      createCountryMap(),
-      6
-    );
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
 
     expect(result[0].gold).toBe(2);
     expect(result[0].silver).toBe(1);
@@ -181,11 +169,7 @@ describe("calculateCountryStandings", () => {
       }),
     ];
 
-    const result = calculateCountryStandings(
-      participations,
-      createCountryMap(),
-      6
-    );
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
 
     expect(result).toHaveLength(1);
     expect(result[0].countryId).toBe("country-gbr");
@@ -201,11 +185,7 @@ describe("calculateCountryStandings", () => {
       }),
     ];
 
-    const result = calculateCountryStandings(
-      participations,
-      createCountryMap(),
-      6
-    );
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
 
     expect(result[0].problemTotals).toEqual([7, 0, 7, 0, 0, 0]);
   });
@@ -340,9 +320,7 @@ describe("getCountryFilterOptions", () => {
   });
 
   it("uses country ID as label when country not in map", () => {
-    const participations = [
-      createParticipation({ person_id: "p1", country_id: "country-xyz" }),
-    ];
+    const participations = [createParticipation({ person_id: "p1", country_id: "country-xyz" })];
 
     const result = getCountryFilterOptions(participations, {});
 

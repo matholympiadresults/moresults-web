@@ -78,7 +78,9 @@ describe("ROUTES", () => {
       });
 
       it("handles different competition formats", () => {
-        expect(ROUTES.COMPETITION_STATISTICS("EGMO-2022")).toBe("/competitions/EGMO-2022/statistics");
+        expect(ROUTES.COMPETITION_STATISTICS("EGMO-2022")).toBe(
+          "/competitions/EGMO-2022/statistics"
+        );
       });
     });
 

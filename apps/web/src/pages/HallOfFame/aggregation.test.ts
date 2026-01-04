@@ -20,11 +20,7 @@ const createCountry = (id: string, code: string, name: string): Country => ({
   name,
 });
 
-const createCompetition = (
-  id: string,
-  source: Source,
-  year: number
-): Competition => ({
+const createCompetition = (id: string, source: Source, year: number): Competition => ({
   id,
   source,
   year,
@@ -89,12 +85,7 @@ describe("aggregateHallOfFame", () => {
 
     it("excludes participants with only honourable mentions", () => {
       const participations = [
-        createParticipation(
-          "IMO-2020",
-          "person-1",
-          "country-usa",
-          Award.HONOURABLE_MENTION
-        ),
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.HONOURABLE_MENTION),
       ];
 
       const result = aggregateHallOfFame({
@@ -110,9 +101,7 @@ describe("aggregateHallOfFame", () => {
     });
 
     it("excludes participants with no awards", () => {
-      const participations = [
-        createParticipation("IMO-2020", "person-1", "country-usa", null),
-      ];
+      const participations = [createParticipation("IMO-2020", "person-1", "country-usa", null)];
 
       const result = aggregateHallOfFame({
         participations,
@@ -150,12 +139,7 @@ describe("aggregateHallOfFame", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
         createParticipation("IMO-2021", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "EGMO-2020",
-          "person-1",
-          "country-usa",
-          Award.SILVER
-        ),
+        createParticipation("EGMO-2020", "person-1", "country-usa", Award.SILVER),
       ];
 
       const result = aggregateHallOfFame({
@@ -178,12 +162,7 @@ describe("aggregateHallOfFame", () => {
     it("counts honourable mentions separately from total medals", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "IMO-2021",
-          "person-1",
-          "country-usa",
-          Award.HONOURABLE_MENTION
-        ),
+        createParticipation("IMO-2021", "person-1", "country-usa", Award.HONOURABLE_MENTION),
       ];
 
       const result = aggregateHallOfFame({
@@ -228,12 +207,7 @@ describe("aggregateHallOfFame", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
         createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
-        createParticipation(
-          "IMO-2021",
-          "person-2",
-          "country-chn",
-          Award.SILVER
-        ),
+        createParticipation("IMO-2021", "person-2", "country-chn", Award.SILVER),
       ];
 
       const result = aggregateHallOfFame({
@@ -252,25 +226,10 @@ describe("aggregateHallOfFame", () => {
     it("uses bronze as tiebreaker when gold and silver are equal", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "IMO-2021",
-          "person-1",
-          "country-usa",
-          Award.SILVER
-        ),
+        createParticipation("IMO-2021", "person-1", "country-usa", Award.SILVER),
         createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
-        createParticipation(
-          "IMO-2021",
-          "person-2",
-          "country-chn",
-          Award.SILVER
-        ),
-        createParticipation(
-          "EGMO-2020",
-          "person-2",
-          "country-chn",
-          Award.BRONZE
-        ),
+        createParticipation("IMO-2021", "person-2", "country-chn", Award.SILVER),
+        createParticipation("EGMO-2020", "person-2", "country-chn", Award.BRONZE),
       ];
 
       const result = aggregateHallOfFame({
@@ -290,12 +249,7 @@ describe("aggregateHallOfFame", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
         createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
-        createParticipation(
-          "IMO-2021",
-          "person-2",
-          "country-chn",
-          Award.HONOURABLE_MENTION
-        ),
+        createParticipation("IMO-2021", "person-2", "country-chn", Award.HONOURABLE_MENTION),
       ];
 
       const result = aggregateHallOfFame({
@@ -316,18 +270,8 @@ describe("aggregateHallOfFame", () => {
     it("assigns sequential ranks starting from 1", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "IMO-2020",
-          "person-2",
-          "country-chn",
-          Award.SILVER
-        ),
-        createParticipation(
-          "IMO-2020",
-          "person-3",
-          "country-usa",
-          Award.BRONZE
-        ),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.SILVER),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.BRONZE),
       ];
 
       const result = aggregateHallOfFame({
@@ -349,12 +293,7 @@ describe("aggregateHallOfFame", () => {
     it("filters by IMO when selected", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "EGMO-2020",
-          "person-2",
-          "country-chn",
-          Award.GOLD
-        ),
+        createParticipation("EGMO-2020", "person-2", "country-chn", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({
@@ -373,12 +312,7 @@ describe("aggregateHallOfFame", () => {
     it("filters by EGMO when selected", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "EGMO-2020",
-          "person-2",
-          "country-chn",
-          Award.GOLD
-        ),
+        createParticipation("EGMO-2020", "person-2", "country-chn", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({
@@ -397,12 +331,7 @@ describe("aggregateHallOfFame", () => {
     it("includes all sources when 'all' selected", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "EGMO-2020",
-          "person-2",
-          "country-chn",
-          Award.GOLD
-        ),
+        createParticipation("EGMO-2020", "person-2", "country-chn", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({
@@ -421,12 +350,7 @@ describe("aggregateHallOfFame", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
         createParticipation("IMO-2021", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "EGMO-2020",
-          "person-1",
-          "country-usa",
-          Award.SILVER
-        ),
+        createParticipation("EGMO-2020", "person-1", "country-usa", Award.SILVER),
       ];
 
       const result = aggregateHallOfFame({
@@ -449,12 +373,7 @@ describe("aggregateHallOfFame", () => {
     it("filters by country when selected", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "IMO-2020",
-          "person-2",
-          "country-chn",
-          Award.GOLD
-        ),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({
@@ -474,12 +393,7 @@ describe("aggregateHallOfFame", () => {
     it("includes all countries when 'all' selected", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "IMO-2020",
-          "person-2",
-          "country-chn",
-          Award.GOLD
-        ),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({
@@ -499,18 +413,8 @@ describe("aggregateHallOfFame", () => {
     it("applies both source and country filters", () => {
       const participations = [
         createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-        createParticipation(
-          "IMO-2020",
-          "person-2",
-          "country-chn",
-          Award.GOLD
-        ),
-        createParticipation(
-          "EGMO-2020",
-          "person-3",
-          "country-usa",
-          Award.GOLD
-        ),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("EGMO-2020", "person-3", "country-usa", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({
@@ -567,23 +471,14 @@ describe("aggregateHallOfFame", () => {
     });
 
     it("handles missing country data gracefully", () => {
-      const personWithUnknownCountry = createPerson(
-        "person-5",
-        "Eve",
-        "country-unknown"
-      );
+      const personWithUnknownCountry = createPerson("person-5", "Eve", "country-unknown");
       const peopleWithUnknown = {
         ...people,
         "person-5": personWithUnknownCountry,
       };
 
       const participations = [
-        createParticipation(
-          "IMO-2020",
-          "person-5",
-          "country-unknown",
-          Award.GOLD
-        ),
+        createParticipation("IMO-2020", "person-5", "country-unknown", Award.GOLD),
       ];
 
       const result = aggregateHallOfFame({

@@ -7,11 +7,6 @@ import { useMemo } from "react";
  * @param entities - Array of entities with an 'id' property
  * @returns A memoized object mapping id -> entity
  */
-export function useEntityMap<T extends { id: string }>(
-  entities: T[]
-): Record<string, T> {
-  return useMemo(
-    () => Object.fromEntries(entities.map((e) => [e.id, e])),
-    [entities]
-  );
+export function useEntityMap<T extends { id: string }>(entities: T[]): Record<string, T> {
+  return useMemo(() => Object.fromEntries(entities.map((e) => [e.id, e])), [entities]);
 }

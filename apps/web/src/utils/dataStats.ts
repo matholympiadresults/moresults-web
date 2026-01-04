@@ -52,9 +52,7 @@ export function countParticipationsBySource(
 /**
  * Collects years for each olympiad source.
  */
-export function collectYearsBySource(
-  competitions: Competition[]
-): Record<string, Set<number>> {
+export function collectYearsBySource(competitions: Competition[]): Record<string, Set<number>> {
   const yearSetByOlympiad: Record<string, Set<number>> = {};
 
   for (const competition of competitions) {

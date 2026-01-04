@@ -75,7 +75,9 @@ export function CountriesIndividual() {
           const scoreA = rowA.columnFiltersMeta[columnID];
           const scoreB = rowB.columnFiltersMeta[columnID];
           return typeof scoreA === "number" && typeof scoreB === "number"
-            ? scoreA < scoreB ? -1 : 1
+            ? scoreA < scoreB
+              ? -1
+              : 1
             : 0;
         },
       }),

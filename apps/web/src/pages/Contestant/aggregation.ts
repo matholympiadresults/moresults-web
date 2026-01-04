@@ -78,10 +78,7 @@ export function aggregateRankingChartData({
   chartSource,
 }: AggregateRankingChartInput): RankingChartDataPoint[] {
   // Group all participations by competition (year + source)
-  const byCompetition = new Map<
-    string,
-    { year: number; participations: Participation[] }
-  >();
+  const byCompetition = new Map<string, { year: number; participations: Participation[] }>();
 
   allParticipations.forEach((p) => {
     const comp = competitionMap[p.competition_id];
@@ -121,9 +118,7 @@ export function aggregateRankingChartData({
     const personData = personParticipationsByYear.get(year);
     // Convert rank to position from bottom (totalParticipants - rank + 1)
     const personPosition =
-      personData?.rank != null
-        ? totalParticipants - personData.rank + 1
-        : null;
+      personData?.rank != null ? totalParticipants - personData.rank + 1 : null;
 
     data.push({
       year,
@@ -159,13 +154,8 @@ export function getPersonSources({
  * Calculates the maximum number of problems across participations.
  * Used to determine how many problem columns to display.
  */
-export function getMaxProblems(
-  rows: ParticipationRow[],
-  sourceFilter: Source | null
-): number {
-  const filteredRows = sourceFilter
-    ? rows.filter((r) => r.source === sourceFilter)
-    : rows;
+export function getMaxProblems(rows: ParticipationRow[], sourceFilter: Source | null): number {
+  const filteredRows = sourceFilter ? rows.filter((r) => r.source === sourceFilter) : rows;
   return Math.max(0, ...filteredRows.map((r) => r.numProblems));
 }
 

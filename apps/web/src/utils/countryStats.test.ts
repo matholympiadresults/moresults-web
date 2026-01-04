@@ -17,11 +17,7 @@ const createCountry = (code: string, name: string): Country => ({
   name,
 });
 
-const createCompetition = (
-  source: Source,
-  year: number,
-  numProblems = 6
-): Competition => ({
+const createCompetition = (source: Source, year: number, numProblems = 6): Competition => ({
   id: `${source.toLowerCase()}-${year}`,
   source,
   year,
@@ -271,9 +267,7 @@ describe("calculateTeamRankOverTime", () => {
   });
 
   it("returns null for country not participating", () => {
-    const participations = [
-      createParticipation("imo-2024", "country-usa", "person-1", 42),
-    ];
+    const participations = [createParticipation("imo-2024", "country-usa", "person-1", 42)];
 
     const result = calculateTeamRankOverTime(
       participations,
@@ -323,12 +317,7 @@ describe("calculateMedalProgression", () => {
       createParticipation("imo-2024", "country-usa", "person-3", 42, Award.GOLD),
     ];
 
-    const result = calculateMedalProgression(
-      participations,
-      competitions,
-      Source.IMO,
-      "yearly"
-    );
+    const result = calculateMedalProgression(participations, competitions, Source.IMO, "yearly");
 
     expect(result).toHaveLength(2);
     expect(result[0]).toEqual({
@@ -396,12 +385,7 @@ describe("calculateMedalProgression", () => {
       createParticipation("imo-2022", "country-usa", "person-2", 42, Award.GOLD),
     ];
 
-    const result = calculateMedalProgression(
-      participations,
-      competitions,
-      Source.IMO,
-      "yearly"
-    );
+    const result = calculateMedalProgression(participations, competitions, Source.IMO, "yearly");
 
     expect(result[0].year).toBe(2022);
     expect(result[1].year).toBe(2024);

@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  SOURCE_OPTIONS,
-  SOURCE_OPTIONS_WITH_ALL,
-  AWARD_OPTIONS,
-} from "./filterOptions";
+import { SOURCE_OPTIONS, SOURCE_OPTIONS_WITH_ALL, AWARD_OPTIONS } from "./filterOptions";
 import { Source, Award } from "@/schemas/base";
 
 describe("SOURCE_OPTIONS", () => {
@@ -41,9 +37,7 @@ describe("SOURCE_OPTIONS_WITH_ALL", () => {
   });
 
   it("contains all Source enum values after 'all'", () => {
-    const sourceValues = SOURCE_OPTIONS_WITH_ALL.slice(1).map(
-      (opt) => opt.value
-    );
+    const sourceValues = SOURCE_OPTIONS_WITH_ALL.slice(1).map((opt) => opt.value);
     const enumValues = Object.values(Source);
 
     for (const enumValue of enumValues) {
@@ -90,9 +84,7 @@ describe("AWARD_OPTIONS", () => {
     const goldOption = AWARD_OPTIONS.find((opt) => opt.value === Award.GOLD);
     expect(goldOption?.label).toBe("Gold");
 
-    const hmOption = AWARD_OPTIONS.find(
-      (opt) => opt.value === Award.HONOURABLE_MENTION
-    );
+    const hmOption = AWARD_OPTIONS.find((opt) => opt.value === Award.HONOURABLE_MENTION);
     expect(hmOption?.label).toBe("Honourable Mention");
   });
 });

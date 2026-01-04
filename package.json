@@ -9,9 +9,12 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "start:web": "yarn workspace @moresults/web start"
   },
   "devDependencies": {
+    "prettier": "^3.7.4",
     "turbo": "^2"
   }
 }

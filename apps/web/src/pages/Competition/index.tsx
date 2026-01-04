@@ -15,15 +15,7 @@ import {
   ScrollArea,
   SimpleGrid,
 } from "@mantine/core";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { IconSearch } from "@tabler/icons-react";
 import { useParams, Link } from "react-router";
 import {
@@ -42,7 +34,12 @@ import {
 } from "@/hooks/api";
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { useTableSearch } from "@/hooks/useTableSearch";
-import { getTableBody, getSortingIcon, generateProblemColumns, type ProblemScoreRow } from "@/utils/table";
+import {
+  getTableBody,
+  getSortingIcon,
+  generateProblemColumns,
+  type ProblemScoreRow,
+} from "@/utils/table";
 import { getTooltipStyle, getAxisStyle } from "@/utils/chartStyles";
 import { CountryFlag } from "@/utils/flags";
 import { ROUTES } from "@/constants/routes";
@@ -156,7 +153,9 @@ export function Competition() {
           const scoreA = rowA.columnFiltersMeta[columnID];
           const scoreB = rowB.columnFiltersMeta[columnID];
           return typeof scoreA === "number" && typeof scoreB === "number"
-            ? scoreA < scoreB ? -1 : 1
+            ? scoreA < scoreB
+              ? -1
+              : 1
             : 0;
         },
       }),
@@ -218,7 +217,10 @@ export function Competition() {
           const countryId = info.row.original.countryId;
           if (!countryId) return info.getValue();
           return (
-            <Anchor component={Link} to={ROUTES.COUNTRY_INDIVIDUAL(countryId.replace("country-", ""))}>
+            <Anchor
+              component={Link}
+              to={ROUTES.COUNTRY_INDIVIDUAL(countryId.replace("country-", ""))}
+            >
               <Group gap={6} wrap="nowrap">
                 <CountryFlag code={info.row.original.countryCode} />
                 {info.getValue()}
@@ -303,8 +305,7 @@ export function Competition() {
           </Title>
           <Text c="dimmed" mb="md">
             {competition.edition && `${competition.edition}th edition - `}
-            {competition.host_country_id &&
-              countryMap[competition.host_country_id]?.name}
+            {competition.host_country_id && countryMap[competition.host_country_id]?.name}
             {" | "}
             <Anchor component={Link} to={ROUTES.COMPETITION_STATISTICS(id!)}>
               Statistics
@@ -321,31 +322,38 @@ export function Competition() {
           <Paper p="md" withBorder mb="xl">
             <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }} mb="sm">
               <Group gap="xs">
-                <div style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }} />
+                <div
+                  style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }}
+                />
                 <Text size="sm">Gold</Text>
               </Group>
               <Group gap="xs">
-                <div style={{ width: 16, height: 16, backgroundColor: "#C0C0C0", borderRadius: 2 }} />
+                <div
+                  style={{ width: 16, height: 16, backgroundColor: "#C0C0C0", borderRadius: 2 }}
+                />
                 <Text size="sm">Silver</Text>
               </Group>
               <Group gap="xs">
-                <div style={{ width: 16, height: 16, backgroundColor: "#CD7F32", borderRadius: 2 }} />
+                <div
+                  style={{ width: 16, height: 16, backgroundColor: "#CD7F32", borderRadius: 2 }}
+                />
                 <Text size="sm">Bronze</Text>
               </Group>
               <Group gap="xs">
-                <div style={{ width: 16, height: 16, backgroundColor: "#40c057", borderRadius: 2 }} />
+                <div
+                  style={{ width: 16, height: 16, backgroundColor: "#40c057", borderRadius: 2 }}
+                />
                 <Text size="sm">HM</Text>
               </Group>
               <Group gap="xs">
-                <div style={{ width: 16, height: 16, backgroundColor: "#87CEEB", borderRadius: 2 }} />
+                <div
+                  style={{ width: 16, height: 16, backgroundColor: "#87CEEB", borderRadius: 2 }}
+                />
                 <Text size="sm">No award</Text>
               </Group>
             </SimpleGrid>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={scoreDistribution}
-                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-              >
+              <BarChart data={scoreDistribution} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                 <XAxis
                   dataKey="score"
@@ -429,37 +437,37 @@ export function Competition() {
 
           <ScrollArea>
             <Table striped highlightOnHover miw={800}>
-            <Table.Thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <Table.Tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <Table.Th
-                      key={header.id}
-                      onClick={header.column.getToggleSortingHandler()}
-                      style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                    >
-                      <Group gap="xs">
-                        {header.isPlaceholder
-                          ? null
-                          : typeof header.column.columnDef.header === "string"
-                            ? header.column.columnDef.header
-                            : null}
-                        {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                      </Group>
-                    </Table.Th>
-                  ))}
-                </Table.Tr>
-              ))}
-            </Table.Thead>
-            <Table.Tbody>
-              {getTableBody({
-                isLoading: loading,
-                error,
-                tableRows: table.getRowModel().rows,
-                columnCount: columns.length,
-                noDataMessage: "No contestants found",
-              })}
-            </Table.Tbody>
+              <Table.Thead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <Table.Tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <Table.Th
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                      >
+                        <Group gap="xs">
+                          {header.isPlaceholder
+                            ? null
+                            : typeof header.column.columnDef.header === "string"
+                              ? header.column.columnDef.header
+                              : null}
+                          {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                        </Group>
+                      </Table.Th>
+                    ))}
+                  </Table.Tr>
+                ))}
+              </Table.Thead>
+              <Table.Tbody>
+                {getTableBody({
+                  isLoading: loading,
+                  error,
+                  tableRows: table.getRowModel().rows,
+                  columnCount: columns.length,
+                  noDataMessage: "No contestants found",
+                })}
+              </Table.Tbody>
             </Table>
           </ScrollArea>
         </Tabs.Panel>
@@ -471,37 +479,37 @@ export function Competition() {
 
           <ScrollArea>
             <Table striped highlightOnHover miw={900}>
-            <Table.Thead>
-              {countryTable.getHeaderGroups().map((headerGroup) => (
-                <Table.Tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <Table.Th
-                      key={header.id}
-                      onClick={header.column.getToggleSortingHandler()}
-                      style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                    >
-                      <Group gap="xs">
-                        {header.isPlaceholder
-                          ? null
-                          : typeof header.column.columnDef.header === "string"
-                            ? header.column.columnDef.header
-                            : null}
-                        {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                      </Group>
-                    </Table.Th>
-                  ))}
-                </Table.Tr>
-              ))}
-            </Table.Thead>
-            <Table.Tbody>
-              {getTableBody({
-                isLoading: loading,
-                error,
-                tableRows: countryTable.getRowModel().rows,
-                columnCount: countryColumns.length,
-                noDataMessage: "No countries found",
-              })}
-            </Table.Tbody>
+              <Table.Thead>
+                {countryTable.getHeaderGroups().map((headerGroup) => (
+                  <Table.Tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <Table.Th
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                      >
+                        <Group gap="xs">
+                          {header.isPlaceholder
+                            ? null
+                            : typeof header.column.columnDef.header === "string"
+                              ? header.column.columnDef.header
+                              : null}
+                          {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                        </Group>
+                      </Table.Th>
+                    ))}
+                  </Table.Tr>
+                ))}
+              </Table.Thead>
+              <Table.Tbody>
+                {getTableBody({
+                  isLoading: loading,
+                  error,
+                  tableRows: countryTable.getRowModel().rows,
+                  columnCount: countryColumns.length,
+                  noDataMessage: "No countries found",
+                })}
+              </Table.Tbody>
             </Table>
           </ScrollArea>
         </Tabs.Panel>

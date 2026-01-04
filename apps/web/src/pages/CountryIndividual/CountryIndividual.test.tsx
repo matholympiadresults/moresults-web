@@ -56,11 +56,7 @@ const createCountry = (code: string, name: string): Country => ({
   name,
 });
 
-const createCompetition = (
-  source: Source,
-  year: number,
-  numProblems = 6
-): Competition => ({
+const createCompetition = (source: Source, year: number, numProblems = 6): Competition => ({
   id: `${source.toLowerCase()}-${year}`,
   source,
   year,

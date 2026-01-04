@@ -18,10 +18,7 @@ export interface AggregationInput {
  * Aggregates contestant data for display in the Contestants list.
  * Filters out redacted names and maps person data to display rows.
  */
-export function aggregateContestants({
-  people,
-  countryMap,
-}: AggregationInput): ContestantRow[] {
+export function aggregateContestants({ people, countryMap }: AggregationInput): ContestantRow[] {
   return people
     .filter((person) => !isRedactedName(person.name))
     .map((person) => ({

@@ -86,19 +86,17 @@ export function Contestant() {
   );
 
   // Find max number of problems across filtered participations (based on source filter)
-  const maxProblems = useMemo(
-    () => getMaxProblems(rows, sourceFilter),
-    [rows, sourceFilter]
-  );
+  const maxProblems = useMemo(() => getMaxProblems(rows, sourceFilter), [rows, sourceFilter]);
 
   // Build chart data: for each year, count participants by medal type and track person's rank
   const rankingChartData = useMemo(
-    () => aggregateRankingChartData({
-      allParticipations,
-      personParticipations,
-      competitionMap,
-      chartSource,
-    }),
+    () =>
+      aggregateRankingChartData({
+        allParticipations,
+        personParticipations,
+        competitionMap,
+        chartSource,
+      }),
     [allParticipations, personParticipations, competitionMap, chartSource]
   );
 
@@ -122,7 +120,11 @@ export function Contestant() {
 
   // Set initial chart source to first source the person participated in
   const initialChartSource = personSourceOptions[0]?.value ?? Source.IMO;
-  if (chartSource !== initialChartSource && !personSources.has(chartSource) && personSourceOptions.length > 0) {
+  if (
+    chartSource !== initialChartSource &&
+    !personSources.has(chartSource) &&
+    personSourceOptions.length > 0
+  ) {
     setChartSource(initialChartSource);
   }
 
@@ -205,7 +207,8 @@ export function Contestant() {
 
   const handleMinYearChange = (value: number | string) => {
     setMinYear(value);
-    const currentFilter = (table.getColumn("year")?.getFilterValue() as { min?: number; max?: number }) ?? {};
+    const currentFilter =
+      (table.getColumn("year")?.getFilterValue() as { min?: number; max?: number }) ?? {};
     table.getColumn("year")?.setFilterValue({
       ...currentFilter,
       min: typeof value === "number" ? value : undefined,
@@ -214,7 +217,8 @@ export function Contestant() {
 
   const handleMaxYearChange = (value: number | string) => {
     setMaxYear(value);
-    const currentFilter = (table.getColumn("year")?.getFilterValue() as { min?: number; max?: number }) ?? {};
+    const currentFilter =
+      (table.getColumn("year")?.getFilterValue() as { min?: number; max?: number }) ?? {};
     table.getColumn("year")?.setFilterValue({
       ...currentFilter,
       max: typeof value === "number" ? value : undefined,
@@ -236,9 +240,7 @@ export function Contestant() {
           <Title>{contestantInfo.name}</Title>
           <Group gap={8} mb="md">
             <CountryFlag code={contestantInfo.countryCode} size="md" />
-            <Text c="dimmed">
-              {contestantInfo.countryName}
-            </Text>
+            <Text c="dimmed">{contestantInfo.countryName}</Text>
           </Group>
         </>
       )}
@@ -252,19 +254,27 @@ export function Contestant() {
             <Stack gap="md" mb="md">
               <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }}>
                 <Group gap="xs">
-                  <div style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }} />
+                  <div
+                    style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }}
+                  />
                   <Text size="sm">Gold</Text>
                 </Group>
                 <Group gap="xs">
-                  <div style={{ width: 16, height: 16, backgroundColor: "#C0C0C0", borderRadius: 2 }} />
+                  <div
+                    style={{ width: 16, height: 16, backgroundColor: "#C0C0C0", borderRadius: 2 }}
+                  />
                   <Text size="sm">Silver</Text>
                 </Group>
                 <Group gap="xs">
-                  <div style={{ width: 16, height: 16, backgroundColor: "#CD7F32", borderRadius: 2 }} />
+                  <div
+                    style={{ width: 16, height: 16, backgroundColor: "#CD7F32", borderRadius: 2 }}
+                  />
                   <Text size="sm">Bronze</Text>
                 </Group>
                 <Group gap="xs">
-                  <div style={{ width: 16, height: 16, backgroundColor: "#87CEEB", borderRadius: 2 }} />
+                  <div
+                    style={{ width: 16, height: 16, backgroundColor: "#87CEEB", borderRadius: 2 }}
+                  />
                   <Text size="sm">No medal</Text>
                 </Group>
                 <Group gap="xs">
@@ -286,10 +296,7 @@ export function Contestant() {
                 margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                <XAxis
-                  dataKey="year"
-                  {...axisStyle}
-                />
+                <XAxis dataKey="year" {...axisStyle} />
                 <YAxis
                   {...axisStyle}
                   allowDecimals={false}
@@ -303,12 +310,22 @@ export function Contestant() {
                     if (!data) return null;
                     return (
                       <div style={getTooltipContentStyle(isDark)}>
-                        <Text size="sm" fw={600}>{chartSource} {label}</Text>
+                        <Text size="sm" fw={600}>
+                          {chartSource} {label}
+                        </Text>
                         <Text size="sm">Total: {data.totalParticipants} participants</Text>
-                        <Text size="sm" c="yellow">Gold: {data.gold}</Text>
-                        <Text size="sm" c="gray">Silver: {data.silver}</Text>
-                        <Text size="sm" c="orange">Bronze: {data.bronze}</Text>
-                        <Text size="sm" c="cyan">No medal: {data.noMedal}</Text>
+                        <Text size="sm" c="yellow">
+                          Gold: {data.gold}
+                        </Text>
+                        <Text size="sm" c="gray">
+                          Silver: {data.silver}
+                        </Text>
+                        <Text size="sm" c="orange">
+                          Bronze: {data.bronze}
+                        </Text>
+                        <Text size="sm" c="cyan">
+                          No medal: {data.noMedal}
+                        </Text>
                         {data.personRank && (
                           <Text size="sm" fw={600} mt="xs">
                             {person?.name}: Rank {data.personRank}
@@ -322,7 +339,13 @@ export function Contestant() {
                 <Bar dataKey="noMedal" stackId="medals" fill="#87CEEB" name="No medal" />
                 <Bar dataKey="bronze" stackId="medals" fill="#CD7F32" name="Bronze" />
                 <Bar dataKey="silver" stackId="medals" fill="#C0C0C0" name="Silver" />
-                <Bar dataKey="gold" stackId="medals" fill="#FFD700" name="Gold" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="gold"
+                  stackId="medals"
+                  fill="#FFD700"
+                  name="Gold"
+                  radius={[4, 4, 0, 0]}
+                />
                 <Line
                   type="monotone"
                   dataKey="personPosition"
@@ -380,40 +403,40 @@ export function Contestant() {
 
       <ScrollArea>
         <Table striped highlightOnHover miw={700}>
-        <Table.Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                >
-                  <Group gap="xs">
-                    {header.isPlaceholder
-                      ? null
-                      : typeof header.column.columnDef.header === "string"
-                        ? header.column.columnDef.header
-                        : null}
-                    {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                  </Group>
-                </Table.Th>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Thead>
-        <Table.Tbody>
-          {getTableBody({
-            isLoading: loading,
-            error,
-            tableRows: table.getRowModel().rows,
-            columnCount: table.getVisibleLeafColumns().length,
-            noDataMessage: "No participations found",
-            getRowStyle: (row) => ({
-              backgroundColor: sourceColors[row.original.source],
-            }),
-          })}
-        </Table.Tbody>
+          <Table.Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Table.Tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <Table.Th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                  >
+                    <Group gap="xs">
+                      {header.isPlaceholder
+                        ? null
+                        : typeof header.column.columnDef.header === "string"
+                          ? header.column.columnDef.header
+                          : null}
+                      {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                    </Group>
+                  </Table.Th>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Thead>
+          <Table.Tbody>
+            {getTableBody({
+              isLoading: loading,
+              error,
+              tableRows: table.getRowModel().rows,
+              columnCount: table.getVisibleLeafColumns().length,
+              noDataMessage: "No participations found",
+              getRowStyle: (row) => ({
+                backgroundColor: sourceColors[row.original.source],
+              }),
+            })}
+          </Table.Tbody>
         </Table>
       </ScrollArea>
     </Container>

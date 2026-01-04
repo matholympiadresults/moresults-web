@@ -20,9 +20,7 @@ describe("Home", () => {
     it("renders the main title", () => {
       renderHome();
 
-      expect(
-        screen.getByText("Explore Consolidated Math Olympiad Results")
-      ).toBeInTheDocument();
+      expect(screen.getByText("Explore Consolidated Math Olympiad Results")).toBeInTheDocument();
     });
 
     it("renders the subtitle", () => {
@@ -60,21 +58,13 @@ describe("Home", () => {
       expect(
         screen.getByText("Browse all contestants and their participation history")
       ).toBeInTheDocument();
-      expect(
-        screen.getByText("View competition results by olympiad and year")
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText("Country statistics and performance rankings")
-      ).toBeInTheDocument();
+      expect(screen.getByText("View competition results by olympiad and year")).toBeInTheDocument();
+      expect(screen.getByText("Country statistics and performance rankings")).toBeInTheDocument();
       expect(
         screen.getByText("Side-by-side comparison of country performances")
       ).toBeInTheDocument();
-      expect(
-        screen.getByText("Top performers across all competitions")
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText("About our data sources and methodology")
-      ).toBeInTheDocument();
+      expect(screen.getByText("Top performers across all competitions")).toBeInTheDocument();
+      expect(screen.getByText("About our data sources and methodology")).toBeInTheDocument();
     });
 
     it("links Contestants card to correct route", () => {

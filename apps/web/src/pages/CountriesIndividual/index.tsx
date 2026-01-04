@@ -9,6 +9,7 @@ import {
   TextInput,
   Pagination,
   Select,
+  ScrollArea,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link } from "react-router";
@@ -133,41 +134,43 @@ export function CountriesIndividual() {
         />
       </Group>
 
-      <Table striped highlightOnHover>
-        <Table.Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                >
-                  <Group gap="xs">
-                    {header.isPlaceholder
-                      ? null
-                      : typeof header.column.columnDef.header === "string"
-                        ? header.column.columnDef.header
-                        : null}
-                    {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                  </Group>
-                </Table.Th>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Thead>
-        <Table.Tbody>
-          {getTableBody({
-            isLoading: loading,
-            error,
-            tableRows: table.getRowModel().rows,
-            columnCount: columns.length,
-            noDataMessage: "No countries found",
-          })}
-        </Table.Tbody>
-      </Table>
+      <ScrollArea>
+        <Table striped highlightOnHover miw={500}>
+          <Table.Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Table.Tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <Table.Th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                  >
+                    <Group gap="xs">
+                      {header.isPlaceholder
+                        ? null
+                        : typeof header.column.columnDef.header === "string"
+                          ? header.column.columnDef.header
+                          : null}
+                      {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                    </Group>
+                  </Table.Th>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Thead>
+          <Table.Tbody>
+            {getTableBody({
+              isLoading: loading,
+              error,
+              tableRows: table.getRowModel().rows,
+              columnCount: columns.length,
+              noDataMessage: "No countries found",
+            })}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
 
-      <Group justify="space-between" mt="md">
+      <Group justify="space-between" mt="md" wrap="wrap" gap="md">
         <Group gap="xs">
           <Text size="sm" c="dimmed">
             Showing {table.getRowModel().rows.length} of {table.getFilteredRowModel().rows.length}

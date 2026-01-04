@@ -12,6 +12,8 @@ import {
   Paper,
   useMantineColorScheme,
   Tabs,
+  ScrollArea,
+  SimpleGrid,
 } from "@mantine/core";
 import {
   BarChart,
@@ -317,7 +319,7 @@ export function Competition() {
             Score Distribution
           </Title>
           <Paper p="md" withBorder mb="xl">
-            <Group gap="lg" mb="sm">
+            <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }} mb="sm">
               <Group gap="xs">
                 <div style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }} />
                 <Text size="sm">Gold</Text>
@@ -338,7 +340,7 @@ export function Competition() {
                 <div style={{ width: 16, height: 16, backgroundColor: "#87CEEB", borderRadius: 2 }} />
                 <Text size="sm">No award</Text>
               </Group>
-            </Group>
+            </SimpleGrid>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={scoreDistribution}
@@ -393,7 +395,7 @@ export function Competition() {
         </Tabs.List>
 
         <Tabs.Panel value="individual">
-          <Group align="end" mb="md">
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} mb="md">
             <TextInput
               placeholder="Search by name..."
               leftSection={<IconSearch size={16} />}
@@ -409,7 +411,6 @@ export function Competition() {
               onChange={(value) => {
                 table.getColumn("countryId")?.setFilterValue(value);
               }}
-              style={{ minWidth: 200 }}
             />
             <MultiSelect
               placeholder="Filter by award"
@@ -419,15 +420,15 @@ export function Competition() {
               onChange={(value) => {
                 table.getColumn("award")?.setFilterValue(value);
               }}
-              style={{ minWidth: 180 }}
             />
-          </Group>
+          </SimpleGrid>
 
           <Text size="sm" c="dimmed" mb="md">
             {table.getFilteredRowModel().rows.length} of {participations.length} contestants
           </Text>
 
-          <Table striped highlightOnHover>
+          <ScrollArea>
+            <Table striped highlightOnHover miw={800}>
             <Table.Thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <Table.Tr key={headerGroup.id}>
@@ -459,7 +460,8 @@ export function Competition() {
                 noDataMessage: "No contestants found",
               })}
             </Table.Tbody>
-          </Table>
+            </Table>
+          </ScrollArea>
         </Tabs.Panel>
 
         <Tabs.Panel value="country">
@@ -467,7 +469,8 @@ export function Competition() {
             {countryRows.length} countries
           </Text>
 
-          <Table striped highlightOnHover>
+          <ScrollArea>
+            <Table striped highlightOnHover miw={900}>
             <Table.Thead>
               {countryTable.getHeaderGroups().map((headerGroup) => (
                 <Table.Tr key={headerGroup.id}>
@@ -499,7 +502,8 @@ export function Competition() {
                 noDataMessage: "No countries found",
               })}
             </Table.Tbody>
-          </Table>
+            </Table>
+          </ScrollArea>
         </Tabs.Panel>
       </Tabs>
     </Container>

@@ -12,6 +12,9 @@ import {
   Anchor,
   Paper,
   useMantineColorScheme,
+  ScrollArea,
+  SimpleGrid,
+  Stack,
 } from "@mantine/core";
 import {
   ComposedChart,
@@ -246,8 +249,8 @@ export function Contestant() {
             Individual Ranking
           </Title>
           <Paper p="md" withBorder mb="xl">
-            <Group justify="space-between" mb="md">
-              <Group gap="lg">
+            <Stack gap="md" mb="md">
+              <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }}>
                 <Group gap="xs">
                   <div style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }} />
                   <Text size="sm">Gold</Text>
@@ -268,15 +271,15 @@ export function Contestant() {
                   <div style={{ width: 16, height: 3, backgroundColor: "#000", borderRadius: 1 }} />
                   <Text size="sm">This contestant</Text>
                 </Group>
-              </Group>
+              </SimpleGrid>
               <Select
                 size="sm"
                 data={personSourceOptions}
                 value={chartSource}
                 onChange={(value) => value && setChartSource(value as Source)}
-                style={{ width: 120 }}
+                style={{ maxWidth: 150 }}
               />
-            </Group>
+            </Stack>
             <ResponsiveContainer width="100%" height={350}>
               <ComposedChart
                 data={rankingChartData}
@@ -339,7 +342,7 @@ export function Contestant() {
         Participations ({table.getFilteredRowModel().rows.length} of {personParticipations.length})
       </Title>
 
-      <Group align="end" mb="md">
+      <SimpleGrid cols={{ base: 2, sm: 4 }} mb="md">
         <Select
           placeholder="Filter by source"
           clearable
@@ -349,13 +352,11 @@ export function Contestant() {
             setSourceFilter(value as Source | null);
             table.getColumn("source")?.setFilterValue(value);
           }}
-          style={{ minWidth: 120 }}
         />
         <NumberInput
           placeholder="Min year"
           value={minYear}
           onChange={handleMinYearChange}
-          style={{ width: 100 }}
           min={1959}
           max={2030}
         />
@@ -363,7 +364,6 @@ export function Contestant() {
           placeholder="Max year"
           value={maxYear}
           onChange={handleMaxYearChange}
-          style={{ width: 100 }}
           min={1959}
           max={2030}
         />
@@ -375,11 +375,11 @@ export function Contestant() {
           onChange={(value) => {
             table.getColumn("award")?.setFilterValue(value);
           }}
-          style={{ minWidth: 180 }}
         />
-      </Group>
+      </SimpleGrid>
 
-      <Table striped highlightOnHover>
+      <ScrollArea>
+        <Table striped highlightOnHover miw={700}>
         <Table.Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Tr key={headerGroup.id}>
@@ -414,7 +414,8 @@ export function Contestant() {
             }),
           })}
         </Table.Tbody>
-      </Table>
+        </Table>
+      </ScrollArea>
     </Container>
   );
 }

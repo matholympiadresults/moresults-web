@@ -8,6 +8,7 @@ import {
   SimpleGrid,
   Paper,
   useMantineColorScheme,
+  ScrollArea,
 } from "@mantine/core";
 import { useParams, Link } from "react-router";
 import {
@@ -216,104 +217,108 @@ export function CompetitionStatistics() {
       <Title order={3} mt="xl" mb="md">
         Score Distribution
       </Title>
-      <Table striped withTableBorder withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th></Table.Th>
-            {problemHeaders.map((h) => (
-              <Table.Th key={h} style={{ textAlign: "center" }}>
-                {h}
-              </Table.Th>
+      <ScrollArea>
+        <Table striped withTableBorder withColumnBorders miw={500}>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th></Table.Th>
+              {problemHeaders.map((h) => (
+                <Table.Th key={h} style={{ textAlign: "center" }}>
+                  {h}
+                </Table.Th>
+              ))}
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {Array.from({ length: stats.maxScore + 1 }, (_, score) => (
+              <Table.Tr key={`score-${score}`}>
+                <Table.Td>Num( P# = {score} )</Table.Td>
+                {stats.distributions.map((dist, p) => (
+                  <Table.Td key={p} style={{ textAlign: "center" }}>
+                    {dist[score]}
+                  </Table.Td>
+                ))}
+              </Table.Tr>
             ))}
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {Array.from({ length: stats.maxScore + 1 }, (_, score) => (
-            <Table.Tr key={`score-${score}`}>
-              <Table.Td>Num( P# = {score} )</Table.Td>
-              {stats.distributions.map((dist, p) => (
-                <Table.Td key={p} style={{ textAlign: "center" }}>
-                  {dist[score]}
+            <Table.Tr>
+              <Table.Td fw={500}>Mean( P# )</Table.Td>
+              {stats.means.map((mean, p) => (
+                <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
+                  {mean.toFixed(3)}
                 </Table.Td>
               ))}
             </Table.Tr>
-          ))}
-          <Table.Tr>
-            <Table.Td fw={500}>Mean( P# )</Table.Td>
-            {stats.means.map((mean, p) => (
-              <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
-                {mean.toFixed(3)}
-              </Table.Td>
-            ))}
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Td fw={500}>Max( P# )</Table.Td>
-            {stats.maxScores.map((max, p) => (
-              <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
-                {max}
-              </Table.Td>
-            ))}
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Td fw={500}>σ( P# )</Table.Td>
-            {stats.stdDevs.map((std, p) => (
-              <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
-                {std.toFixed(3)}
-              </Table.Td>
-            ))}
-          </Table.Tr>
-        </Table.Tbody>
-      </Table>
+            <Table.Tr>
+              <Table.Td fw={500}>Max( P# )</Table.Td>
+              {stats.maxScores.map((max, p) => (
+                <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
+                  {max}
+                </Table.Td>
+              ))}
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td fw={500}>σ( P# )</Table.Td>
+              {stats.stdDevs.map((std, p) => (
+                <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
+                  {std.toFixed(3)}
+                </Table.Td>
+              ))}
+            </Table.Tr>
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
 
       {/* Correlations Table */}
       <Title order={3} mt="xl" mb="md">
         Correlations
       </Title>
-      <Table withTableBorder withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th></Table.Th>
-            {problemHeaders.map((h) => (
-              <Table.Th key={h} style={{ textAlign: "center" }}>
-                {h}
-              </Table.Th>
-            ))}
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Td fw={500}>Corr( P#, Sum )</Table.Td>
-            {stats.correlationsWithSum.map((corr, p) => (
-              <Table.Td
-                key={p}
-                style={{
-                  textAlign: "center",
-                  backgroundColor: getCorrelationColor(corr, isDark),
-                }}
-                fw={500}
-              >
-                {corr.toFixed(3)}
-              </Table.Td>
-            ))}
-          </Table.Tr>
-          {problemHeaders.map((h, p1) => (
-            <Table.Tr key={`corr-${p1}`}>
-              <Table.Td fw={500}>Corr( P#, {h} )</Table.Td>
-              {stats.problemCorrelations[p1].map((corr, p2) => (
+      <ScrollArea>
+        <Table withTableBorder withColumnBorders miw={500}>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th></Table.Th>
+              {problemHeaders.map((h) => (
+                <Table.Th key={h} style={{ textAlign: "center" }}>
+                  {h}
+                </Table.Th>
+              ))}
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            <Table.Tr>
+              <Table.Td fw={500}>Corr( P#, Sum )</Table.Td>
+              {stats.correlationsWithSum.map((corr, p) => (
                 <Table.Td
-                  key={p2}
+                  key={p}
                   style={{
                     textAlign: "center",
                     backgroundColor: getCorrelationColor(corr, isDark),
                   }}
+                  fw={500}
                 >
-                  {p1 === p2 ? "" : corr.toFixed(3)}
+                  {corr.toFixed(3)}
                 </Table.Td>
               ))}
             </Table.Tr>
-          ))}
-        </Table.Tbody>
-      </Table>
+            {problemHeaders.map((h, p1) => (
+              <Table.Tr key={`corr-${p1}`}>
+                <Table.Td fw={500}>Corr( P#, {h} )</Table.Td>
+                {stats.problemCorrelations[p1].map((corr, p2) => (
+                  <Table.Td
+                    key={p2}
+                    style={{
+                      textAlign: "center",
+                      backgroundColor: getCorrelationColor(corr, isDark),
+                    }}
+                  >
+                    {p1 === p2 ? "" : corr.toFixed(3)}
+                  </Table.Td>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
     </Container>
   );
 }

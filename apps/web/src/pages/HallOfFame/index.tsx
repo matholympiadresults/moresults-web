@@ -9,6 +9,8 @@ import {
   Select,
   Pagination,
   Badge,
+  ScrollArea,
+  SimpleGrid,
 } from "@mantine/core";
 import { Link } from "react-router";
 import {
@@ -170,13 +172,12 @@ export function HallOfFame() {
         Top contestants ranked by medals (gold, then silver, then bronze)
       </Text>
 
-      <Group align="end" mb="md">
+      <SimpleGrid cols={{ base: 1, sm: 2 }} mb="md">
         <Select
           label="Competition"
           data={SOURCE_OPTIONS_WITH_ALL}
           value={selectedSource}
           onChange={handleSourceChange}
-          style={{ minWidth: 180 }}
         />
         <Select
           label="Country"
@@ -186,15 +187,15 @@ export function HallOfFame() {
           onChange={handleCountryChange}
           searchable
           clearable
-          style={{ minWidth: 200 }}
         />
-      </Group>
+      </SimpleGrid>
 
       <Text size="sm" c="dimmed" mb="md">
         {rows.length} contestants with medals
       </Text>
 
-      <Table striped highlightOnHover>
+      <ScrollArea>
+        <Table striped highlightOnHover miw={700}>
         <Table.Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Tr key={headerGroup.id}>
@@ -226,9 +227,10 @@ export function HallOfFame() {
             noDataMessage: "No contestants found",
           })}
         </Table.Tbody>
-      </Table>
+        </Table>
+      </ScrollArea>
 
-      <Group justify="space-between" mt="md">
+      <Group justify="space-between" mt="md" wrap="wrap" gap="md">
         <Group gap="xs">
           <Text size="sm" c="dimmed">
             Showing {table.getRowModel().rows.length} of {rows.length}

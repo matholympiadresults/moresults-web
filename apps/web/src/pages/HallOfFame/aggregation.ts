@@ -74,8 +74,7 @@ export function aggregateHallOfFame({
     if (stats.gold + stats.silver + stats.bronze === 0) return;
 
     // Filter by country if selected
-    if (selectedCountry !== "all" && person.country_id !== selectedCountry)
-      return;
+    if (selectedCountry !== "all" && person.country_id !== selectedCountry) return;
 
     result.push({
       rank: 0, // Will be set after sorting

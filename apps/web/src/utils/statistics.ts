@@ -25,10 +25,7 @@ export function createEmptyAwardCounts(): AwardCounts {
  * @param stats - The award counts object to mutate
  * @param award - The award to increment (or null for no award)
  */
-export function incrementAwardCounts(
-  stats: AwardCounts,
-  award: Award | null
-): void {
+export function incrementAwardCounts(stats: AwardCounts, award: Award | null): void {
   if (award === Award.GOLD) stats.gold++;
   else if (award === Award.SILVER) stats.silver++;
   else if (award === Award.BRONZE) stats.bronze++;

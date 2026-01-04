@@ -145,8 +145,7 @@ describe("api hooks", () => {
     originalDecompressionStream = global.DecompressionStream;
 
     // Mock DecompressionStream to pass through data unchanged
-    global.DecompressionStream =
-      MockDecompressionStream as unknown as typeof DecompressionStream;
+    global.DecompressionStream = MockDecompressionStream as unknown as typeof DecompressionStream;
 
     // Reset module state by clearing the cache
     vi.resetModules();
@@ -458,30 +457,22 @@ describe("api hooks", () => {
     it("returns participations filtered by person id", async () => {
       global.fetch = vi.fn().mockResolvedValue(createMockFetchResponse(mockDatabase));
 
-      const { useParticipationsByPerson: freshUseParticipationsByPerson } =
-        await import("./api");
-      const { result } = renderHook(() =>
-        freshUseParticipationsByPerson("person-1")
-      );
+      const { useParticipationsByPerson: freshUseParticipationsByPerson } = await import("./api");
+      const { result } = renderHook(() => freshUseParticipationsByPerson("person-1"));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       expect(result.current.participations).toHaveLength(2);
-      expect(
-        result.current.participations.every((p) => p.person_id === "person-1")
-      ).toBe(true);
+      expect(result.current.participations.every((p) => p.person_id === "person-1")).toBe(true);
     });
 
     it("returns empty array for non-existent person", async () => {
       global.fetch = vi.fn().mockResolvedValue(createMockFetchResponse(mockDatabase));
 
-      const { useParticipationsByPerson: freshUseParticipationsByPerson } =
-        await import("./api");
-      const { result } = renderHook(() =>
-        freshUseParticipationsByPerson("person-999")
-      );
+      const { useParticipationsByPerson: freshUseParticipationsByPerson } = await import("./api");
+      const { result } = renderHook(() => freshUseParticipationsByPerson("person-999"));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -497,18 +488,16 @@ describe("api hooks", () => {
 
       const { useParticipationsByCompetition: freshUseParticipationsByCompetition } =
         await import("./api");
-      const { result } = renderHook(() =>
-        freshUseParticipationsByCompetition("IMO-2023")
-      );
+      const { result } = renderHook(() => freshUseParticipationsByCompetition("IMO-2023"));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       expect(result.current.participations).toHaveLength(2);
-      expect(
-        result.current.participations.every((p) => p.competition_id === "IMO-2023")
-      ).toBe(true);
+      expect(result.current.participations.every((p) => p.competition_id === "IMO-2023")).toBe(
+        true
+      );
     });
 
     it("returns empty array for non-existent competition", async () => {
@@ -516,9 +505,7 @@ describe("api hooks", () => {
 
       const { useParticipationsByCompetition: freshUseParticipationsByCompetition } =
         await import("./api");
-      const { result } = renderHook(() =>
-        freshUseParticipationsByCompetition("IMO-9999")
-      );
+      const { result } = renderHook(() => freshUseParticipationsByCompetition("IMO-9999"));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -532,30 +519,22 @@ describe("api hooks", () => {
     it("returns participations filtered by country id", async () => {
       global.fetch = vi.fn().mockResolvedValue(createMockFetchResponse(mockDatabase));
 
-      const { useParticipationsByCountry: freshUseParticipationsByCountry } =
-        await import("./api");
-      const { result } = renderHook(() =>
-        freshUseParticipationsByCountry("country-USA")
-      );
+      const { useParticipationsByCountry: freshUseParticipationsByCountry } = await import("./api");
+      const { result } = renderHook(() => freshUseParticipationsByCountry("country-USA"));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       expect(result.current.participations).toHaveLength(2);
-      expect(
-        result.current.participations.every((p) => p.country_id === "country-USA")
-      ).toBe(true);
+      expect(result.current.participations.every((p) => p.country_id === "country-USA")).toBe(true);
     });
 
     it("returns empty array for non-existent country", async () => {
       global.fetch = vi.fn().mockResolvedValue(createMockFetchResponse(mockDatabase));
 
-      const { useParticipationsByCountry: freshUseParticipationsByCountry } =
-        await import("./api");
-      const { result } = renderHook(() =>
-        freshUseParticipationsByCountry("country-INVALID")
-      );
+      const { useParticipationsByCountry: freshUseParticipationsByCountry } = await import("./api");
+      const { result } = renderHook(() => freshUseParticipationsByCountry("country-INVALID"));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);

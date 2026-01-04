@@ -37,12 +37,12 @@ The app will be available at `http://localhost:3001`.
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `yarn dev` | Start development server |
-| `yarn build` | Build for production |
-| `yarn lint` | Run ESLint |
-| `yarn workspace @moresults/web test` | Run tests |
+| Command                              | Description              |
+| ------------------------------------ | ------------------------ |
+| `yarn dev`                           | Start development server |
+| `yarn build`                         | Build for production     |
+| `yarn lint`                          | Run ESLint               |
+| `yarn workspace @moresults/web test` | Run tests                |
 
 ## Project Structure
 

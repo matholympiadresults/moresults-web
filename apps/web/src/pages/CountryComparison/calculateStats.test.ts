@@ -10,7 +10,11 @@ import type { Participation, Competition } from "@/schemas/base";
 
 // Helper to create a participation
 function createParticipation(
-  overrides: Partial<Participation> & { competition_id: string; country_id: string; person_id: string }
+  overrides: Partial<Participation> & {
+    competition_id: string;
+    country_id: string;
+    person_id: string;
+  }
 ): Participation {
   return {
     id: `${overrides.competition_id}-${overrides.person_id}`,

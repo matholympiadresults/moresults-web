@@ -11,11 +11,13 @@ export function PerformanceMetrics() {
 
   const checkIfLoaded = useCallback(() => {
     // Check for common loading indicators
-    const hasLoader = document.querySelector('[class*="Loader"], [class*="Skeleton"], [class*="loading"]');
+    const hasLoader = document.querySelector(
+      '[class*="Loader"], [class*="Skeleton"], [class*="loading"]'
+    );
     const hasSpinner = document.querySelector('[role="progressbar"], [aria-busy="true"]');
 
     // Check for Mantine loader specifically
-    const hasMantineLoader = document.querySelector('.mantine-Loader-root');
+    const hasMantineLoader = document.querySelector(".mantine-Loader-root");
 
     return !hasLoader && !hasSpinner && !hasMantineLoader;
   }, []);
@@ -99,16 +101,13 @@ export function PerformanceMetrics() {
       withBorder
     >
       <Group gap="xs">
-        <Text size="xs" c="dimmed">{location.pathname}</Text>
+        <Text size="xs" c="dimmed">
+          {location.pathname}
+        </Text>
         <Badge size="sm" color={getColor(renderTime)}>
           {formatMs(renderTime)}
         </Badge>
-        <Text
-          size="xs"
-          c="dimmed"
-          style={{ cursor: "pointer" }}
-          onClick={() => setVisible(false)}
-        >
+        <Text size="xs" c="dimmed" style={{ cursor: "pointer" }} onClick={() => setVisible(false)}>
           ✕
         </Text>
       </Group>

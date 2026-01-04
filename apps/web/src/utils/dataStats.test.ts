@@ -12,11 +12,7 @@ import type { Competition, Participation, Database } from "@/schemas/base";
 import { Source, Award } from "@/schemas/base";
 
 // Helper factories
-const createCompetition = (
-  source: Source,
-  year: number,
-  id?: string
-): Competition => ({
+const createCompetition = (source: Source, year: number, id?: string): Competition => ({
   id: id ?? `${source}-${year}`,
   source,
   year,
@@ -26,10 +22,7 @@ const createCompetition = (
   max_score_per_problem: 7,
 });
 
-const createParticipation = (
-  competitionId: string,
-  award: Award | null = null
-): Participation => ({
+const createParticipation = (competitionId: string, award: Award | null = null): Participation => ({
   id: `${competitionId}-person-1`,
   competition_id: competitionId,
   person_id: "person-1",
@@ -299,9 +292,9 @@ describe("calculateDataStats", () => {
         },
       },
       participations: {
-        "p1": { ...createParticipation("IMO-2020", Award.GOLD), id: "p1" },
-        "p2": { ...createParticipation("IMO-2021", Award.SILVER), id: "p2" },
-        "p3": { ...createParticipation("EGMO-2020", null), id: "p3" },
+        p1: { ...createParticipation("IMO-2020", Award.GOLD), id: "p1" },
+        p2: { ...createParticipation("IMO-2021", Award.SILVER), id: "p2" },
+        p3: { ...createParticipation("EGMO-2020", null), id: "p3" },
       },
     };
 

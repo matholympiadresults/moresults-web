@@ -149,9 +149,7 @@ export function getCountryFilterOptions(
   participations: Participation[],
   countryMap: Record<string, Country>
 ): { value: string; label: string }[] {
-  const uniqueCountries = new Set(
-    participations.map((p) => p.country_id).filter(Boolean)
-  );
+  const uniqueCountries = new Set(participations.map((p) => p.country_id).filter(Boolean));
   return Array.from(uniqueCountries)
     .map((countryId) => ({
       value: countryId,

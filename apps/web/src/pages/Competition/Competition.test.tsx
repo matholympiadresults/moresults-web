@@ -4,7 +4,12 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route } from "react-router";
 import { MantineProvider } from "@mantine/core";
 import { Competition } from "./index";
-import type { Competition as CompetitionType, Country, Person, Participation } from "@/schemas/base";
+import type {
+  Competition as CompetitionType,
+  Country,
+  Person,
+  Participation,
+} from "@/schemas/base";
 import { Award, Source } from "@/schemas/base";
 
 // Mock the API hooks
@@ -151,7 +156,8 @@ function setupMocks(overrides?: {
   loading?: boolean;
   error?: Error | null;
 }) {
-  const competition = overrides?.competition !== undefined ? overrides.competition : mockCompetition;
+  const competition =
+    overrides?.competition !== undefined ? overrides.competition : mockCompetition;
   mockUseCompetition.mockReturnValue({
     data: competition,
     competition,

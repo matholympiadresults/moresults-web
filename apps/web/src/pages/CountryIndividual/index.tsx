@@ -117,7 +117,8 @@ export function CountryIndividual() {
 
   // Calculate medal progression over time for the selected source
   const medalProgressionData = useMemo(
-    () => calculateMedalProgression(participations, competitionMap, effectiveSource, medalChartMode),
+    () =>
+      calculateMedalProgression(participations, competitionMap, effectiveSource, medalChartMode),
     [participations, competitionMap, effectiveSource, medalChartMode]
   );
 
@@ -225,7 +226,11 @@ export function CountryIndividual() {
         </>
       )}
 
-      <Tabs value={effectiveSource} onChange={(value) => value && setGlobalSource(value as Source)} mb="xl">
+      <Tabs
+        value={effectiveSource}
+        onChange={(value) => value && setGlobalSource(value as Source)}
+        mb="xl"
+      >
         <Tabs.List>
           {availableSources.map((opt) => (
             <Tabs.Tab key={opt.value} value={opt.value} fz="lg" py="sm">
@@ -237,20 +242,36 @@ export function CountryIndividual() {
 
       <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md" mb="xl">
         <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">Gold</Text>
-          <Text size="xl" fw={700}>{stats.medals[Award.GOLD]}</Text>
+          <Text size="xs" c="dimmed" tt="uppercase">
+            Gold
+          </Text>
+          <Text size="xl" fw={700}>
+            {stats.medals[Award.GOLD]}
+          </Text>
         </Paper>
         <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">Silver</Text>
-          <Text size="xl" fw={700}>{stats.medals[Award.SILVER]}</Text>
+          <Text size="xs" c="dimmed" tt="uppercase">
+            Silver
+          </Text>
+          <Text size="xl" fw={700}>
+            {stats.medals[Award.SILVER]}
+          </Text>
         </Paper>
         <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">Bronze</Text>
-          <Text size="xl" fw={700}>{stats.medals[Award.BRONZE]}</Text>
+          <Text size="xs" c="dimmed" tt="uppercase">
+            Bronze
+          </Text>
+          <Text size="xl" fw={700}>
+            {stats.medals[Award.BRONZE]}
+          </Text>
         </Paper>
         <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">Honourable Mention</Text>
-          <Text size="xl" fw={700}>{stats.medals[Award.HONOURABLE_MENTION]}</Text>
+          <Text size="xs" c="dimmed" tt="uppercase">
+            Honourable Mention
+          </Text>
+          <Text size="xl" fw={700}>
+            {stats.medals[Award.HONOURABLE_MENTION]}
+          </Text>
         </Paper>
       </SimpleGrid>
 
@@ -271,10 +292,7 @@ export function CountryIndividual() {
         </Group>
         {teamRankData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={teamRankData}
-              margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-            >
+            <LineChart data={teamRankData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
               <XAxis dataKey="year" {...axisStyle} />
               <YAxis
@@ -296,8 +314,12 @@ export function CountryIndividual() {
                   if (!data || data.teamRank === null) return null;
                   return (
                     <div style={getTooltipContentStyle(isDark)}>
-                      <Text size="sm" fw={600}>{effectiveSource} {label}</Text>
-                      <Text size="sm">Team Rank: {data.teamRank} / {data.totalTeams}</Text>
+                      <Text size="sm" fw={600}>
+                        {effectiveSource} {label}
+                      </Text>
+                      <Text size="sm">
+                        Team Rank: {data.teamRank} / {data.totalTeams}
+                      </Text>
                       <Text size="sm">Percentile: {data.percentile}%</Text>
                     </div>
                   );
@@ -375,12 +397,24 @@ export function CountryIndividual() {
                   if (!data) return null;
                   return (
                     <div style={getTooltipContentStyle(isDark)}>
-                      <Text size="sm" fw={600}>{effectiveSource} {label}</Text>
-                      <Text size="sm" c="yellow">Gold: {data.gold}</Text>
-                      <Text size="sm" c="gray">Silver: {data.silver}</Text>
-                      <Text size="sm" c="orange">Bronze: {data.bronze}</Text>
-                      <Text size="sm" c="blue">HM: {data.hm}</Text>
-                      <Text size="sm" fw={500} mt="xs">Total: {data.total}</Text>
+                      <Text size="sm" fw={600}>
+                        {effectiveSource} {label}
+                      </Text>
+                      <Text size="sm" c="yellow">
+                        Gold: {data.gold}
+                      </Text>
+                      <Text size="sm" c="gray">
+                        Silver: {data.silver}
+                      </Text>
+                      <Text size="sm" c="orange">
+                        Bronze: {data.bronze}
+                      </Text>
+                      <Text size="sm" c="blue">
+                        HM: {data.hm}
+                      </Text>
+                      <Text size="sm" fw={500} mt="xs">
+                        Total: {data.total}
+                      </Text>
                     </div>
                   );
                 }}

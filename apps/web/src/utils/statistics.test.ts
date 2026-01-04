@@ -82,16 +82,11 @@ describe("calculateCorrelation", () => {
   });
 
   it("returns 1 for perfect positive correlation", () => {
-    expect(calculateCorrelation([1, 2, 3, 4, 5], [2, 4, 6, 8, 10])).toBeCloseTo(
-      1,
-      5
-    );
+    expect(calculateCorrelation([1, 2, 3, 4, 5], [2, 4, 6, 8, 10])).toBeCloseTo(1, 5);
   });
 
   it("returns -1 for perfect negative correlation", () => {
-    expect(
-      calculateCorrelation([1, 2, 3, 4, 5], [10, 8, 6, 4, 2])
-    ).toBeCloseTo(-1, 5);
+    expect(calculateCorrelation([1, 2, 3, 4, 5], [10, 8, 6, 4, 2])).toBeCloseTo(-1, 5);
   });
 
   it("calculates positive correlation correctly", () => {

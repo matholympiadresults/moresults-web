@@ -62,8 +62,7 @@ export function Home() {
         <Stack gap="xs">
           <Title>Explore Consolidated Math Olympiad Results</Title>
           <Text c="dimmed" size="lg">
-            This website is a mirror of official records from different
-            international olympiads.
+            This website is a mirror of official records from different international olympiads.
           </Text>
         </Stack>
 
@@ -112,8 +111,8 @@ export function Home() {
         <Alert variant="light" title="Help us improve">
           <Group justify="space-between" align="center">
             <Text size="sm">
-              Found a bug, missing data, or an olympiad we should add? Have
-              suggestions or want to contribute? We'd love to hear from you!
+              Found a bug, missing data, or an olympiad we should add? Have suggestions or want to
+              contribute? We'd love to hear from you!
             </Text>
             <Group gap="xs">
               <ActionIcon

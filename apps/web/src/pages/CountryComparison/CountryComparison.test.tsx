@@ -40,7 +40,9 @@ vi.mock("@/hooks/api", () => ({
 
 // Mock recharts to avoid rendering issues in tests
 vi.mock("recharts", () => ({
-  LineChart: ({ children }: { children: React.ReactNode }) => <div data-testid="line-chart">{children}</div>,
+  LineChart: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="line-chart">{children}</div>
+  ),
   Line: () => null,
   XAxis: () => null,
   YAxis: () => null,

@@ -278,9 +278,7 @@ describe("Participation interface", () => {
       source_contestant_id: null,
     };
 
-    expect(participation.id).toBe(
-      `${participation.competition_id}-${participation.person_id}`
-    );
+    expect(participation.id).toBe(`${participation.competition_id}-${participation.person_id}`);
   });
 });
 

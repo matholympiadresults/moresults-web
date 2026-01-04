@@ -22,11 +22,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import {
-  useCountries,
-  useParticipations,
-  useCompetitions,
-} from "@/hooks/api";
+import { useCountries, useParticipations, useCompetitions } from "@/hooks/api";
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { CountryFlag } from "@/utils/flags";
 import { getTooltipStyle, getAxisStyle } from "@/utils/chartStyles";
@@ -146,12 +142,14 @@ export function CountryComparison() {
           year,
           [`${country1.name} Medals`]: s1Medals,
           [`${country2.name} Medals`]: s2Medals,
-          [`${country1.name} Avg Score`]: s1 && s1.participants > 0
-            ? parseFloat((s1.totalScore / s1.participants).toFixed(1))
-            : null,
-          [`${country2.name} Avg Score`]: s2 && s2.participants > 0
-            ? parseFloat((s2.totalScore / s2.participants).toFixed(1))
-            : null,
+          [`${country1.name} Avg Score`]:
+            s1 && s1.participants > 0
+              ? parseFloat((s1.totalScore / s1.participants).toFixed(1))
+              : null,
+          [`${country2.name} Avg Score`]:
+            s2 && s2.participants > 0
+              ? parseFloat((s2.totalScore / s2.participants).toFixed(1))
+              : null,
           [`${country1.name} Total Pts`]: s1?.totalScore ?? null,
           [`${country2.name} Total Pts`]: s2?.totalScore ?? null,
           [`${country1.name} Team Rank`]: c1Rank,
@@ -213,7 +211,11 @@ export function CountryComparison() {
 
       {country1 && country2 && stats1 && stats2 && availableSources.length > 0 && (
         <>
-          <Tabs value={effectiveSource} onChange={(value) => value && setSelectedSource(value as Source)} mb="xl">
+          <Tabs
+            value={effectiveSource}
+            onChange={(value) => value && setSelectedSource(value as Source)}
+            mb="xl"
+          >
             <Tabs.List>
               {availableSources.map((opt) => (
                 <Tabs.Tab key={opt.value} value={opt.value} fz="lg" py="sm">
@@ -223,201 +225,257 @@ export function CountryComparison() {
             </Tabs.List>
           </Tabs>
 
-          <Title order={3} mb="md">Medal Summary</Title>
+          <Title order={3} mb="md">
+            Medal Summary
+          </Title>
           <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mb="xl">
             <Paper p="md" withBorder>
               <Group gap={8} mb="sm">
                 <CountryFlag code={country1.code} size="lg" />
-                <Text fw={700} size="lg">{country1.name}</Text>
+                <Text fw={700} size="lg">
+                  {country1.name}
+                </Text>
               </Group>
               <SimpleGrid cols={{ base: 3, xs: 5 }}>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Gold</Text>
-                  <Text size="xl" fw={700}>{filteredStats1.gold}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Gold
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats1.gold}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Silver</Text>
-                  <Text size="xl" fw={700}>{filteredStats1.silver}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Silver
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats1.silver}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Bronze</Text>
-                  <Text size="xl" fw={700}>{filteredStats1.bronze}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Bronze
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats1.bronze}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">HM</Text>
-                  <Text size="xl" fw={700}>{filteredStats1.hm}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    HM
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats1.hm}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Participations</Text>
-                  <Text size="xl" fw={700}>{filteredStats1.total}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Participations
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats1.total}
+                  </Text>
                 </Stack>
               </SimpleGrid>
               <Text size="sm" c="dimmed" mt="sm">
                 {filteredStats1.total > 0
-                  ? `${((filteredStats1.gold + filteredStats1.silver + filteredStats1.bronze) / filteredStats1.total * 100).toFixed(1)}% medal rate`
+                  ? `${(((filteredStats1.gold + filteredStats1.silver + filteredStats1.bronze) / filteredStats1.total) * 100).toFixed(1)}% medal rate`
                   : "No participations"}
               </Text>
             </Paper>
             <Paper p="md" withBorder>
               <Group gap={8} mb="sm">
                 <CountryFlag code={country2.code} size="lg" />
-                <Text fw={700} size="lg">{country2.name}</Text>
+                <Text fw={700} size="lg">
+                  {country2.name}
+                </Text>
               </Group>
               <SimpleGrid cols={{ base: 3, xs: 5 }}>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Gold</Text>
-                  <Text size="xl" fw={700}>{filteredStats2.gold}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Gold
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats2.gold}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Silver</Text>
-                  <Text size="xl" fw={700}>{filteredStats2.silver}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Silver
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats2.silver}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Bronze</Text>
-                  <Text size="xl" fw={700}>{filteredStats2.bronze}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Bronze
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats2.bronze}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">HM</Text>
-                  <Text size="xl" fw={700}>{filteredStats2.hm}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    HM
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats2.hm}
+                  </Text>
                 </Stack>
                 <Stack gap={0}>
-                  <Text size="xs" c="dimmed" tt="uppercase">Participations</Text>
-                  <Text size="xl" fw={700}>{filteredStats2.total}</Text>
+                  <Text size="xs" c="dimmed" tt="uppercase">
+                    Participations
+                  </Text>
+                  <Text size="xl" fw={700}>
+                    {filteredStats2.total}
+                  </Text>
                 </Stack>
               </SimpleGrid>
               <Text size="sm" c="dimmed" mt="sm">
                 {filteredStats2.total > 0
-                  ? `${((filteredStats2.gold + filteredStats2.silver + filteredStats2.bronze) / filteredStats2.total * 100).toFixed(1)}% medal rate`
+                  ? `${(((filteredStats2.gold + filteredStats2.silver + filteredStats2.bronze) / filteredStats2.total) * 100).toFixed(1)}% medal rate`
                   : "No participations"}
               </Text>
             </Paper>
           </SimpleGrid>
 
-          <Title order={3} mb="md">Performance Over Time</Title>
+          <Title order={3} mb="md">
+            Performance Over Time
+          </Title>
 
           {chartData.length > 0 ? (
-                <SimpleGrid cols={1} spacing="xl">
-                  <Paper p="md" withBorder>
-                    <Title order={4} mb="md">Medals</Title>
-                    <ResponsiveContainer width="100%" height={280}>
-                      <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                        <XAxis dataKey="year" {...axisStyle} />
-                        <YAxis {...axisStyle} allowDecimals={false} />
-                        <Tooltip {...tooltipStyle} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country1.name} Medals`}
-                          stroke="#228be6"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country2.name} Medals`}
-                          stroke="#fa5252"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </Paper>
+            <SimpleGrid cols={1} spacing="xl">
+              <Paper p="md" withBorder>
+                <Title order={4} mb="md">
+                  Medals
+                </Title>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="year" {...axisStyle} />
+                    <YAxis {...axisStyle} allowDecimals={false} />
+                    <Tooltip {...tooltipStyle} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country1.name} Medals`}
+                      stroke="#228be6"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country2.name} Medals`}
+                      stroke="#fa5252"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Paper>
 
-                  <Paper p="md" withBorder>
-                    <Title order={4} mb="md">Average Score</Title>
-                    <ResponsiveContainer width="100%" height={280}>
-                      <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                        <XAxis dataKey="year" {...axisStyle} />
-                        <YAxis {...axisStyle} />
-                        <Tooltip {...tooltipStyle} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country1.name} Avg Score`}
-                          stroke="#228be6"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country2.name} Avg Score`}
-                          stroke="#fa5252"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </Paper>
+              <Paper p="md" withBorder>
+                <Title order={4} mb="md">
+                  Average Score
+                </Title>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="year" {...axisStyle} />
+                    <YAxis {...axisStyle} />
+                    <Tooltip {...tooltipStyle} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country1.name} Avg Score`}
+                      stroke="#228be6"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country2.name} Avg Score`}
+                      stroke="#fa5252"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Paper>
 
-                  <Paper p="md" withBorder>
-                    <Title order={4} mb="md">Total Points</Title>
-                    <ResponsiveContainer width="100%" height={280}>
-                      <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                        <XAxis dataKey="year" {...axisStyle} />
-                        <YAxis {...axisStyle} />
-                        <Tooltip {...tooltipStyle} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country1.name} Total Pts`}
-                          stroke="#228be6"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country2.name} Total Pts`}
-                          stroke="#fa5252"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </Paper>
+              <Paper p="md" withBorder>
+                <Title order={4} mb="md">
+                  Total Points
+                </Title>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="year" {...axisStyle} />
+                    <YAxis {...axisStyle} />
+                    <Tooltip {...tooltipStyle} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country1.name} Total Pts`}
+                      stroke="#228be6"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country2.name} Total Pts`}
+                      stroke="#fa5252"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Paper>
 
-                  <Paper p="md" withBorder>
-                    <Title order={4} mb="md">Team Rank</Title>
-                    <ResponsiveContainer width="100%" height={280}>
-                      <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                        <XAxis dataKey="year" {...axisStyle} />
-                        <YAxis {...axisStyle} reversed allowDecimals={false} domain={[1, 'auto']} />
-                        <Tooltip {...tooltipStyle} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country1.name} Team Rank`}
-                          stroke="#228be6"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey={`${country2.name} Team Rank`}
-                          stroke="#fa5252"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
-                          connectNulls
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </Paper>
-                </SimpleGrid>
-              ) : (
-                <Text c="dimmed" ta="center" py="xl">
-                  No data available for {selectedSource}
-                </Text>
-              )}
+              <Paper p="md" withBorder>
+                <Title order={4} mb="md">
+                  Team Rank
+                </Title>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                    <XAxis dataKey="year" {...axisStyle} />
+                    <YAxis {...axisStyle} reversed allowDecimals={false} domain={[1, "auto"]} />
+                    <Tooltip {...tooltipStyle} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country1.name} Team Rank`}
+                      stroke="#228be6"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey={`${country2.name} Team Rank`}
+                      stroke="#fa5252"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      connectNulls
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Paper>
+            </SimpleGrid>
+          ) : (
+            <Text c="dimmed" ta="center" py="xl">
+              No data available for {selectedSource}
+            </Text>
+          )}
         </>
       )}
 

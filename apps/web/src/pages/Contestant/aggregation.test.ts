@@ -10,11 +10,7 @@ import type { Person, Participation, Competition, Country } from "@/schemas/base
 import { Award, Source } from "@/schemas/base";
 
 // Test fixtures
-const createPerson = (
-  id: string,
-  name: string,
-  countryId: string
-): Person => ({
+const createPerson = (id: string, name: string, countryId: string): Person => ({
   id,
   name,
   given_name: null,
@@ -176,15 +172,14 @@ describe("aggregateParticipations", () => {
   describe("problem scores", () => {
     it("preserves null values in problem scores", () => {
       const participations = [
-        createParticipation(
-          "IMO-2020",
-          "person-1",
-          "country-usa",
-          Award.GOLD,
-          1,
-          35,
-          [7, 7, 7, 7, 7, null]
-        ),
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD, 1, 35, [
+          7,
+          7,
+          7,
+          7,
+          7,
+          null,
+        ]),
       ];
 
       const result = aggregateParticipations({
@@ -464,9 +459,7 @@ describe("getPersonSources", () => {
   });
 
   it("returns single source for single participation", () => {
-    const participations = [
-      createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
-    ];
+    const participations = [createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD)];
 
     const result = getPersonSources({
       participations,

@@ -1,0 +1,17 @@
+{
+  "name": "moresults",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "start:web": "yarn workspace @moresults/web start"
+  },
+  "devDependencies": {
+    "turbo": "^2"
+  }
+}

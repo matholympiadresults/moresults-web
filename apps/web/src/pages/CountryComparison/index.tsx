@@ -190,7 +190,7 @@ export function CountryComparison() {
         Compare olympiad performance between two countries
       </Text>
 
-      <Group align="end" mb="xl">
+      <SimpleGrid cols={{ base: 1, sm: 2 }} mb="xl">
         <Select
           label="Country 1"
           placeholder="Select a country"
@@ -199,7 +199,6 @@ export function CountryComparison() {
           data={countryOptions}
           value={country1Code}
           onChange={handleCountry1Change}
-          style={{ minWidth: 200 }}
         />
         <Select
           label="Country 2"
@@ -209,9 +208,8 @@ export function CountryComparison() {
           data={countryOptions}
           value={country2Code}
           onChange={handleCountry2Change}
-          style={{ minWidth: 200 }}
         />
-      </Group>
+      </SimpleGrid>
 
       {country1 && country2 && stats1 && stats2 && availableSources.length > 0 && (
         <>
@@ -232,7 +230,7 @@ export function CountryComparison() {
                 <CountryFlag code={country1.code} size="lg" />
                 <Text fw={700} size="lg">{country1.name}</Text>
               </Group>
-              <SimpleGrid cols={5}>
+              <SimpleGrid cols={{ base: 3, xs: 5 }}>
                 <Stack gap={0}>
                   <Text size="xs" c="dimmed" tt="uppercase">Gold</Text>
                   <Text size="xl" fw={700}>{filteredStats1.gold}</Text>
@@ -265,7 +263,7 @@ export function CountryComparison() {
                 <CountryFlag code={country2.code} size="lg" />
                 <Text fw={700} size="lg">{country2.name}</Text>
               </Group>
-              <SimpleGrid cols={5}>
+              <SimpleGrid cols={{ base: 3, xs: 5 }}>
                 <Stack gap={0}>
                   <Text size="xs" c="dimmed" tt="uppercase">Gold</Text>
                   <Text size="xl" fw={700}>{filteredStats2.gold}</Text>

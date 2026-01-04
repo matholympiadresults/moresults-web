@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Container, Title, Text, Table, Anchor, Group, Select } from "@mantine/core";
+import { Container, Title, Text, Table, Anchor, Group, Select, ScrollArea } from "@mantine/core";
 import { Link } from "react-router";
 import {
   useReactTable,
@@ -94,42 +94,44 @@ export function Competitions() {
         />
       </Group>
 
-      <Table striped highlightOnHover>
-        <Table.Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                >
-                  <Group gap="xs">
-                    {header.isPlaceholder
-                      ? null
-                      : typeof header.column.columnDef.header === "string"
-                        ? header.column.columnDef.header
-                        : null}
-                    {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                  </Group>
-                </Table.Th>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Thead>
-        <Table.Tbody>
-          {getTableBody({
-            isLoading: loading,
-            error,
-            tableRows: table.getRowModel().rows,
-            columnCount: columns.length,
-            noDataMessage: "No competitions found",
-            getRowStyle: (row) => ({
-              backgroundColor: sourceColors[row.original.source],
-            }),
-          })}
-        </Table.Tbody>
-      </Table>
+      <ScrollArea>
+        <Table striped highlightOnHover miw={400}>
+          <Table.Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Table.Tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <Table.Th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                  >
+                    <Group gap="xs">
+                      {header.isPlaceholder
+                        ? null
+                        : typeof header.column.columnDef.header === "string"
+                          ? header.column.columnDef.header
+                          : null}
+                      {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                    </Group>
+                  </Table.Th>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Thead>
+          <Table.Tbody>
+            {getTableBody({
+              isLoading: loading,
+              error,
+              tableRows: table.getRowModel().rows,
+              columnCount: columns.length,
+              noDataMessage: "No competitions found",
+              getRowStyle: (row) => ({
+                backgroundColor: sourceColors[row.original.source],
+              }),
+            })}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
     </Container>
   );
 }

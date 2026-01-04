@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Container, Title, Text, Table, Anchor, Group, TextInput, MultiSelect, Pagination, Select } from "@mantine/core";
+import { Container, Title, Text, Table, Anchor, Group, TextInput, MultiSelect, Pagination, Select, ScrollArea, SimpleGrid } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link } from "react-router";
 import {
@@ -124,7 +124,7 @@ export function Contestants() {
           : `${table.getFilteredRowModel().rows.length} of ${rows.length} contestants`}
       </Text>
 
-      <Group align="end" mb="md">
+      <SimpleGrid cols={{ base: 1, sm: 2 }} mb="md">
         <TextInput
           placeholder="Search by name..."
           leftSection={<IconSearch size={16} />}
@@ -140,11 +140,11 @@ export function Contestants() {
           onChange={(value) => {
             table.getColumn("countryId")?.setFilterValue(value);
           }}
-          style={{ minWidth: 200 }}
         />
-      </Group>
+      </SimpleGrid>
 
-      <Table striped highlightOnHover>
+      <ScrollArea>
+        <Table striped highlightOnHover miw={500}>
         <Table.Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Tr key={headerGroup.id}>
@@ -176,9 +176,10 @@ export function Contestants() {
             noDataMessage: "No contestants found",
           })}
         </Table.Tbody>
-      </Table>
+        </Table>
+      </ScrollArea>
 
-      <Group justify="space-between" mt="md">
+      <Group justify="space-between" mt="md" wrap="wrap" gap="md">
         <Group gap="xs">
           <Text size="sm" c="dimmed">
             Showing {table.getRowModel().rows.length} of {table.getFilteredRowModel().rows.length}

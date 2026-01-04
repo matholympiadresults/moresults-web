@@ -12,6 +12,8 @@ import {
   SegmentedControl,
   Tabs,
   useMantineColorScheme,
+  ScrollArea,
+  Stack,
 } from "@mantine/core";
 import {
   LineChart,
@@ -322,8 +324,8 @@ export function CountryIndividual() {
         Medal Progression
       </Title>
       <Paper p="md" withBorder mb="xl">
-        <Group justify="space-between" mb="md">
-          <Group gap="lg">
+        <Stack gap="md" mb="md">
+          <SimpleGrid cols={{ base: 2, sm: 4 }}>
             <Group gap="xs">
               <div style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }} />
               <Text size="sm">Gold</Text>
@@ -340,7 +342,7 @@ export function CountryIndividual() {
               <div style={{ width: 16, height: 16, backgroundColor: "#228be6", borderRadius: 2 }} />
               <Text size="sm">HM</Text>
             </Group>
-          </Group>
+          </SimpleGrid>
           <SegmentedControl
             size="sm"
             value={medalChartMode}
@@ -349,8 +351,9 @@ export function CountryIndividual() {
               { label: "Yearly", value: "yearly" },
               { label: "Cumulative", value: "cumulative" },
             ]}
+            style={{ alignSelf: "flex-start" }}
           />
-        </Group>
+        </Stack>
         {medalProgressionData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart
@@ -399,43 +402,45 @@ export function CountryIndividual() {
         Participations ({rows.length})
       </Title>
 
-      <Table striped highlightOnHover>
-        <Table.Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                >
-                  <Group gap="xs">
-                    {header.isPlaceholder
-                      ? null
-                      : typeof header.column.columnDef.header === "string"
-                        ? header.column.columnDef.header
-                        : null}
-                    {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                  </Group>
-                </Table.Th>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Thead>
-        <Table.Tbody>
-          {getTableBody({
-            isLoading: loading,
-            error,
-            tableRows: table.getRowModel().rows,
-            columnCount: columns.length,
-            noDataMessage: "No participations found",
-            rowGroupSeparator: {
-              getGroupKey: (row) => row.original.year,
-              separatorStyle: { backgroundColor: isDark ? "#1a1b1e" : "#f1f3f5", height: 8 },
-            },
-          })}
-        </Table.Tbody>
-      </Table>
+      <ScrollArea>
+        <Table striped highlightOnHover miw={700}>
+          <Table.Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Table.Tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <Table.Th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                  >
+                    <Group gap="xs">
+                      {header.isPlaceholder
+                        ? null
+                        : typeof header.column.columnDef.header === "string"
+                          ? header.column.columnDef.header
+                          : null}
+                      {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                    </Group>
+                  </Table.Th>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Thead>
+          <Table.Tbody>
+            {getTableBody({
+              isLoading: loading,
+              error,
+              tableRows: table.getRowModel().rows,
+              columnCount: columns.length,
+              noDataMessage: "No participations found",
+              rowGroupSeparator: {
+                getGroupKey: (row) => row.original.year,
+                separatorStyle: { backgroundColor: isDark ? "#1a1b1e" : "#f1f3f5", height: 8 },
+              },
+            })}
+          </Table.Tbody>
+        </Table>
+      </ScrollArea>
     </Container>
   );
 }

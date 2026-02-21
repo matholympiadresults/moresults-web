@@ -147,8 +147,12 @@ export function Data() {
                 <Table.Tr>
                   <Table.Td fw={500}>Baltic Way</Table.Td>
                   <Table.Td>
-                    <a href="https://bw.math.lv/" target="_blank" rel="noopener noreferrer">
-                      bw.math.lv
+                    <a
+                      href="https://www.math.olympiaadid.ut.ee/eng/html/?id=bw"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      math.olympiaadid.ut.ee
                     </a>
                   </Table.Td>
                 </Table.Tr>

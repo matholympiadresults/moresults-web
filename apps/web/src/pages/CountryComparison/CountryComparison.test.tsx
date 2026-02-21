@@ -1,35 +1,10 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { MantineProvider } from "@mantine/core";
 import { CountryComparison } from "./index";
 import { Award, Source } from "@/schemas/base";
 import type { Country, Competition, Participation } from "@/schemas/base";
-
-// Mock browser APIs for Mantine
-class MockResizeObserver {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
-}
-
-beforeAll(() => {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockImplementation((query: string) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-
-  global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
-});
 
 // Mock the API hooks
 vi.mock("@/hooks/api", () => ({
@@ -40,18 +15,10 @@ vi.mock("@/hooks/api", () => ({
 }));
 
 // Mock recharts to avoid rendering issues in tests
-vi.mock("recharts", () => ({
-  LineChart: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="line-chart">{children}</div>
-  ),
-  Line: () => null,
-  XAxis: () => null,
-  YAxis: () => null,
-  CartesianGrid: () => null,
-  Tooltip: () => null,
-  Legend: () => null,
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
+vi.mock("recharts", async () => {
+  const { rechartsComponentMocks } = await import("@/test/mocks/recharts");
+  return rechartsComponentMocks;
+});
 
 import {
   useCountries,

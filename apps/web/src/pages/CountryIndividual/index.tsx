@@ -10,7 +10,6 @@ import {
   SimpleGrid,
   Paper,
   SegmentedControl,
-  Tabs,
   useMantineColorScheme,
   ScrollArea,
   Stack,
@@ -58,7 +57,9 @@ import {
   filterTeamStatsBySource,
 } from "@/utils/countryStats";
 import { ROUTES } from "@/constants/routes";
-import { Award, Source, isTeamCompetition } from "@/schemas/base";
+import { useSourceSelection } from "@/hooks/useSourceSelection";
+import { SourceTabs } from "@/components/SourceTabs";
+import { Award, Source } from "@/schemas/base";
 import type { ProblemScoreRow } from "@/utils/table";
 import { SOURCE_OPTIONS, AWARD_COLORS } from "@/constants/filterOptions";
 
@@ -99,7 +100,6 @@ export function CountryIndividual() {
   const { competitions } = useCompetitions();
   const { people } = usePeople();
   const [sorting, setSorting] = useState<SortingState>([{ id: "year", desc: true }]);
-  const [globalSource, setGlobalSource] = useState<Source>(Source.IMO);
   const [teamRankMode, setTeamRankMode] = useState<"absolute" | "relative">("absolute");
   const [medalChartMode, setMedalChartMode] = useState<"yearly" | "cumulative">("yearly");
   const { colorScheme } = useMantineColorScheme();
@@ -109,20 +109,14 @@ export function CountryIndividual() {
   const peopleMap = useEntityMap(people);
 
   // Get sources that this country has participated in
-  const availableSources = useMemo(() => {
+  const computedSources = useMemo(() => {
     const sources = getCountryAvailableSources(participations, competitionMap, teamParticipations);
     return SOURCE_OPTIONS.filter((opt) => sources.includes(opt.value));
   }, [participations, competitionMap, teamParticipations]);
 
-  // If current globalSource is not available, switch to first available
-  const effectiveSource = useMemo(() => {
-    if (availableSources.some((s) => s.value === globalSource)) {
-      return globalSource;
-    }
-    return availableSources[0]?.value ?? Source.IMO;
-  }, [availableSources, globalSource]);
-
-  const isTeam = isTeamCompetition(effectiveSource);
+  const { effectiveSource, setSelectedSource, isTeam, availableSources } = useSourceSelection({
+    availableSources: computedSources,
+  });
 
   const stats = useMemo(() => {
     const medals = calculateMedalsBySource(participations, competitionMap, effectiveSource);
@@ -327,19 +321,11 @@ export function CountryIndividual() {
         </>
       )}
 
-      <Tabs
-        value={effectiveSource}
-        onChange={(value) => value && setGlobalSource(value as Source)}
-        mb="xl"
-      >
-        <Tabs.List>
-          {availableSources.map((opt) => (
-            <Tabs.Tab key={opt.value} value={opt.value} fz="lg" py="sm">
-              {opt.label}
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-      </Tabs>
+      <SourceTabs
+        availableSources={availableSources}
+        effectiveSource={effectiveSource}
+        onSourceChange={setSelectedSource}
+      />
 
       {isTeam && teamStats ? (
         <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md" mb="xl">

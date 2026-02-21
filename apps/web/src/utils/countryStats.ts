@@ -174,9 +174,7 @@ export function calculateTeamRankOverTime(
     });
 
     // Sort and find this country's rank
-    const sorted = Array.from(countryTotals.entries()).sort(
-      (a, b) => b[1] - a[1]
-    );
+    const sorted = Array.from(countryTotals.entries()).sort((a, b) => b[1] - a[1]);
     const thisCountryIndex = sorted.findIndex(([cId]) => cId === countryId);
     const totalTeams = sorted.length;
 
@@ -204,10 +202,7 @@ export function calculateMedalProgression(
   source: Source,
   mode: "yearly" | "cumulative"
 ): YearlyMedalData[] {
-  const byYear = new Map<
-    number,
-    { gold: number; silver: number; bronze: number; hm: number }
-  >();
+  const byYear = new Map<number, { gold: number; silver: number; bronze: number; hm: number }>();
 
   participations.forEach((p) => {
     const comp = competitionMap[p.competition_id];

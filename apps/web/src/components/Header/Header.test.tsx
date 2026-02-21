@@ -51,9 +51,7 @@ describe("Layout", () => {
     it("renders the color scheme toggle button", () => {
       renderLayout();
 
-      expect(
-        screen.getByRole("button", { name: "Toggle color scheme" })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Toggle color scheme" })).toBeInTheDocument();
     });
 
     it("renders navigation links in desktop view", () => {
@@ -89,10 +87,7 @@ describe("Layout", () => {
         "href",
         "/hall-of-fame"
       );
-      expect(screen.getByRole("link", { name: "Data" })).toHaveAttribute(
-        "href",
-        "/data"
-      );
+      expect(screen.getByRole("link", { name: "Data" })).toHaveAttribute("href", "/data");
     });
 
     it("marks Contestants link as active when on contestants page", () => {

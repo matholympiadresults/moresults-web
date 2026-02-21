@@ -21,79 +21,55 @@ const defaultSorting = [{ id: "name", desc: false }];
 describe("useTableSearch", () => {
   describe("fuzzySearch filter function", () => {
     it("returns true for empty filter value", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockRow = { index: 0 } as never;
       const addMeta = vi.fn();
 
-      expect(result.current.fuzzySearch(mockRow, "name", "", addMeta)).toBe(
-        true
-      );
-      expect(
-        result.current.fuzzySearch(mockRow, "name", "  ", addMeta)
-      ).toBe(true);
+      expect(result.current.fuzzySearch(mockRow, "name", "", addMeta)).toBe(true);
+      expect(result.current.fuzzySearch(mockRow, "name", "  ", addMeta)).toBe(true);
     });
 
     it("returns true for empty data", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, [])
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, []));
 
       const mockRow = { index: 0 } as never;
       const addMeta = vi.fn();
 
-      expect(
-        result.current.fuzzySearch(mockRow, "name", "alice", addMeta)
-      ).toBe(true);
+      expect(result.current.fuzzySearch(mockRow, "name", "alice", addMeta)).toBe(true);
     });
 
     it("returns true for matching rows", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockRow = { index: 0 } as never; // Alice Johnson
       const addMeta = vi.fn();
 
-      expect(
-        result.current.fuzzySearch(mockRow, "name", "Alice", addMeta)
-      ).toBe(true);
+      expect(result.current.fuzzySearch(mockRow, "name", "Alice", addMeta)).toBe(true);
       expect(addMeta).toHaveBeenCalled();
     });
 
     it("returns false for non-matching rows", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockRow = { index: 1 } as never; // Bob Smith
       const addMeta = vi.fn();
 
-      expect(
-        result.current.fuzzySearch(mockRow, "name", "Alice", addMeta)
-      ).toBe(false);
+      expect(result.current.fuzzySearch(mockRow, "name", "Alice", addMeta)).toBe(false);
     });
 
     it("supports fuzzy matching", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockRow = { index: 0 } as never; // Alice Johnson
       const addMeta = vi.fn();
 
       // "Alic" should match "Alice"
-      expect(
-        result.current.fuzzySearch(mockRow, "name", "Alic", addMeta)
-      ).toBe(true);
+      expect(result.current.fuzzySearch(mockRow, "name", "Alic", addMeta)).toBe(true);
     });
 
     it("caches search results for same query", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const addMeta = vi.fn();
 
@@ -110,9 +86,7 @@ describe("useTableSearch", () => {
 
   describe("createHandleSearch", () => {
     it("creates a handler function", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockTable = {
         getColumn: vi.fn().mockReturnValue({
@@ -122,17 +96,12 @@ describe("useTableSearch", () => {
         setSorting: vi.fn(),
       };
 
-      const handler = result.current.createHandleSearch(
-        mockTable as never,
-        "name"
-      );
+      const handler = result.current.createHandleSearch(mockTable as never, "name");
       expect(typeof handler).toBe("function");
     });
 
     it("sets filter value on input change", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const setFilterValue = vi.fn();
       const mockTable = {
@@ -141,19 +110,14 @@ describe("useTableSearch", () => {
         setSorting: vi.fn(),
       };
 
-      const handler = result.current.createHandleSearch(
-        mockTable as never,
-        "name"
-      );
+      const handler = result.current.createHandleSearch(mockTable as never, "name");
       handler({ currentTarget: { value: "test" } } as never);
 
       expect(setFilterValue).toHaveBeenCalledWith("test");
     });
 
     it("resets page index on search", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockTable = {
         getColumn: vi.fn().mockReturnValue({ setFilterValue: vi.fn() }),
@@ -161,19 +125,14 @@ describe("useTableSearch", () => {
         setSorting: vi.fn(),
       };
 
-      const handler = result.current.createHandleSearch(
-        mockTable as never,
-        "name"
-      );
+      const handler = result.current.createHandleSearch(mockTable as never, "name");
       handler({ currentTarget: { value: "test" } } as never);
 
       expect(mockTable.setPageIndex).toHaveBeenCalledWith(0);
     });
 
     it("sets sorting by search column when searching", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockTable = {
         getColumn: vi.fn().mockReturnValue({ setFilterValue: vi.fn() }),
@@ -181,21 +140,14 @@ describe("useTableSearch", () => {
         setSorting: vi.fn(),
       };
 
-      const handler = result.current.createHandleSearch(
-        mockTable as never,
-        "name"
-      );
+      const handler = result.current.createHandleSearch(mockTable as never, "name");
       handler({ currentTarget: { value: "test" } } as never);
 
-      expect(mockTable.setSorting).toHaveBeenCalledWith([
-        { id: "name", desc: false },
-      ]);
+      expect(mockTable.setSorting).toHaveBeenCalledWith([{ id: "name", desc: false }]);
     });
 
     it("resets to default sorting when search is cleared", () => {
-      const { result } = renderHook(() =>
-        useTableSearch(getSearchValue, defaultSorting, testData)
-      );
+      const { result } = renderHook(() => useTableSearch(getSearchValue, defaultSorting, testData));
 
       const mockTable = {
         getColumn: vi.fn().mockReturnValue({ setFilterValue: vi.fn() }),
@@ -203,10 +155,7 @@ describe("useTableSearch", () => {
         setSorting: vi.fn(),
       };
 
-      const handler = result.current.createHandleSearch(
-        mockTable as never,
-        "name"
-      );
+      const handler = result.current.createHandleSearch(mockTable as never, "name");
       handler({ currentTarget: { value: "" } } as never);
 
       expect(mockTable.setSorting).toHaveBeenCalledWith(defaultSorting);

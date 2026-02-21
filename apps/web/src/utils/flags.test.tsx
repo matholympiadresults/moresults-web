@@ -148,7 +148,10 @@ describe("countryCodeToFlag", () => {
 });
 
 describe("CountryFlag", () => {
-  function renderCountryFlag(code: string | null | undefined, size?: "xs" | "sm" | "md" | "lg" | "xl") {
+  function renderCountryFlag(
+    code: string | null | undefined,
+    size?: "xs" | "sm" | "md" | "lg" | "xl"
+  ) {
     return render(
       <MantineProvider>
         <CountryFlag code={code} size={size} />

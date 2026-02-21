@@ -3,11 +3,7 @@ import { aggregateContestants } from "./aggregation";
 import type { Person, Country } from "@/schemas/base";
 
 // Test fixtures
-const createPerson = (
-  id: string,
-  name: string,
-  countryId: string
-): Person => ({
+const createPerson = (id: string, name: string, countryId: string): Person => ({
   id,
   name,
   given_name: null,
@@ -172,9 +168,7 @@ describe("aggregateContestants", () => {
     });
 
     it("handles missing country gracefully with null code", () => {
-      const people = [
-        createPerson("person-1", "Alice Johnson", "country-unknown"),
-      ];
+      const people = [createPerson("person-1", "Alice Johnson", "country-unknown")];
 
       const result = aggregateContestants({
         people,

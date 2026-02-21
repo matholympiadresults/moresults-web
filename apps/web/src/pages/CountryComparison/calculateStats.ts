@@ -148,7 +148,5 @@ export function getAvailableSources(
   stats2.byYearAndSource.forEach((stats) => sources2.add(stats.source));
 
   // Return intersection in the same order as sourceOptions
-  return sourceOptions.filter(
-    (opt) => sources1.has(opt.value) && sources2.has(opt.value)
-  );
+  return sourceOptions.filter((opt) => sources1.has(opt.value) && sources2.has(opt.value));
 }

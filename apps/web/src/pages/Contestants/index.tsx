@@ -1,5 +1,18 @@
 import { useMemo, useState } from "react";
-import { Container, Title, Text, Table, Anchor, Group, TextInput, MultiSelect, Pagination, Select, ScrollArea, SimpleGrid } from "@mantine/core";
+import {
+  Container,
+  Title,
+  Text,
+  Table,
+  Anchor,
+  Group,
+  TextInput,
+  MultiSelect,
+  Pagination,
+  Select,
+  ScrollArea,
+  SimpleGrid,
+} from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link } from "react-router";
 import {
@@ -145,37 +158,37 @@ export function Contestants() {
 
       <ScrollArea>
         <Table striped highlightOnHover miw={500}>
-        <Table.Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Table.Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                >
-                  <Group gap="xs">
-                    {header.isPlaceholder
-                      ? null
-                      : typeof header.column.columnDef.header === "string"
-                        ? header.column.columnDef.header
-                        : null}
-                    {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                  </Group>
-                </Table.Th>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Thead>
-        <Table.Tbody>
-          {getTableBody({
-            isLoading: loading,
-            error,
-            tableRows: table.getRowModel().rows,
-            columnCount: columns.length,
-            noDataMessage: "No contestants found",
-          })}
-        </Table.Tbody>
+          <Table.Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Table.Tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <Table.Th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
+                  >
+                    <Group gap="xs">
+                      {header.isPlaceholder
+                        ? null
+                        : typeof header.column.columnDef.header === "string"
+                          ? header.column.columnDef.header
+                          : null}
+                      {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+                    </Group>
+                  </Table.Th>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Thead>
+          <Table.Tbody>
+            {getTableBody({
+              isLoading: loading,
+              error,
+              tableRows: table.getRowModel().rows,
+              columnCount: columns.length,
+              noDataMessage: "No contestants found",
+            })}
+          </Table.Tbody>
         </Table>
       </ScrollArea>
 

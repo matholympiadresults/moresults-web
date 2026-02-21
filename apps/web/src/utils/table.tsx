@@ -16,7 +16,7 @@ export const sourceColors: Record<Source, string> = {
 
 export function getSortingIcon(
   direction: false | "asc" | "desc",
-  canSort: boolean,
+  canSort: boolean
 ): JSX.Element | null {
   let icon: JSX.Element | null = null;
 
@@ -110,11 +110,7 @@ export function getTableBody<T>(params: GetTableBodyParams<T>) {
         if (prevGroupKey !== null && currentGroupKey !== prevGroupKey) {
           result.push(
             <Table.Tr key={`separator-${currentGroupKey}`}>
-              <Table.Td
-                colSpan={columnCount}
-                py="xs"
-                style={rowGroupSeparator.separatorStyle}
-              />
+              <Table.Td colSpan={columnCount} py="xs" style={rowGroupSeparator.separatorStyle} />
             </Table.Tr>
           );
         }

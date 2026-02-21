@@ -28,11 +28,7 @@ vi.mock("recharts", () => ({
   Tooltip: () => <div data-testid="tooltip" />,
 }));
 
-import {
-  useCompetition,
-  useParticipationsByCompetition,
-  useCountries,
-} from "@/hooks/api";
+import { useCompetition, useParticipationsByCompetition, useCountries } from "@/hooks/api";
 
 const mockUseCompetition = vi.mocked(useCompetition);
 const mockUseParticipationsByCompetition = vi.mocked(useParticipationsByCompetition);
@@ -115,7 +111,8 @@ function setupMocks(overrides?: {
   loading?: boolean;
   error?: Error | null;
 }) {
-  const competition = overrides?.competition !== undefined ? overrides.competition : mockCompetition;
+  const competition =
+    overrides?.competition !== undefined ? overrides.competition : mockCompetition;
   mockUseCompetition.mockReturnValue({
     data: competition,
     competition,

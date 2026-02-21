@@ -15,12 +15,7 @@ vi.mock("@/hooks/api", () => ({
   useCountries: vi.fn(),
 }));
 
-import {
-  usePeople,
-  useParticipations,
-  useCompetitions,
-  useCountries,
-} from "@/hooks/api";
+import { usePeople, useParticipations, useCompetitions, useCountries } from "@/hooks/api";
 
 const mockUsePeople = vi.mocked(usePeople);
 const mockUseParticipations = vi.mocked(useParticipations);
@@ -189,9 +184,7 @@ describe("HallOfFame", () => {
 
       expect(screen.getByText("Hall of Fame")).toBeInTheDocument();
       expect(
-        screen.getByText(
-          "Top contestants ranked by medals (gold, then silver, then bronze)"
-        )
+        screen.getByText("Top contestants ranked by medals (gold, then silver, then bronze)")
       ).toBeInTheDocument();
     });
 
@@ -247,9 +240,7 @@ describe("HallOfFame", () => {
       renderHallOfFame();
 
       // Alice has 2 golds - find badge with "2" in Alice's row
-      const aliceRow = screen
-        .getByRole("link", { name: "Alice Johnson" })
-        .closest("tr");
+      const aliceRow = screen.getByRole("link", { name: "Alice Johnson" }).closest("tr");
       expect(aliceRow).toBeInTheDocument();
       // The "2" appears in the gold column and also in total/participations
       const aliceCells = within(aliceRow!).getAllByRole("cell");
@@ -269,9 +260,7 @@ describe("HallOfFame", () => {
       renderHallOfFame();
 
       // Alice has no silver, bronze, or HM - should show dashes
-      const aliceRow = screen
-        .getByRole("link", { name: "Alice Johnson" })
-        .closest("tr");
+      const aliceRow = screen.getByRole("link", { name: "Alice Johnson" }).closest("tr");
       expect(aliceRow).toBeInTheDocument();
       // Find dashes in Alice's row (silver, bronze, HM columns)
       const dashes = within(aliceRow!).getAllByText("-");
@@ -346,9 +335,7 @@ describe("HallOfFame", () => {
       // Now should only show Bob (who has EGMO gold)
       expect(screen.getByText("1 contestants with medals")).toBeInTheDocument();
       expect(screen.getByRole("link", { name: "Bob Smith" })).toBeInTheDocument();
-      expect(
-        screen.queryByRole("link", { name: "Alice Johnson" })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: "Alice Johnson" })).not.toBeInTheDocument();
     });
 
     it("renders country filter with correct options", () => {
@@ -361,12 +348,8 @@ describe("HallOfFame", () => {
 
       // Verify both contestants are shown (no filter applied)
       expect(screen.getByText("2 contestants with medals")).toBeInTheDocument();
-      expect(
-        screen.getByRole("link", { name: "Alice Johnson" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("link", { name: "Bob Smith" })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "Alice Johnson" })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "Bob Smith" })).toBeInTheDocument();
     });
   });
 
@@ -376,9 +359,8 @@ describe("HallOfFame", () => {
       renderHallOfFame();
 
       const links = screen.getAllByRole("link");
-      const contestantLinks = links.filter(
-        (link) =>
-          link.getAttribute("href")?.startsWith("/contestants/")
+      const contestantLinks = links.filter((link) =>
+        link.getAttribute("href")?.startsWith("/contestants/")
       );
 
       // Alice (2 golds) should come before Bob (1 silver)
@@ -391,9 +373,7 @@ describe("HallOfFame", () => {
       renderHallOfFame();
 
       // Find Alice's row and verify rank is 1
-      const aliceRow = screen
-        .getByRole("link", { name: "Alice Johnson" })
-        .closest("tr");
+      const aliceRow = screen.getByRole("link", { name: "Alice Johnson" }).closest("tr");
       const aliceCells = within(aliceRow!).getAllByRole("cell");
       expect(aliceCells[0]).toHaveTextContent("1"); // Rank column
 

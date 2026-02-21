@@ -11,20 +11,8 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { useParams, Link } from "react-router";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  useCompetition,
-  useParticipationsByCompetition,
-  useCountries,
-} from "@/hooks/api";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useCompetition, useParticipationsByCompetition, useCountries } from "@/hooks/api";
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -160,10 +148,7 @@ export function CompetitionStatistics() {
     );
   }
 
-  const problemHeaders = Array.from(
-    { length: stats.numProblems },
-    (_, i) => `P${i + 1}`
-  );
+  const problemHeaders = Array.from({ length: stats.numProblems }, (_, i) => `P${i + 1}`);
 
   return (
     <Container size="lg">
@@ -172,8 +157,7 @@ export function CompetitionStatistics() {
       </Title>
       <Text c="dimmed" mb="md">
         {competition.edition && `${competition.edition}th edition - `}
-        {competition.host_country_id &&
-          countryMap[competition.host_country_id]?.name}
+        {competition.host_country_id && countryMap[competition.host_country_id]?.name}
         {" | "}
         <Anchor component={Link} to={ROUTES.COMPETITION(id!)}>
           Back to results

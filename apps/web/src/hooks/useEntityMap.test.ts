@@ -98,10 +98,9 @@ describe("useEntityMap", () => {
       { id: "b", name: "Bob" },
     ];
 
-    const { result, rerender } = renderHook(
-      ({ entities }) => useEntityMap(entities),
-      { initialProps: { entities: initialEntities } }
-    );
+    const { result, rerender } = renderHook(({ entities }) => useEntityMap(entities), {
+      initialProps: { entities: initialEntities },
+    });
 
     expect(Object.keys(result.current)).toHaveLength(1);
 

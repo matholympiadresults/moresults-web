@@ -53,7 +53,12 @@ vi.mock("recharts", () => ({
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-import { useCountries, useParticipations, useTeamParticipations, useCompetitions } from "@/hooks/api";
+import {
+  useCountries,
+  useParticipations,
+  useTeamParticipations,
+  useCompetitions,
+} from "@/hooks/api";
 
 const mockUseCountries = vi.mocked(useCountries);
 const mockUseParticipations = vi.mocked(useParticipations);

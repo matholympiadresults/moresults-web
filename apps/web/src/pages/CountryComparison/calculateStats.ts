@@ -1,4 +1,9 @@
-import { Source, type Participation, type Competition, type TeamParticipation } from "@/schemas/base";
+import {
+  Source,
+  type Participation,
+  type Competition,
+  type TeamParticipation,
+} from "@/schemas/base";
 import { createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
 
 function createEmptySourceCounts(): Record<Source, number> {
@@ -198,7 +203,12 @@ export function calculateTeamStats(
 export function filterTeamStatsBySource(
   stats: TeamCountryStats | null,
   source: Source
-): { participations: number; bestRank: number | null; avgRank: number | null; avgScore: number | null } {
+): {
+  participations: number;
+  bestRank: number | null;
+  avgRank: number | null;
+  avgScore: number | null;
+} {
   if (!stats) return { participations: 0, bestRank: null, avgRank: null, avgScore: null };
 
   const entries: TeamYearStats[] = [];
@@ -218,9 +228,7 @@ export function filterTeamStatsBySource(
         ? Math.round((ranks.reduce((a, b) => a + b, 0) / ranks.length) * 10) / 10
         : null,
     avgScore:
-      Math.round(
-        (entries.reduce((a, e) => a + e.totalScore, 0) / entries.length) * 10
-      ) / 10,
+      Math.round((entries.reduce((a, e) => a + e.totalScore, 0) / entries.length) * 10) / 10,
   };
 }
 

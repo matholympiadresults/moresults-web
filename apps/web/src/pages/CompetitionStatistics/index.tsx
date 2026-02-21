@@ -166,7 +166,9 @@ export function CompetitionStatistics() {
   const problemHeaders = Array.from({ length: stats.numProblems }, (_, i) => `P${i + 1}`);
   const isCompact = stats.numProblems > 10;
   const tableMinWidth = Math.max(500, stats.numProblems * 50 + 150);
-  const compactCellStyle = isCompact ? { textAlign: "center" as const, padding: "4px 3px", whiteSpace: "nowrap" as const } : { textAlign: "center" as const };
+  const compactCellStyle = isCompact
+    ? { textAlign: "center" as const, padding: "4px 3px", whiteSpace: "nowrap" as const }
+    : { textAlign: "center" as const };
   const tooltipStyle = getTooltipStyle(isDark);
   const axisStyle = getAxisStyle(isDark);
 
@@ -212,7 +214,13 @@ export function CompetitionStatistics() {
         Score Distribution
       </Title>
       <ScrollArea>
-        <Table striped withTableBorder withColumnBorders miw={tableMinWidth} fz={isCompact ? "sm" : undefined}>
+        <Table
+          striped
+          withTableBorder
+          withColumnBorders
+          miw={tableMinWidth}
+          fz={isCompact ? "sm" : undefined}
+        >
           <Table.Thead>
             <Table.Tr>
               <Table.Th></Table.Th>
@@ -235,7 +243,9 @@ export function CompetitionStatistics() {
               </Table.Tr>
             ))}
             <Table.Tr>
-              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Mean( P# )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>
+                Mean( P# )
+              </Table.Td>
               {stats.means.map((mean, p) => (
                 <Table.Td key={p} style={compactCellStyle} fw={500}>
                   {mean.toFixed(3)}
@@ -243,7 +253,9 @@ export function CompetitionStatistics() {
               ))}
             </Table.Tr>
             <Table.Tr>
-              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Max( P# )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>
+                Max( P# )
+              </Table.Td>
               {stats.maxScores.map((max, p) => (
                 <Table.Td key={p} style={compactCellStyle} fw={500}>
                   {max}
@@ -251,7 +263,9 @@ export function CompetitionStatistics() {
               ))}
             </Table.Tr>
             <Table.Tr>
-              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>σ( P# )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>
+                σ( P# )
+              </Table.Td>
               {stats.stdDevs.map((std, p) => (
                 <Table.Td key={p} style={compactCellStyle} fw={500}>
                   {std.toFixed(3)}
@@ -267,7 +281,12 @@ export function CompetitionStatistics() {
         Correlations
       </Title>
       <ScrollArea>
-        <Table withTableBorder withColumnBorders miw={tableMinWidth} fz={isCompact ? "sm" : undefined}>
+        <Table
+          withTableBorder
+          withColumnBorders
+          miw={tableMinWidth}
+          fz={isCompact ? "sm" : undefined}
+        >
           <Table.Thead>
             <Table.Tr>
               <Table.Th></Table.Th>
@@ -280,7 +299,9 @@ export function CompetitionStatistics() {
           </Table.Thead>
           <Table.Tbody>
             <Table.Tr>
-              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Corr( P#, Sum )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>
+                Corr( P#, Sum )
+              </Table.Td>
               {stats.correlationsWithSum.map((corr, p) => (
                 <Table.Td
                   key={p}
@@ -296,7 +317,9 @@ export function CompetitionStatistics() {
             </Table.Tr>
             {problemHeaders.map((h, p1) => (
               <Table.Tr key={`corr-${p1}`}>
-                <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Corr( P#, {h} )</Table.Td>
+                <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>
+                  Corr( P#, {h} )
+                </Table.Td>
                 {stats.problemCorrelations[p1].map((corr, p2) => (
                   <Table.Td
                     key={p2}

@@ -447,10 +447,13 @@ export function Competition() {
           </Title>
 
           <ScrollArea>
-            <Table striped highlightOnHover miw={getTableMinWidth(numProblems)} fz={numProblems > 10 ? "sm" : undefined}>
-              <Table.Thead>
-                {getTableHead(teamTable.getHeaderGroups())}
-              </Table.Thead>
+            <Table
+              striped
+              highlightOnHover
+              miw={getTableMinWidth(numProblems)}
+              fz={numProblems > 10 ? "sm" : undefined}
+            >
+              <Table.Thead>{getTableHead(teamTable.getHeaderGroups())}</Table.Thead>
               <Table.Tbody>
                 {getTableBody({
                   isLoading: loading,
@@ -616,9 +619,7 @@ export function Competition() {
 
               <ScrollArea>
                 <Table striped highlightOnHover miw={800}>
-                  <Table.Thead>
-                    {getTableHead(table.getHeaderGroups())}
-                  </Table.Thead>
+                  <Table.Thead>{getTableHead(table.getHeaderGroups())}</Table.Thead>
                   <Table.Tbody>
                     {getTableBody({
                       isLoading: loading,
@@ -639,9 +640,7 @@ export function Competition() {
 
               <ScrollArea>
                 <Table striped highlightOnHover miw={900}>
-                  <Table.Thead>
-                    {getTableHead(countryTable.getHeaderGroups())}
-                  </Table.Thead>
+                  <Table.Thead>{getTableHead(countryTable.getHeaderGroups())}</Table.Thead>
                   <Table.Tbody>
                     {getTableBody({
                       isLoading: loading,

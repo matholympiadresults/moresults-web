@@ -463,9 +463,7 @@ describe("getAvailableSources", () => {
       "balticway-2024": createCompetition(Source.BALTICWAY, 2024, 20),
     };
 
-    const teamParticipations = [
-      createTeamParticipation("balticway-2024", "country-usa", 80, 1),
-    ];
+    const teamParticipations = [createTeamParticipation("balticway-2024", "country-usa", 80, 1)];
 
     const result = getAvailableSources([], allCompetitions, teamParticipations);
 
@@ -478,12 +476,8 @@ describe("getAvailableSources", () => {
       "balticway-2024": createCompetition(Source.BALTICWAY, 2024, 20),
     };
 
-    const participations = [
-      createParticipation("imo-2024", "country-usa", "person-1", 42),
-    ];
-    const teamParticipations = [
-      createTeamParticipation("balticway-2024", "country-usa", 80, 1),
-    ];
+    const participations = [createParticipation("imo-2024", "country-usa", "person-1", 42)];
+    const teamParticipations = [createTeamParticipation("balticway-2024", "country-usa", 80, 1)];
 
     const result = getAvailableSources(participations, allCompetitions, teamParticipations);
 
@@ -556,9 +550,7 @@ describe("calculateTeamRankFromTeamParticipations", () => {
   });
 
   it("returns null rank for country not in competition", () => {
-    const teamParticipations = [
-      createTeamParticipation("balticway-2024", "country-est", 90, 1),
-    ];
+    const teamParticipations = [createTeamParticipation("balticway-2024", "country-est", 90, 1)];
 
     const result = calculateTeamRankFromTeamParticipations(
       teamParticipations,

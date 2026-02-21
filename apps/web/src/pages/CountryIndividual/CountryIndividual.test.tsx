@@ -49,7 +49,9 @@ import {
 
 const mockUseCountry = useCountry as ReturnType<typeof vi.fn>;
 const mockUseParticipationsByCountry = useParticipationsByCountry as ReturnType<typeof vi.fn>;
-const mockUseTeamParticipationsByCountry = useTeamParticipationsByCountry as ReturnType<typeof vi.fn>;
+const mockUseTeamParticipationsByCountry = useTeamParticipationsByCountry as ReturnType<
+  typeof vi.fn
+>;
 const mockUseParticipations = useParticipations as ReturnType<typeof vi.fn>;
 const mockUseTeamParticipations = useTeamParticipations as ReturnType<typeof vi.fn>;
 const mockUseCompetitions = useCompetitions as ReturnType<typeof vi.fn>;

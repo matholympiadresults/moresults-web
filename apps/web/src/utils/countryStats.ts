@@ -299,10 +299,7 @@ export function calculateTeamRankFromTeamParticipations(
   source: Source
 ): TeamRankData[] {
   // Group by competition
-  const byCompetition = new Map<
-    string,
-    { year: number; participations: TeamParticipation[] }
-  >();
+  const byCompetition = new Map<string, { year: number; participations: TeamParticipation[] }>();
 
   allTeamParticipations.forEach((tp) => {
     const comp = competitionMap[tp.competition_id];

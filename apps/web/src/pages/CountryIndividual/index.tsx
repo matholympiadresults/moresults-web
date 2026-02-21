@@ -59,7 +59,10 @@ import { ROUTES } from "@/constants/routes";
 import { Award, Source, isTeamCompetition } from "@/schemas/base";
 import type { ProblemScoreRow } from "@/utils/table";
 import { SOURCE_OPTIONS, AWARD_COLORS } from "@/constants/filterOptions";
-import { calculateTeamStats, filterTeamStatsBySource } from "@/pages/CountryComparison/calculateStats";
+import {
+  calculateTeamStats,
+  filterTeamStatsBySource,
+} from "@/pages/CountryComparison/calculateStats";
 
 interface ParticipationRow {
   id: string;
@@ -487,10 +490,7 @@ export function CountryIndividual() {
           <Paper p="md" withBorder mb="xl">
             {teamScoreData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={teamScoreData}
-                  margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-                >
+                <LineChart data={teamScoreData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                   <XAxis dataKey="year" {...axisStyle} />
                   <YAxis
@@ -638,13 +638,7 @@ export function CountryIndividual() {
                       );
                     }}
                   />
-                  <Area
-                    type="monotone"
-                    dataKey="hm"
-                    stackId="1"
-                    stroke="#228be6"
-                    fill="#228be6"
-                  />
+                  <Area type="monotone" dataKey="hm" stackId="1" stroke="#228be6" fill="#228be6" />
                   <Area
                     type="monotone"
                     dataKey="bronze"
@@ -684,9 +678,7 @@ export function CountryIndividual() {
       <ScrollArea>
         {isTeam ? (
           <Table striped highlightOnHover miw={700}>
-            <Table.Thead>
-              {getTableHead(teamTable.getHeaderGroups())}
-            </Table.Thead>
+            <Table.Thead>{getTableHead(teamTable.getHeaderGroups())}</Table.Thead>
             <Table.Tbody>
               {getTableBody({
                 isLoading: loading,
@@ -699,9 +691,7 @@ export function CountryIndividual() {
           </Table>
         ) : (
           <Table striped highlightOnHover miw={700}>
-            <Table.Thead>
-              {getTableHead(table.getHeaderGroups())}
-            </Table.Thead>
+            <Table.Thead>{getTableHead(table.getHeaderGroups())}</Table.Thead>
             <Table.Tbody>
               {getTableBody({
                 isLoading: loading,

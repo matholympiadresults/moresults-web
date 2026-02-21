@@ -107,6 +107,9 @@ export function CompetitionStatistics() {
       data: dist.map((count, score) => ({ score: score.toString(), count })),
     }));
 
+    // Compute max count across all problems for synced Y-axis
+    const maxCount = Math.max(...distributions.flat());
+
     return {
       numProblems,
       maxScore,
@@ -117,6 +120,7 @@ export function CompetitionStatistics() {
       correlationsWithSum,
       problemCorrelations,
       chartData,
+      maxCount,
     };
   }, [competition, participations]);
 
@@ -178,7 +182,11 @@ export function CompetitionStatistics() {
                   interval={0}
                   tick={{ fontSize: 12, fill: isDark ? "#c1c2c5" : "#495057" }}
                 />
-                <YAxis tick={{ fontSize: 12, fill: isDark ? "#c1c2c5" : "#495057" }} width={40} />
+                <YAxis
+                  tick={{ fontSize: 12, fill: isDark ? "#c1c2c5" : "#495057" }}
+                  width={40}
+                  domain={[0, stats.maxCount]}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: isDark ? "#25262b" : "#fff",

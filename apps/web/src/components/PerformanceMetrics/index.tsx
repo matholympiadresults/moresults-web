@@ -28,29 +28,33 @@ export function PerformanceMetrics() {
     setRenderTime(null);
 
     let animationFrameId: number;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let cancelled = false;
     let attempts = 0;
     const maxAttempts = 300; // 30 seconds max (100ms intervals)
 
     const checkComplete = () => {
+      if (cancelled) return;
       attempts++;
 
       if (checkIfLoaded()) {
         // Double-check after a short delay to make sure it's stable
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
+          if (cancelled) return;
           if (checkIfLoaded()) {
             const time = performance.now() - navigationStart.current;
             setRenderTime(time);
           } else {
             // Still loading, keep checking
             animationFrameId = requestAnimationFrame(() => {
-              setTimeout(checkComplete, 100);
+              timeoutId = setTimeout(checkComplete, 100);
             });
           }
         }, 50);
       } else if (attempts < maxAttempts) {
         // Still loading, check again
         animationFrameId = requestAnimationFrame(() => {
-          setTimeout(checkComplete, 100);
+          timeoutId = setTimeout(checkComplete, 100);
         });
       } else {
         // Timeout - mark current time
@@ -61,11 +65,13 @@ export function PerformanceMetrics() {
 
     // Start checking after initial render
     animationFrameId = requestAnimationFrame(() => {
-      setTimeout(checkComplete, 50);
+      timeoutId = setTimeout(checkComplete, 50);
     });
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(animationFrameId);
+      clearTimeout(timeoutId);
     };
   }, [location.pathname, checkIfLoaded]);
 

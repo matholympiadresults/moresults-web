@@ -12,7 +12,13 @@ import {
 } from "@mantine/core";
 import { useParams, Link } from "react-router";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { useCompetition, useParticipationsByCompetition, useCountries } from "@/hooks/api";
+import {
+  useCompetition,
+  useParticipationsByCompetition,
+  useTeamParticipationsByCompetition,
+  useCountries,
+} from "@/hooks/api";
+import { isTeamCompetition } from "@/schemas/base";
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -21,26 +27,35 @@ import {
   calculateCorrelation,
   getCorrelationColor,
 } from "@/utils/statistics";
+import { getTooltipStyle, getAxisStyle } from "@/utils/chartStyles";
 
 export function CompetitionStatistics() {
   const { id } = useParams<{ id: string }>();
   const { competition, loading, error } = useCompetition(id!);
   const { participations } = useParticipationsByCompetition(id!);
+  const { teamParticipations } = useTeamParticipationsByCompetition(id!);
   const { countries } = useCountries();
   const { colorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
 
+  const isTeam = competition ? isTeamCompetition(competition.source) : false;
   const countryMap = useEntityMap(countries);
 
+  // Use team participations for team competitions, individual for others
+  const dataRows = useMemo(
+    () => (isTeam ? teamParticipations : participations),
+    [isTeam, teamParticipations, participations]
+  );
+
   const stats = useMemo(() => {
-    if (!competition || participations.length === 0) return null;
+    if (!competition || dataRows.length === 0) return null;
 
     const numProblems = competition.num_problems;
     const maxScore = competition.max_score_per_problem;
 
     const problemScores: number[][] = [];
     for (let p = 0; p < numProblems; p++) {
-      problemScores[p] = participations
+      problemScores[p] = dataRows
         .map((part) => part.problem_scores[p])
         .filter((s): s is number => s !== null);
     }
@@ -69,7 +84,7 @@ export function CompetitionStatistics() {
 
       const validPScores: number[] = [];
       const validTotals: number[] = [];
-      participations.forEach((part) => {
+      dataRows.forEach((part) => {
         const score = part.problem_scores[p];
         if (score !== null) {
           validPScores.push(score);
@@ -88,7 +103,7 @@ export function CompetitionStatistics() {
         } else {
           const scores1: number[] = [];
           const scores2: number[] = [];
-          participations.forEach((part) => {
+          dataRows.forEach((part) => {
             const s1 = part.problem_scores[p1];
             const s2 = part.problem_scores[p2];
             if (s1 !== null && s2 !== null) {
@@ -122,7 +137,7 @@ export function CompetitionStatistics() {
       chartData,
       maxCount,
     };
-  }, [competition, participations]);
+  }, [competition, dataRows]);
 
   if (loading) {
     return (
@@ -149,9 +164,14 @@ export function CompetitionStatistics() {
   }
 
   const problemHeaders = Array.from({ length: stats.numProblems }, (_, i) => `P${i + 1}`);
+  const isCompact = stats.numProblems > 10;
+  const tableMinWidth = Math.max(500, stats.numProblems * 50 + 150);
+  const compactCellStyle = isCompact ? { textAlign: "center" as const, padding: "4px 3px", whiteSpace: "nowrap" as const } : { textAlign: "center" as const };
+  const tooltipStyle = getTooltipStyle(isDark);
+  const axisStyle = getAxisStyle(isDark);
 
   return (
-    <Container size="lg">
+    <Container size={isCompact ? "xl" : "lg"}>
       <Title>
         {competition.source} {competition.year} - Statistics
       </Title>
@@ -177,24 +197,9 @@ export function CompetitionStatistics() {
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                <XAxis
-                  dataKey="score"
-                  interval={0}
-                  tick={{ fontSize: 12, fill: isDark ? "#c1c2c5" : "#495057" }}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: isDark ? "#c1c2c5" : "#495057" }}
-                  width={40}
-                  domain={[0, stats.maxCount]}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: isDark ? "#25262b" : "#fff",
-                    border: `1px solid ${isDark ? "#373a40" : "#dee2e6"}`,
-                    borderRadius: 4,
-                  }}
-                  labelStyle={{ color: isDark ? "#c1c2c5" : "#495057" }}
-                />
+                <XAxis dataKey="score" interval={0} {...axisStyle} />
+                <YAxis {...axisStyle} width={40} domain={[0, stats.maxCount]} />
+                <Tooltip {...tooltipStyle} />
                 <Bar dataKey="count" fill="#228be6" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -207,12 +212,12 @@ export function CompetitionStatistics() {
         Score Distribution
       </Title>
       <ScrollArea>
-        <Table striped withTableBorder withColumnBorders miw={500}>
+        <Table striped withTableBorder withColumnBorders miw={tableMinWidth} fz={isCompact ? "sm" : undefined}>
           <Table.Thead>
             <Table.Tr>
               <Table.Th></Table.Th>
               {problemHeaders.map((h) => (
-                <Table.Th key={h} style={{ textAlign: "center" }}>
+                <Table.Th key={h} style={compactCellStyle}>
                   {h}
                 </Table.Th>
               ))}
@@ -221,34 +226,34 @@ export function CompetitionStatistics() {
           <Table.Tbody>
             {Array.from({ length: stats.maxScore + 1 }, (_, score) => (
               <Table.Tr key={`score-${score}`}>
-                <Table.Td>Num( P# = {score} )</Table.Td>
+                <Table.Td style={{ whiteSpace: "nowrap" }}>Num( P# = {score} )</Table.Td>
                 {stats.distributions.map((dist, p) => (
-                  <Table.Td key={p} style={{ textAlign: "center" }}>
+                  <Table.Td key={p} style={compactCellStyle}>
                     {dist[score]}
                   </Table.Td>
                 ))}
               </Table.Tr>
             ))}
             <Table.Tr>
-              <Table.Td fw={500}>Mean( P# )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Mean( P# )</Table.Td>
               {stats.means.map((mean, p) => (
-                <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
+                <Table.Td key={p} style={compactCellStyle} fw={500}>
                   {mean.toFixed(3)}
                 </Table.Td>
               ))}
             </Table.Tr>
             <Table.Tr>
-              <Table.Td fw={500}>Max( P# )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Max( P# )</Table.Td>
               {stats.maxScores.map((max, p) => (
-                <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
+                <Table.Td key={p} style={compactCellStyle} fw={500}>
                   {max}
                 </Table.Td>
               ))}
             </Table.Tr>
             <Table.Tr>
-              <Table.Td fw={500}>σ( P# )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>σ( P# )</Table.Td>
               {stats.stdDevs.map((std, p) => (
-                <Table.Td key={p} style={{ textAlign: "center" }} fw={500}>
+                <Table.Td key={p} style={compactCellStyle} fw={500}>
                   {std.toFixed(3)}
                 </Table.Td>
               ))}
@@ -262,12 +267,12 @@ export function CompetitionStatistics() {
         Correlations
       </Title>
       <ScrollArea>
-        <Table withTableBorder withColumnBorders miw={500}>
+        <Table withTableBorder withColumnBorders miw={tableMinWidth} fz={isCompact ? "sm" : undefined}>
           <Table.Thead>
             <Table.Tr>
               <Table.Th></Table.Th>
               {problemHeaders.map((h) => (
-                <Table.Th key={h} style={{ textAlign: "center" }}>
+                <Table.Th key={h} style={compactCellStyle}>
                   {h}
                 </Table.Th>
               ))}
@@ -275,12 +280,12 @@ export function CompetitionStatistics() {
           </Table.Thead>
           <Table.Tbody>
             <Table.Tr>
-              <Table.Td fw={500}>Corr( P#, Sum )</Table.Td>
+              <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Corr( P#, Sum )</Table.Td>
               {stats.correlationsWithSum.map((corr, p) => (
                 <Table.Td
                   key={p}
                   style={{
-                    textAlign: "center",
+                    ...compactCellStyle,
                     backgroundColor: getCorrelationColor(corr, isDark),
                   }}
                   fw={500}
@@ -291,12 +296,12 @@ export function CompetitionStatistics() {
             </Table.Tr>
             {problemHeaders.map((h, p1) => (
               <Table.Tr key={`corr-${p1}`}>
-                <Table.Td fw={500}>Corr( P#, {h} )</Table.Td>
+                <Table.Td fw={500} style={{ whiteSpace: "nowrap" }}>Corr( P#, {h} )</Table.Td>
                 {stats.problemCorrelations[p1].map((corr, p2) => (
                   <Table.Td
                     key={p2}
                     style={{
-                      textAlign: "center",
+                      ...compactCellStyle,
                       backgroundColor: getCorrelationColor(corr, isDark),
                     }}
                   >

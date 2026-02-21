@@ -3,7 +3,7 @@
  * These are extracted from the UI components for testability.
  */
 
-import type { Country, Competition, Participation } from "@/schemas/base";
+import type { Country, Competition, Participation, TeamParticipation } from "@/schemas/base";
 import { Award, Source } from "@/schemas/base";
 import { createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
 
@@ -258,11 +258,18 @@ export function calculateMedalProgression(
  */
 export function getAvailableSources(
   participations: Participation[],
-  competitionMap: Record<string, Competition>
+  competitionMap: Record<string, Competition>,
+  teamParticipations?: TeamParticipation[]
 ): Source[] {
   const sources = new Set<Source>();
   participations.forEach((p) => {
     const comp = competitionMap[p.competition_id];
+    if (comp) {
+      sources.add(comp.source);
+    }
+  });
+  teamParticipations?.forEach((tp) => {
+    const comp = competitionMap[tp.competition_id];
     if (comp) {
       sources.add(comp.source);
     }
@@ -277,6 +284,82 @@ export function getAvailableSources(
     Source.APMO,
     Source.BMO,
     Source.PAMO,
+    Source.BALTICWAY,
   ];
   return sourceOrder.filter((s) => sources.has(s));
+}
+
+/**
+ * Calculate team rank data over time from TeamParticipation records (for team competitions).
+ */
+export function calculateTeamRankFromTeamParticipations(
+  allTeamParticipations: TeamParticipation[],
+  competitionMap: Record<string, Competition>,
+  countryId: string,
+  source: Source
+): TeamRankData[] {
+  // Group by competition
+  const byCompetition = new Map<
+    string,
+    { year: number; participations: TeamParticipation[] }
+  >();
+
+  allTeamParticipations.forEach((tp) => {
+    const comp = competitionMap[tp.competition_id];
+    if (!comp || comp.source !== source) return;
+
+    if (!byCompetition.has(tp.competition_id)) {
+      byCompetition.set(tp.competition_id, { year: comp.year, participations: [] });
+    }
+    byCompetition.get(tp.competition_id)!.participations.push(tp);
+  });
+
+  const data: TeamRankData[] = [];
+
+  byCompetition.forEach(({ year, participations }) => {
+    const totalTeams = participations.length;
+    const thisTeam = participations.find((tp) => tp.country_id === countryId);
+
+    data.push({
+      year,
+      teamRank: thisTeam?.rank ?? null,
+      totalTeams,
+      percentile:
+        thisTeam?.rank !== null && thisTeam?.rank !== undefined
+          ? Math.round((1 - (thisTeam.rank - 1) / (totalTeams - 1 || 1)) * 100)
+          : null,
+    });
+  });
+
+  return data.sort((a, b) => a.year - b.year);
+}
+
+export interface TeamScoreOverTimeData {
+  year: number;
+  total: number;
+  rank: number | null;
+}
+
+/**
+ * Calculate total score over time for a country in team competitions.
+ */
+export function calculateTeamScoreOverTime(
+  teamParticipations: TeamParticipation[],
+  competitionMap: Record<string, Competition>,
+  source: Source
+): TeamScoreOverTimeData[] {
+  return teamParticipations
+    .filter((tp) => {
+      const comp = competitionMap[tp.competition_id];
+      return comp?.source === source;
+    })
+    .map((tp) => {
+      const comp = competitionMap[tp.competition_id]!;
+      return {
+        year: comp.year,
+        total: tp.total,
+        rank: tp.rank,
+      };
+    })
+    .sort((a, b) => a.year - b.year);
 }

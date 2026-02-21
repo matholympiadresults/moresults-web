@@ -8,7 +8,7 @@ import {
   getYearRange,
   calculateDataStats,
 } from "./dataStats";
-import type { Competition, Participation, Database } from "@/schemas/base";
+import type { Competition, Participation, TeamParticipation, Database } from "@/schemas/base";
 import { Source, Award } from "@/schemas/base";
 
 // Helper factories
@@ -47,6 +47,7 @@ describe("countParticipationsBySource", () => {
     expect(result[Source.APMO]).toBe(0);
     expect(result[Source.BMO]).toBe(0);
     expect(result[Source.PAMO]).toBe(0);
+    expect(result[Source.BALTICWAY]).toBe(0);
   });
 
   it("counts participations correctly by source", () => {
@@ -83,6 +84,52 @@ describe("countParticipationsBySource", () => {
     const result = countParticipationsBySource(participations, competitions);
 
     expect(result[Source.IMO]).toBe(1);
+  });
+
+  it("counts team participations when provided", () => {
+    const competitions: Record<string, Competition> = {
+      "IMO-2020": createCompetition(Source.IMO, 2020),
+      "BALTICWAY-2024": createCompetition(Source.BALTICWAY, 2024, "BALTICWAY-2024"),
+    };
+
+    const participations: Participation[] = [createParticipation("IMO-2020")];
+
+    const teamParticipations: TeamParticipation[] = [
+      {
+        id: "BALTICWAY-2024-country-est",
+        competition_id: "BALTICWAY-2024",
+        country_id: "country-est",
+        problem_scores: [5, 5, 5],
+        total: 15,
+        rank: 1,
+      },
+      {
+        id: "BALTICWAY-2024-country-lva",
+        competition_id: "BALTICWAY-2024",
+        country_id: "country-lva",
+        problem_scores: [4, 5, 3],
+        total: 12,
+        rank: 2,
+      },
+    ];
+
+    const result = countParticipationsBySource(participations, competitions, teamParticipations);
+
+    expect(result[Source.IMO]).toBe(1);
+    expect(result[Source.BALTICWAY]).toBe(2);
+  });
+
+  it("works without team participations (backwards compatible)", () => {
+    const competitions: Record<string, Competition> = {
+      "IMO-2020": createCompetition(Source.IMO, 2020),
+    };
+
+    const participations: Participation[] = [createParticipation("IMO-2020")];
+
+    const result = countParticipationsBySource(participations, competitions);
+
+    expect(result[Source.IMO]).toBe(1);
+    expect(result[Source.BALTICWAY]).toBe(0);
   });
 });
 
@@ -296,6 +343,7 @@ describe("calculateDataStats", () => {
         p2: { ...createParticipation("IMO-2021", Award.SILVER), id: "p2" },
         p3: { ...createParticipation("EGMO-2020", null), id: "p3" },
       },
+      team_participations: {},
     };
 
     const result = calculateDataStats(database);
@@ -325,6 +373,7 @@ describe("calculateDataStats", () => {
       competitions: {},
       people: {},
       participations: {},
+      team_participations: {},
     };
 
     const result = calculateDataStats(database);
@@ -336,5 +385,46 @@ describe("calculateDataStats", () => {
     expect(result.minYear).toBe(0);
     expect(result.maxYear).toBe(0);
     expect(result.yearSpan).toBe(0);
+  });
+
+  it("includes team participations in byOlympiad counts", () => {
+    const database: Database = {
+      version: "1.0.0",
+      last_updated: "2024-01-15T12:00:00Z",
+      countries: {
+        "country-est": { id: "country-est", code: "EST", name: "Estonia" },
+      },
+      competitions: {
+        "BALTICWAY-2024": createCompetition(Source.BALTICWAY, 2024, "BALTICWAY-2024"),
+        "IMO-2024": createCompetition(Source.IMO, 2024, "IMO-2024"),
+      },
+      people: {},
+      participations: {
+        p1: { ...createParticipation("IMO-2024", Award.GOLD), id: "p1" },
+      },
+      team_participations: {
+        tp1: {
+          id: "tp1",
+          competition_id: "BALTICWAY-2024",
+          country_id: "country-est",
+          problem_scores: [5, 5, 5],
+          total: 15,
+          rank: 1,
+        },
+        tp2: {
+          id: "tp2",
+          competition_id: "BALTICWAY-2024",
+          country_id: "country-lva",
+          problem_scores: [4, 5, 3],
+          total: 12,
+          rank: 2,
+        },
+      },
+    };
+
+    const result = calculateDataStats(database);
+
+    expect(result.byOlympiad[Source.IMO]).toBe(1);
+    expect(result.byOlympiad[Source.BALTICWAY]).toBe(2);
   });
 });

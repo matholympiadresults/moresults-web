@@ -2,7 +2,7 @@
  * Utility functions for calculating statistics displayed on the Data page.
  */
 
-import type { Database, Competition, Participation } from "@/schemas/base";
+import type { Database, Competition, Participation, TeamParticipation } from "@/schemas/base";
 import { Source, Award } from "@/schemas/base";
 
 export interface YearRange {
@@ -26,11 +26,12 @@ export interface DataStats {
 }
 
 /**
- * Counts participations by olympiad source.
+ * Counts participations by olympiad source (individual + team).
  */
 export function countParticipationsBySource(
   participations: Participation[],
-  competitions: Record<string, Competition>
+  competitions: Record<string, Competition>,
+  teamParticipations?: TeamParticipation[]
 ): Record<string, number> {
   const byOlympiad: Record<string, number> = {};
 
@@ -43,6 +44,15 @@ export function countParticipationsBySource(
     const competition = competitions[participation.competition_id];
     if (competition) {
       byOlympiad[competition.source] = (byOlympiad[competition.source] || 0) + 1;
+    }
+  }
+
+  if (teamParticipations) {
+    for (const tp of teamParticipations) {
+      const competition = competitions[tp.competition_id];
+      if (competition) {
+        byOlympiad[competition.source] = (byOlympiad[competition.source] || 0) + 1;
+      }
     }
   }
 
@@ -169,7 +179,14 @@ export function calculateDataStats(data: Database): DataStats {
   const participationsList = Object.values(data.participations);
   const competitionsList = Object.values(data.competitions);
 
-  const byOlympiad = countParticipationsBySource(participationsList, data.competitions);
+  const teamParticipationsList = data.team_participations
+    ? Object.values(data.team_participations)
+    : [];
+  const byOlympiad = countParticipationsBySource(
+    participationsList,
+    data.competitions,
+    teamParticipationsList
+  );
   const yearSetByOlympiad = collectYearsBySource(competitionsList);
   const yearsByOlympiad = formatYearsBySource(yearSetByOlympiad);
   const { minYear, maxYear, yearSpan } = getYearRange(competitionsList);

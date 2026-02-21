@@ -1,6 +1,12 @@
-import { Alert, Skeleton, Table } from "@mantine/core";
+import { Alert, Group, Skeleton, Table } from "@mantine/core";
 import { IconSortAscending, IconSortDescending, IconSelector } from "@tabler/icons-react";
-import { flexRender, type Row, type ColumnHelper, type ColumnDef } from "@tanstack/react-table";
+import {
+  flexRender,
+  type Row,
+  type HeaderGroup,
+  type ColumnHelper,
+  type ColumnDef,
+} from "@tanstack/react-table";
 import type { CSSProperties, JSX } from "react";
 import { Source } from "@/schemas/base";
 
@@ -12,6 +18,7 @@ export const sourceColors: Record<Source, string> = {
   [Source.APMO]: "light-dark(var(--mantine-color-pink-1), var(--mantine-color-pink-light))",
   [Source.BMO]: "light-dark(var(--mantine-color-violet-1), var(--mantine-color-violet-light))",
   [Source.PAMO]: "light-dark(var(--mantine-color-teal-1), var(--mantine-color-teal-light))",
+  [Source.BALTICWAY]: "light-dark(var(--mantine-color-cyan-1), var(--mantine-color-cyan-light))",
 };
 
 export function getSortingIcon(
@@ -38,6 +45,41 @@ export function getSortingIcon(
   }
 
   return icon;
+}
+
+/**
+ * Renders sortable table header rows from TanStack header groups.
+ * Reads `meta.compact` from column definitions to apply compact styling.
+ */
+export function getTableHead<T>(headerGroups: HeaderGroup<T>[]): JSX.Element[] {
+  return headerGroups.map((headerGroup) => (
+    <Table.Tr key={headerGroup.id}>
+      {headerGroup.headers.map((header) => {
+        const isCompact = (header.column.columnDef.meta as { compact?: boolean })?.compact;
+        return (
+          <Table.Th
+            key={header.id}
+            onClick={header.column.getToggleSortingHandler()}
+            style={{
+              cursor: header.column.getCanSort() ? "pointer" : "default",
+              ...(isCompact
+                ? { textAlign: "center", padding: "4px 2px", whiteSpace: "nowrap" }
+                : {}),
+            }}
+          >
+            <Group gap="xs" justify={isCompact ? "center" : undefined}>
+              {header.isPlaceholder
+                ? null
+                : typeof header.column.columnDef.header === "string"
+                  ? header.column.columnDef.header
+                  : null}
+              {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
+            </Group>
+          </Table.Th>
+        );
+      })}
+    </Table.Tr>
+  ));
 }
 
 export interface RowGroupSeparator<T> {
@@ -121,8 +163,12 @@ export function getTableBody<T>(params: GetTableBodyParams<T>) {
       result.push(
         <Table.Tr key={row.id} style={rowStyle}>
           {row.getVisibleCells().map((cell) => {
+            const isCompact = (cell.column.columnDef.meta as { compact?: boolean })?.compact;
             return (
-              <Table.Td key={cell.id}>
+              <Table.Td
+                key={cell.id}
+                style={isCompact ? { textAlign: "center", padding: "4px 2px" } : undefined}
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </Table.Td>
             );
@@ -157,6 +203,7 @@ export function generateProblemColumns<T extends ProblemScoreRow>(
   columnHelper: ColumnHelper<T>,
   maxProblems: number
 ): ColumnDef<T, unknown>[] {
+  const isCompact = maxProblems > 10;
   return Array.from({ length: maxProblems }, (_, i) =>
     columnHelper.display({
       id: `p${i + 1}`,
@@ -166,6 +213,12 @@ export function generateProblemColumns<T extends ProblemScoreRow>(
         const score = info.row.original.problemScores[i];
         return score !== null ? score : "-";
       },
+      ...(isCompact ? { size: 36, meta: { compact: true } } : {}),
     })
   );
+}
+
+/** Minimum table width that accommodates the given number of problem columns. */
+export function getTableMinWidth(numProblems: number, baseWidth = 200): number {
+  return Math.max(800, numProblems * 44 + baseWidth);
 }

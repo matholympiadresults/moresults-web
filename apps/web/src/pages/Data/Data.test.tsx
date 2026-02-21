@@ -140,6 +140,7 @@ const mockDatabase: Database = {
   competitions: mockCompetitions,
   people: mockPeople,
   participations: mockParticipations,
+  team_participations: {},
 };
 
 function renderData() {
@@ -523,6 +524,7 @@ describe("Data", () => {
           competitions: {},
           people: {},
           participations: {},
+          team_participations: {},
         },
       });
 

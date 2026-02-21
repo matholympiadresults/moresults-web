@@ -11,6 +11,14 @@ export enum Source {
   APMO = "APMO",
   BMO = "BMO",
   PAMO = "PAMO",
+  BALTICWAY = "BALTICWAY",
+}
+
+/**
+ * Returns true if the given source is a team competition (no individual contestants).
+ */
+export function isTeamCompetition(source: Source): boolean {
+  return source === Source.BALTICWAY;
 }
 
 export enum Award {
@@ -60,6 +68,15 @@ export interface Participation {
   source_contestant_id: string | null;
 }
 
+export interface TeamParticipation {
+  id: string; // Format: {competition_id}-{country_id}
+  competition_id: string;
+  country_id: string;
+  problem_scores: (number | null)[];
+  total: number;
+  rank: number | null;
+}
+
 export interface Database {
   version: string;
   last_updated: string;
@@ -67,4 +84,5 @@ export interface Database {
   competitions: Record<string, Competition>;
   people: Record<string, Person>;
   participations: Record<string, Participation>;
+  team_participations: Record<string, TeamParticipation>;
 }

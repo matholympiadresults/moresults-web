@@ -37,7 +37,7 @@ import {
   calculateStats,
   filterStatsBySource,
   calculateTeamRanks,
-  getAvailableSources,
+  getSharedAvailableSources,
   calculateTeamStats,
   filterTeamStatsBySource,
   calculateTeamRanksFromTeamParticipations,
@@ -100,7 +100,7 @@ export function CountryComparison() {
 
   // Get sources where both countries have participated (intersection)
   const availableSources = useMemo(
-    () => getAvailableSources(stats1, stats2, SOURCE_OPTIONS, teamStats1, teamStats2),
+    () => getSharedAvailableSources(stats1, stats2, SOURCE_OPTIONS, teamStats1, teamStats2),
     [stats1, stats2, teamStats1, teamStats2]
   );
 

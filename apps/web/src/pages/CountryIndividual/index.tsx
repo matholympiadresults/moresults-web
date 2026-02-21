@@ -51,18 +51,16 @@ import {
   calculateMedalsBySource,
   calculateTeamRankOverTime,
   calculateMedalProgression,
-  getAvailableSources,
+  getCountryAvailableSources,
   calculateTeamRankFromTeamParticipations,
   calculateTeamScoreOverTime,
+  calculateTeamStats,
+  filterTeamStatsBySource,
 } from "@/utils/countryStats";
 import { ROUTES } from "@/constants/routes";
 import { Award, Source, isTeamCompetition } from "@/schemas/base";
 import type { ProblemScoreRow } from "@/utils/table";
 import { SOURCE_OPTIONS, AWARD_COLORS } from "@/constants/filterOptions";
-import {
-  calculateTeamStats,
-  filterTeamStatsBySource,
-} from "@/pages/CountryComparison/calculateStats";
 
 interface ParticipationRow {
   id: string;
@@ -112,7 +110,7 @@ export function CountryIndividual() {
 
   // Get sources that this country has participated in
   const availableSources = useMemo(() => {
-    const sources = getAvailableSources(participations, competitionMap, teamParticipations);
+    const sources = getCountryAvailableSources(participations, competitionMap, teamParticipations);
     return SOURCE_OPTIONS.filter((opt) => sources.includes(opt.value));
   }, [participations, competitionMap, teamParticipations]);
 

@@ -3,7 +3,7 @@ import {
   calculateStats,
   filterStatsBySource,
   calculateTeamRanks,
-  getAvailableSources,
+  getSharedAvailableSources,
   calculateTeamStats,
   filterTeamStatsBySource,
   calculateTeamRanksFromTeamParticipations,
@@ -473,7 +473,7 @@ describe("calculateTeamRanks", () => {
   });
 });
 
-describe("getAvailableSources", () => {
+describe("getSharedAvailableSources", () => {
   const sourceOptions = [
     { value: Source.IMO, label: "IMO" },
     { value: Source.EGMO, label: "EGMO" },
@@ -482,14 +482,14 @@ describe("getAvailableSources", () => {
 
   it("returns empty array when stats1 is null", () => {
     const stats2 = calculateStats([], {}, "country-b");
-    const result = getAvailableSources(null, stats2, sourceOptions);
+    const result = getSharedAvailableSources(null, stats2, sourceOptions);
 
     expect(result).toEqual([]);
   });
 
   it("returns empty array when stats2 is null", () => {
     const stats1 = calculateStats([], {}, "country-a");
-    const result = getAvailableSources(stats1, null, sourceOptions);
+    const result = getSharedAvailableSources(stats1, null, sourceOptions);
 
     expect(result).toEqual([]);
   });
@@ -537,7 +537,7 @@ describe("getAvailableSources", () => {
     const stats1 = calculateStats(allParticipations, competitions, "country-a");
     const stats2 = calculateStats(allParticipations, competitions, "country-b");
 
-    const result = getAvailableSources(stats1, stats2, sourceOptions);
+    const result = getSharedAvailableSources(stats1, stats2, sourceOptions);
 
     // Only IMO is common
     expect(result).toHaveLength(1);
@@ -580,7 +580,7 @@ describe("getAvailableSources", () => {
     const stats1 = calculateStats(participations, competitions, "country-a");
     const stats2 = calculateStats(participations, competitions, "country-b");
 
-    const result = getAvailableSources(stats1, stats2, sourceOptions);
+    const result = getSharedAvailableSources(stats1, stats2, sourceOptions);
 
     // Should be in same order as sourceOptions (IMO before EGMO)
     expect(result).toHaveLength(2);
@@ -616,7 +616,7 @@ describe("getAvailableSources", () => {
     const stats1 = calculateStats(allParticipations, competitions, "country-a");
     const stats2 = calculateStats(allParticipations, competitions, "country-b");
 
-    const result = getAvailableSources(stats1, stats2, sourceOptions);
+    const result = getSharedAvailableSources(stats1, stats2, sourceOptions);
 
     expect(result).toEqual([]);
   });
@@ -681,7 +681,7 @@ describe("getAvailableSources", () => {
       "country-b"
     );
 
-    const result = getAvailableSources(stats1, stats2, sourceOptionsWithBW, teamStats1, teamStats2);
+    const result = getSharedAvailableSources(stats1, stats2, sourceOptionsWithBW, teamStats1, teamStats2);
 
     expect(result).toHaveLength(2);
     expect(result[0].value).toBe(Source.IMO);

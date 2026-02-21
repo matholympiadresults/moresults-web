@@ -7,7 +7,7 @@ import {
   calculateMedalsBySource,
   calculateTeamRankOverTime,
   calculateMedalProgression,
-  getAvailableSources,
+  getCountryAvailableSources,
   calculateTeamRankFromTeamParticipations,
   calculateTeamScoreOverTime,
 } from "./countryStats";
@@ -408,7 +408,7 @@ describe("calculateMedalProgression", () => {
   });
 });
 
-describe("getAvailableSources", () => {
+describe("getCountryAvailableSources", () => {
   const competitions: Record<string, Competition> = {
     "imo-2024": createCompetition(Source.IMO, 2024),
     "egmo-2024": createCompetition(Source.EGMO, 2024, 4),
@@ -416,7 +416,7 @@ describe("getAvailableSources", () => {
   };
 
   it("returns empty array for empty participations", () => {
-    const result = getAvailableSources([], competitions);
+    const result = getCountryAvailableSources([], competitions);
     expect(result).toEqual([]);
   });
 
@@ -426,7 +426,7 @@ describe("getAvailableSources", () => {
       createParticipation("egmo-2024", "country-usa", "person-2", 28),
     ];
 
-    const result = getAvailableSources(participations, competitions);
+    const result = getCountryAvailableSources(participations, competitions);
 
     expect(result).toContain(Source.IMO);
     expect(result).toContain(Source.EGMO);
@@ -439,7 +439,7 @@ describe("getAvailableSources", () => {
       createParticipation("imo-2024", "country-usa", "person-2", 42),
     ];
 
-    const result = getAvailableSources(participations, competitions);
+    const result = getCountryAvailableSources(participations, competitions);
 
     // Should be ordered: IMO, EGMO (regardless of participation order)
     expect(result[0]).toBe(Source.IMO);
@@ -452,7 +452,7 @@ describe("getAvailableSources", () => {
       createParticipation("unknown-comp", "country-usa", "person-2", 30),
     ];
 
-    const result = getAvailableSources(participations, competitions);
+    const result = getCountryAvailableSources(participations, competitions);
 
     expect(result).toEqual([Source.IMO]);
   });
@@ -465,7 +465,7 @@ describe("getAvailableSources", () => {
 
     const teamParticipations = [createTeamParticipation("balticway-2024", "country-usa", 80, 1)];
 
-    const result = getAvailableSources([], allCompetitions, teamParticipations);
+    const result = getCountryAvailableSources([], allCompetitions, teamParticipations);
 
     expect(result).toContain(Source.BALTICWAY);
   });
@@ -479,7 +479,7 @@ describe("getAvailableSources", () => {
     const participations = [createParticipation("imo-2024", "country-usa", "person-1", 42)];
     const teamParticipations = [createTeamParticipation("balticway-2024", "country-usa", 80, 1)];
 
-    const result = getAvailableSources(participations, allCompetitions, teamParticipations);
+    const result = getCountryAvailableSources(participations, allCompetitions, teamParticipations);
 
     expect(result).toContain(Source.IMO);
     expect(result).toContain(Source.BALTICWAY);

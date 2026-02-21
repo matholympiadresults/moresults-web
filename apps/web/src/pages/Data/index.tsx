@@ -144,6 +144,18 @@ export function Data() {
                     </a>
                   </Table.Td>
                 </Table.Tr>
+                <Table.Tr>
+                  <Table.Td fw={500}>Baltic Way</Table.Td>
+                  <Table.Td>
+                    <a
+                      href="https://www.math.olympiaadid.ut.ee/eng/html/?id=bw"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      math.olympiaadid.ut.ee
+                    </a>
+                  </Table.Td>
+                </Table.Tr>
               </Table.Tbody>
             </Table>
           </Paper>
@@ -220,7 +232,7 @@ export function Data() {
             <Stack gap="md">
               <Title order={3}>Participations by Olympiad</Title>
               <Text c="dimmed" size="sm">
-                A participation is one person competing in one competition.
+                A participation is one person (or team) competing in one competition.
               </Text>
               <Paper withBorder>
                 <Table>

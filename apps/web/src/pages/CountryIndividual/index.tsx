@@ -37,12 +37,14 @@ import {
 import {
   useCountry,
   useParticipationsByCountry,
+  useTeamParticipationsByCountry,
   useParticipations,
+  useTeamParticipations,
   useCompetitions,
   usePeople,
 } from "@/hooks/api";
 import { useEntityMap } from "@/hooks/useEntityMap";
-import { getTableBody, getSortingIcon, generateProblemColumns } from "@/utils/table";
+import { getTableBody, getTableHead, generateProblemColumns } from "@/utils/table";
 import { getTooltipStyle, getAxisStyle, getTooltipContentStyle } from "@/utils/chartStyles";
 import { CountryFlag } from "@/utils/flags";
 import {
@@ -50,10 +52,17 @@ import {
   calculateTeamRankOverTime,
   calculateMedalProgression,
   getAvailableSources,
+  calculateTeamRankFromTeamParticipations,
+  calculateTeamScoreOverTime,
 } from "@/utils/countryStats";
 import { ROUTES } from "@/constants/routes";
-import { Award, Source } from "@/schemas/base";
+import { Award, Source, isTeamCompetition } from "@/schemas/base";
+import type { ProblemScoreRow } from "@/utils/table";
 import { SOURCE_OPTIONS, AWARD_COLORS } from "@/constants/filterOptions";
+import {
+  calculateTeamStats,
+  filterTeamStatsBySource,
+} from "@/pages/CountryComparison/calculateStats";
 
 interface ParticipationRow {
   id: string;
@@ -70,14 +79,25 @@ interface ParticipationRow {
   award: Award | null;
 }
 
+interface TeamParticipationRow extends ProblemScoreRow {
+  id: string;
+  competitionId: string;
+  year: number;
+  rank: number | null;
+  total: number;
+}
+
 const columnHelper = createColumnHelper<ParticipationRow>();
+const teamColumnHelper = createColumnHelper<TeamParticipationRow>();
 
 export function CountryIndividual() {
   const { code } = useParams<{ code: string }>();
   const countryId = `country-${code?.toLowerCase()}`;
   const { country, loading, error } = useCountry(countryId);
   const { participations } = useParticipationsByCountry(countryId);
+  const { teamParticipations } = useTeamParticipationsByCountry(countryId);
   const { participations: allParticipations } = useParticipations();
+  const { teamParticipations: allTeamParticipations } = useTeamParticipations();
   const { competitions } = useCompetitions();
   const { people } = usePeople();
   const [sorting, setSorting] = useState<SortingState>([{ id: "year", desc: true }]);
@@ -92,9 +112,9 @@ export function CountryIndividual() {
 
   // Get sources that this country has participated in
   const availableSources = useMemo(() => {
-    const sources = getAvailableSources(participations, competitionMap);
+    const sources = getAvailableSources(participations, competitionMap, teamParticipations);
     return SOURCE_OPTIONS.filter((opt) => sources.includes(opt.value));
-  }, [participations, competitionMap]);
+  }, [participations, competitionMap, teamParticipations]);
 
   // If current globalSource is not available, switch to first available
   const effectiveSource = useMemo(() => {
@@ -104,15 +124,39 @@ export function CountryIndividual() {
     return availableSources[0]?.value ?? Source.IMO;
   }, [availableSources, globalSource]);
 
+  const isTeam = isTeamCompetition(effectiveSource);
+
   const stats = useMemo(() => {
     const medals = calculateMedalsBySource(participations, competitionMap, effectiveSource);
     return { medals };
   }, [participations, competitionMap, effectiveSource]);
 
+  // Team competition stats — reuse shared calculation from CountryComparison
+  const teamStats = useMemo(() => {
+    if (!isTeam) return null;
+    const teamCountryStats = calculateTeamStats(teamParticipations, competitionMap, countryId);
+    return filterTeamStatsBySource(teamCountryStats, effectiveSource);
+  }, [isTeam, teamParticipations, competitionMap, countryId, effectiveSource]);
+
   // Calculate team ranks over time for the selected source
   const teamRankData = useMemo(
-    () => calculateTeamRankOverTime(allParticipations, competitionMap, countryId, effectiveSource),
-    [allParticipations, competitionMap, countryId, effectiveSource]
+    () =>
+      isTeam
+        ? calculateTeamRankFromTeamParticipations(
+            allTeamParticipations,
+            competitionMap,
+            countryId,
+            effectiveSource
+          )
+        : calculateTeamRankOverTime(allParticipations, competitionMap, countryId, effectiveSource),
+    [isTeam, allTeamParticipations, allParticipations, competitionMap, countryId, effectiveSource]
+  );
+
+  // Team score over time (for team competitions)
+  const teamScoreData = useMemo(
+    () =>
+      isTeam ? calculateTeamScoreOverTime(teamParticipations, competitionMap, effectiveSource) : [],
+    [isTeam, teamParticipations, competitionMap, effectiveSource]
   );
 
   // Calculate medal progression over time for the selected source
@@ -153,10 +197,36 @@ export function CountryIndividual() {
     [participations, competitionMap, peopleMap, effectiveSource]
   );
 
+  // Team competition rows
+  const teamRows: TeamParticipationRow[] = useMemo(
+    () =>
+      teamParticipations
+        .filter((tp) => {
+          const comp = competitionMap[tp.competition_id];
+          return comp?.source === effectiveSource;
+        })
+        .map((tp) => {
+          const comp = competitionMap[tp.competition_id];
+          return {
+            id: tp.id,
+            competitionId: tp.competition_id,
+            year: comp?.year ?? 0,
+            rank: tp.rank,
+            problemScores: tp.problem_scores,
+            numProblems: comp?.num_problems ?? 0,
+            total: tp.total,
+          };
+        }),
+    [teamParticipations, competitionMap, effectiveSource]
+  );
+
   // Find max number of problems across participations for the selected source
   const maxProblems = useMemo(() => {
+    if (isTeam) {
+      return Math.max(0, ...teamRows.map((r) => r.numProblems));
+    }
     return Math.max(0, ...rows.map((r) => r.numProblems));
-  }, [rows]);
+  }, [isTeam, rows, teamRows]);
 
   const columns = useMemo(() => {
     const problemColumns = generateProblemColumns(columnHelper, maxProblems);
@@ -197,6 +267,39 @@ export function CountryIndividual() {
       }),
     ];
   }, [maxProblems]);
+
+  const teamColumns = useMemo(() => {
+    const problemColumns = generateProblemColumns(teamColumnHelper, maxProblems);
+    return [
+      teamColumnHelper.accessor("year", {
+        header: "Year",
+      }),
+      teamColumnHelper.accessor("rank", {
+        header: "Rank",
+        cell: (info) => info.getValue() ?? "-",
+        sortingFn: (rowA, rowB) => {
+          const a = rowA.original.rank ?? 9999;
+          const b = rowB.original.rank ?? 9999;
+          return a - b;
+        },
+      }),
+      ...problemColumns,
+      teamColumnHelper.accessor("total", {
+        header: "Total",
+      }),
+    ];
+  }, [maxProblems]);
+
+  const [teamSorting, setTeamSorting] = useState<SortingState>([{ id: "year", desc: true }]);
+
+  const teamTable = useReactTable({
+    data: teamRows,
+    columns: teamColumns,
+    state: { sorting: teamSorting },
+    onSortingChange: setTeamSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
 
   const table = useReactTable({
     data: rows,
@@ -240,40 +343,77 @@ export function CountryIndividual() {
         </Tabs.List>
       </Tabs>
 
-      <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md" mb="xl">
-        <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">
-            Gold
-          </Text>
-          <Text size="xl" fw={700}>
-            {stats.medals[Award.GOLD]}
-          </Text>
-        </Paper>
-        <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">
-            Silver
-          </Text>
-          <Text size="xl" fw={700}>
-            {stats.medals[Award.SILVER]}
-          </Text>
-        </Paper>
-        <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">
-            Bronze
-          </Text>
-          <Text size="xl" fw={700}>
-            {stats.medals[Award.BRONZE]}
-          </Text>
-        </Paper>
-        <Paper p="md" withBorder>
-          <Text size="xs" c="dimmed" tt="uppercase">
-            Honourable Mention
-          </Text>
-          <Text size="xl" fw={700}>
-            {stats.medals[Award.HONOURABLE_MENTION]}
-          </Text>
-        </Paper>
-      </SimpleGrid>
+      {isTeam && teamStats ? (
+        <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md" mb="xl">
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Participations
+            </Text>
+            <Text size="xl" fw={700}>
+              {teamStats.participations}
+            </Text>
+          </Paper>
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Best Rank
+            </Text>
+            <Text size="xl" fw={700}>
+              {teamStats.bestRank ?? "-"}
+            </Text>
+          </Paper>
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Average Rank
+            </Text>
+            <Text size="xl" fw={700}>
+              {teamStats.avgRank ?? "-"}
+            </Text>
+          </Paper>
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Average Score
+            </Text>
+            <Text size="xl" fw={700}>
+              {teamStats.avgScore ?? "-"}
+            </Text>
+          </Paper>
+        </SimpleGrid>
+      ) : (
+        <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="md" mb="xl">
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Gold
+            </Text>
+            <Text size="xl" fw={700}>
+              {stats.medals[Award.GOLD]}
+            </Text>
+          </Paper>
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Silver
+            </Text>
+            <Text size="xl" fw={700}>
+              {stats.medals[Award.SILVER]}
+            </Text>
+          </Paper>
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Bronze
+            </Text>
+            <Text size="xl" fw={700}>
+              {stats.medals[Award.BRONZE]}
+            </Text>
+          </Paper>
+          <Paper p="md" withBorder>
+            <Text size="xs" c="dimmed" tt="uppercase">
+              Honourable Mention
+            </Text>
+            <Text size="xl" fw={700}>
+              {stats.medals[Award.HONOURABLE_MENTION]}
+            </Text>
+          </Paper>
+        </SimpleGrid>
+      )}
 
       <Title order={3} mb="sm">
         Team Rank Over Time
@@ -342,138 +482,234 @@ export function CountryIndividual() {
         )}
       </Paper>
 
-      <Title order={3} mb="sm">
-        Medal Progression
-      </Title>
-      <Paper p="md" withBorder mb="xl">
-        <Stack gap="md" mb="md">
-          <SimpleGrid cols={{ base: 2, sm: 4 }}>
-            <Group gap="xs">
-              <div style={{ width: 16, height: 16, backgroundColor: "#FFD700", borderRadius: 2 }} />
-              <Text size="sm">Gold</Text>
-            </Group>
-            <Group gap="xs">
-              <div style={{ width: 16, height: 16, backgroundColor: "#C0C0C0", borderRadius: 2 }} />
-              <Text size="sm">Silver</Text>
-            </Group>
-            <Group gap="xs">
-              <div style={{ width: 16, height: 16, backgroundColor: "#CD7F32", borderRadius: 2 }} />
-              <Text size="sm">Bronze</Text>
-            </Group>
-            <Group gap="xs">
-              <div style={{ width: 16, height: 16, backgroundColor: "#228be6", borderRadius: 2 }} />
-              <Text size="sm">HM</Text>
-            </Group>
-          </SimpleGrid>
-          <SegmentedControl
-            size="sm"
-            value={medalChartMode}
-            onChange={(value) => setMedalChartMode(value as "yearly" | "cumulative")}
-            data={[
-              { label: "Yearly", value: "yearly" },
-              { label: "Cumulative", value: "cumulative" },
-            ]}
-            style={{ alignSelf: "flex-start" }}
-          />
-        </Stack>
-        {medalProgressionData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart
-              data={medalProgressionData}
-              margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="year" {...axisStyle} />
-              <YAxis
-                {...axisStyle}
-                allowDecimals={false}
-                label={{ value: "Medals", angle: -90, position: "insideLeft" }}
+      {isTeam ? (
+        <>
+          <Title order={3} mb="sm">
+            Score Over Time
+          </Title>
+          <Paper p="md" withBorder mb="xl">
+            {teamScoreData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={teamScoreData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                  <XAxis dataKey="year" {...axisStyle} />
+                  <YAxis
+                    {...axisStyle}
+                    allowDecimals={false}
+                    label={{ value: "Total Score", angle: -90, position: "insideLeft" }}
+                  />
+                  <Tooltip
+                    {...tooltipStyle}
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload || payload.length === 0) return null;
+                      const data = payload[0]?.payload;
+                      if (!data) return null;
+                      return (
+                        <div style={getTooltipContentStyle(isDark)}>
+                          <Text size="sm" fw={600}>
+                            {effectiveSource} {label}
+                          </Text>
+                          <Text size="sm">Score: {data.total}</Text>
+                          {data.rank !== null && <Text size="sm">Rank: {data.rank}</Text>}
+                        </div>
+                      );
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="total"
+                    stroke="#228be6"
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: "#228be6" }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <Text c="dimmed" ta="center" py="xl">
+                No data available for {effectiveSource}
+              </Text>
+            )}
+          </Paper>
+        </>
+      ) : (
+        <>
+          <Title order={3} mb="sm">
+            Medal Progression
+          </Title>
+          <Paper p="md" withBorder mb="xl">
+            <Stack gap="md" mb="md">
+              <SimpleGrid cols={{ base: 2, sm: 4 }}>
+                <Group gap="xs">
+                  <div
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: "#FFD700",
+                      borderRadius: 2,
+                    }}
+                  />
+                  <Text size="sm">Gold</Text>
+                </Group>
+                <Group gap="xs">
+                  <div
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: "#C0C0C0",
+                      borderRadius: 2,
+                    }}
+                  />
+                  <Text size="sm">Silver</Text>
+                </Group>
+                <Group gap="xs">
+                  <div
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: "#CD7F32",
+                      borderRadius: 2,
+                    }}
+                  />
+                  <Text size="sm">Bronze</Text>
+                </Group>
+                <Group gap="xs">
+                  <div
+                    style={{
+                      width: 16,
+                      height: 16,
+                      backgroundColor: "#228be6",
+                      borderRadius: 2,
+                    }}
+                  />
+                  <Text size="sm">HM</Text>
+                </Group>
+              </SimpleGrid>
+              <SegmentedControl
+                size="sm"
+                value={medalChartMode}
+                onChange={(value) => setMedalChartMode(value as "yearly" | "cumulative")}
+                data={[
+                  { label: "Yearly", value: "yearly" },
+                  { label: "Cumulative", value: "cumulative" },
+                ]}
+                style={{ alignSelf: "flex-start" }}
               />
-              <Tooltip
-                {...tooltipStyle}
-                content={({ active, payload, label }) => {
-                  if (!active || !payload || payload.length === 0) return null;
-                  const data = payload[0]?.payload;
-                  if (!data) return null;
-                  return (
-                    <div style={getTooltipContentStyle(isDark)}>
-                      <Text size="sm" fw={600}>
-                        {effectiveSource} {label}
-                      </Text>
-                      <Text size="sm" c="yellow">
-                        Gold: {data.gold}
-                      </Text>
-                      <Text size="sm" c="gray">
-                        Silver: {data.silver}
-                      </Text>
-                      <Text size="sm" c="orange">
-                        Bronze: {data.bronze}
-                      </Text>
-                      <Text size="sm" c="blue">
-                        HM: {data.hm}
-                      </Text>
-                      <Text size="sm" fw={500} mt="xs">
-                        Total: {data.total}
-                      </Text>
-                    </div>
-                  );
-                }}
-              />
-              <Area type="monotone" dataKey="hm" stackId="1" stroke="#228be6" fill="#228be6" />
-              <Area type="monotone" dataKey="bronze" stackId="1" stroke="#CD7F32" fill="#CD7F32" />
-              <Area type="monotone" dataKey="silver" stackId="1" stroke="#C0C0C0" fill="#C0C0C0" />
-              <Area type="monotone" dataKey="gold" stackId="1" stroke="#FFD700" fill="#FFD700" />
-            </AreaChart>
-          </ResponsiveContainer>
-        ) : (
-          <Text c="dimmed" ta="center" py="xl">
-            No data available for {effectiveSource}
-          </Text>
-        )}
-      </Paper>
+            </Stack>
+            {medalProgressionData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart
+                  data={medalProgressionData}
+                  margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                  <XAxis dataKey="year" {...axisStyle} />
+                  <YAxis
+                    {...axisStyle}
+                    allowDecimals={false}
+                    label={{ value: "Medals", angle: -90, position: "insideLeft" }}
+                  />
+                  <Tooltip
+                    {...tooltipStyle}
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload || payload.length === 0) return null;
+                      const data = payload[0]?.payload;
+                      if (!data) return null;
+                      return (
+                        <div style={getTooltipContentStyle(isDark)}>
+                          <Text size="sm" fw={600}>
+                            {effectiveSource} {label}
+                          </Text>
+                          <Text size="sm" c="yellow">
+                            Gold: {data.gold}
+                          </Text>
+                          <Text size="sm" c="gray">
+                            Silver: {data.silver}
+                          </Text>
+                          <Text size="sm" c="orange">
+                            Bronze: {data.bronze}
+                          </Text>
+                          <Text size="sm" c="blue">
+                            HM: {data.hm}
+                          </Text>
+                          <Text size="sm" fw={500} mt="xs">
+                            Total: {data.total}
+                          </Text>
+                        </div>
+                      );
+                    }}
+                  />
+                  <Area type="monotone" dataKey="hm" stackId="1" stroke="#228be6" fill="#228be6" />
+                  <Area
+                    type="monotone"
+                    dataKey="bronze"
+                    stackId="1"
+                    stroke="#CD7F32"
+                    fill="#CD7F32"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="silver"
+                    stackId="1"
+                    stroke="#C0C0C0"
+                    fill="#C0C0C0"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="gold"
+                    stackId="1"
+                    stroke="#FFD700"
+                    fill="#FFD700"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <Text c="dimmed" ta="center" py="xl">
+                No data available for {effectiveSource}
+              </Text>
+            )}
+          </Paper>
+        </>
+      )}
 
       <Title order={3} mt="lg" mb="sm">
-        Participations ({rows.length})
+        Participations ({isTeam ? teamRows.length : rows.length})
       </Title>
 
       <ScrollArea>
-        <Table striped highlightOnHover miw={700}>
-          <Table.Thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <Table.Tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <Table.Th
-                    key={header.id}
-                    onClick={header.column.getToggleSortingHandler()}
-                    style={{ cursor: header.column.getCanSort() ? "pointer" : "default" }}
-                  >
-                    <Group gap="xs">
-                      {header.isPlaceholder
-                        ? null
-                        : typeof header.column.columnDef.header === "string"
-                          ? header.column.columnDef.header
-                          : null}
-                      {getSortingIcon(header.column.getIsSorted(), header.column.getCanSort())}
-                    </Group>
-                  </Table.Th>
-                ))}
-              </Table.Tr>
-            ))}
-          </Table.Thead>
-          <Table.Tbody>
-            {getTableBody({
-              isLoading: loading,
-              error,
-              tableRows: table.getRowModel().rows,
-              columnCount: columns.length,
-              noDataMessage: "No participations found",
-              rowGroupSeparator: {
-                getGroupKey: (row) => row.original.year,
-                separatorStyle: { backgroundColor: isDark ? "#1a1b1e" : "#f1f3f5", height: 8 },
-              },
-            })}
-          </Table.Tbody>
-        </Table>
+        {isTeam ? (
+          <Table striped highlightOnHover miw={700}>
+            <Table.Thead>{getTableHead(teamTable.getHeaderGroups())}</Table.Thead>
+            <Table.Tbody>
+              {getTableBody({
+                isLoading: loading,
+                error,
+                tableRows: teamTable.getRowModel().rows,
+                columnCount: teamColumns.length,
+                noDataMessage: "No participations found",
+              })}
+            </Table.Tbody>
+          </Table>
+        ) : (
+          <Table striped highlightOnHover miw={700}>
+            <Table.Thead>{getTableHead(table.getHeaderGroups())}</Table.Thead>
+            <Table.Tbody>
+              {getTableBody({
+                isLoading: loading,
+                error,
+                tableRows: table.getRowModel().rows,
+                columnCount: columns.length,
+                noDataMessage: "No participations found",
+                rowGroupSeparator: {
+                  getGroupKey: (row) => row.original.year,
+                  separatorStyle: {
+                    backgroundColor: isDark ? "#1a1b1e" : "#f1f3f5",
+                    height: 8,
+                  },
+                },
+              })}
+            </Table.Tbody>
+          </Table>
+        )}
       </ScrollArea>
     </Container>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { Country, Competition, Participation } from "@/schemas/base";
+import type { Country, Competition, Participation, TeamParticipation } from "@/schemas/base";
 import { Award, Source } from "@/schemas/base";
 import {
   calculateCountryStatsMap,
@@ -8,6 +8,8 @@ import {
   calculateTeamRankOverTime,
   calculateMedalProgression,
   getAvailableSources,
+  calculateTeamRankFromTeamParticipations,
+  calculateTeamScoreOverTime,
 } from "./countryStats";
 
 // Test fixtures
@@ -25,6 +27,20 @@ const createCompetition = (source: Source, year: number, numProblems = 6): Compe
   host_country_id: null,
   num_problems: numProblems,
   max_score_per_problem: 7,
+});
+
+const createTeamParticipation = (
+  competitionId: string,
+  countryId: string,
+  total: number,
+  rank: number | null = null
+): TeamParticipation => ({
+  id: `${competitionId}-${countryId}`,
+  competition_id: competitionId,
+  country_id: countryId,
+  problem_scores: [5, 5, 4, 3, 5].slice(0, Math.ceil(total / 5)),
+  total,
+  rank,
 });
 
 const createParticipation = (
@@ -439,5 +455,203 @@ describe("getAvailableSources", () => {
     const result = getAvailableSources(participations, competitions);
 
     expect(result).toEqual([Source.IMO]);
+  });
+
+  it("includes sources from team participations", () => {
+    const allCompetitions: Record<string, Competition> = {
+      ...competitions,
+      "balticway-2024": createCompetition(Source.BALTICWAY, 2024, 20),
+    };
+
+    const teamParticipations = [createTeamParticipation("balticway-2024", "country-usa", 80, 1)];
+
+    const result = getAvailableSources([], allCompetitions, teamParticipations);
+
+    expect(result).toContain(Source.BALTICWAY);
+  });
+
+  it("combines individual and team participation sources", () => {
+    const allCompetitions: Record<string, Competition> = {
+      ...competitions,
+      "balticway-2024": createCompetition(Source.BALTICWAY, 2024, 20),
+    };
+
+    const participations = [createParticipation("imo-2024", "country-usa", "person-1", 42)];
+    const teamParticipations = [createTeamParticipation("balticway-2024", "country-usa", 80, 1)];
+
+    const result = getAvailableSources(participations, allCompetitions, teamParticipations);
+
+    expect(result).toContain(Source.IMO);
+    expect(result).toContain(Source.BALTICWAY);
+    expect(result).not.toContain(Source.EGMO);
+  });
+});
+
+describe("calculateTeamRankFromTeamParticipations", () => {
+  const competitions: Record<string, Competition> = {
+    "balticway-2023": createCompetition(Source.BALTICWAY, 2023, 20),
+    "balticway-2024": createCompetition(Source.BALTICWAY, 2024, 20),
+  };
+
+  it("returns empty array for empty team participations", () => {
+    const result = calculateTeamRankFromTeamParticipations(
+      [],
+      competitions,
+      "country-est",
+      Source.BALTICWAY
+    );
+    expect(result).toEqual([]);
+  });
+
+  it("calculates team rank directly from team participations", () => {
+    const teamParticipations = [
+      createTeamParticipation("balticway-2024", "country-est", 90, 1),
+      createTeamParticipation("balticway-2024", "country-lva", 85, 2),
+      createTeamParticipation("balticway-2024", "country-ltu", 80, 3),
+    ];
+
+    const result = calculateTeamRankFromTeamParticipations(
+      teamParticipations,
+      competitions,
+      "country-est",
+      Source.BALTICWAY
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].year).toBe(2024);
+    expect(result[0].teamRank).toBe(1);
+    expect(result[0].totalTeams).toBe(3);
+  });
+
+  it("calculates percentile correctly", () => {
+    const teamParticipations = [
+      createTeamParticipation("balticway-2024", "country-est", 90, 1),
+      createTeamParticipation("balticway-2024", "country-lva", 85, 2),
+      createTeamParticipation("balticway-2024", "country-ltu", 80, 3),
+    ];
+
+    const result = calculateTeamRankFromTeamParticipations(
+      teamParticipations,
+      competitions,
+      "country-est",
+      Source.BALTICWAY
+    );
+
+    expect(result[0].percentile).toBe(100); // 1st out of 3 = best
+
+    const resultLast = calculateTeamRankFromTeamParticipations(
+      teamParticipations,
+      competitions,
+      "country-ltu",
+      Source.BALTICWAY
+    );
+
+    expect(resultLast[0].percentile).toBe(0); // 3rd out of 3 = worst
+  });
+
+  it("returns null rank for country not in competition", () => {
+    const teamParticipations = [createTeamParticipation("balticway-2024", "country-est", 90, 1)];
+
+    const result = calculateTeamRankFromTeamParticipations(
+      teamParticipations,
+      competitions,
+      "country-fin", // Not in this competition
+      Source.BALTICWAY
+    );
+
+    expect(result[0].teamRank).toBeNull();
+    expect(result[0].percentile).toBeNull();
+  });
+
+  it("returns data sorted by year", () => {
+    const teamParticipations = [
+      createTeamParticipation("balticway-2024", "country-est", 90, 1),
+      createTeamParticipation("balticway-2023", "country-est", 85, 2),
+    ];
+
+    const result = calculateTeamRankFromTeamParticipations(
+      teamParticipations,
+      competitions,
+      "country-est",
+      Source.BALTICWAY
+    );
+
+    expect(result[0].year).toBe(2023);
+    expect(result[1].year).toBe(2024);
+  });
+
+  it("filters by source", () => {
+    const allCompetitions: Record<string, Competition> = {
+      ...competitions,
+      "imo-2024": createCompetition(Source.IMO, 2024),
+    };
+
+    const teamParticipations = [
+      createTeamParticipation("balticway-2024", "country-est", 90, 1),
+      createTeamParticipation("imo-2024", "country-est", 42, 1), // wrong source for this type but tests filtering
+    ];
+
+    const result = calculateTeamRankFromTeamParticipations(
+      teamParticipations,
+      allCompetitions,
+      "country-est",
+      Source.BALTICWAY
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].year).toBe(2024);
+  });
+});
+
+describe("calculateTeamScoreOverTime", () => {
+  const competitions: Record<string, Competition> = {
+    "balticway-2022": createCompetition(Source.BALTICWAY, 2022, 20),
+    "balticway-2023": createCompetition(Source.BALTICWAY, 2023, 20),
+    "balticway-2024": createCompetition(Source.BALTICWAY, 2024, 20),
+  };
+
+  it("returns empty array for empty team participations", () => {
+    const result = calculateTeamScoreOverTime([], competitions, Source.BALTICWAY);
+    expect(result).toEqual([]);
+  });
+
+  it("returns score data sorted by year", () => {
+    const teamParticipations = [
+      createTeamParticipation("balticway-2024", "country-est", 90, 1),
+      createTeamParticipation("balticway-2022", "country-est", 80, 3),
+      createTeamParticipation("balticway-2023", "country-est", 85, 2),
+    ];
+
+    const result = calculateTeamScoreOverTime(teamParticipations, competitions, Source.BALTICWAY);
+
+    expect(result).toHaveLength(3);
+    expect(result[0].year).toBe(2022);
+    expect(result[0].total).toBe(80);
+    expect(result[0].rank).toBe(3);
+    expect(result[1].year).toBe(2023);
+    expect(result[1].total).toBe(85);
+    expect(result[2].year).toBe(2024);
+    expect(result[2].total).toBe(90);
+  });
+
+  it("filters by source", () => {
+    const allCompetitions: Record<string, Competition> = {
+      ...competitions,
+      "imo-2024": createCompetition(Source.IMO, 2024),
+    };
+
+    const teamParticipations = [
+      createTeamParticipation("balticway-2024", "country-est", 90, 1),
+      createTeamParticipation("imo-2024", "country-est", 42, 5),
+    ];
+
+    const result = calculateTeamScoreOverTime(
+      teamParticipations,
+      allCompetitions,
+      Source.BALTICWAY
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].total).toBe(90);
   });
 });

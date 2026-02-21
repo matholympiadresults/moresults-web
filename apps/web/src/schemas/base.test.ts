@@ -2,10 +2,12 @@ import { describe, it, expect } from "vitest";
 import {
   Source,
   Award,
+  isTeamCompetition,
   type Country,
   type Competition,
   type Person,
   type Participation,
+  type TeamParticipation,
   type Database,
 } from "./base";
 
@@ -38,9 +40,13 @@ describe("Source enum", () => {
     expect(Source.PAMO).toBe("PAMO");
   });
 
+  it("has BALTICWAY value", () => {
+    expect(Source.BALTICWAY).toBe("BALTICWAY");
+  });
+
   it("contains all expected sources", () => {
     const sources = Object.values(Source);
-    expect(sources).toHaveLength(7);
+    expect(sources).toHaveLength(8);
     expect(sources).toContain("IMO");
     expect(sources).toContain("EGMO");
     expect(sources).toContain("MEMO");
@@ -48,6 +54,7 @@ describe("Source enum", () => {
     expect(sources).toContain("APMO");
     expect(sources).toContain("BMO");
     expect(sources).toContain("PAMO");
+    expect(sources).toContain("BALTICWAY");
   });
 });
 
@@ -331,6 +338,7 @@ describe("Database interface", () => {
           source_contestant_id: null,
         },
       },
+      team_participations: {},
     };
 
     expect(database.version).toBe("1.0.0");
@@ -349,11 +357,99 @@ describe("Database interface", () => {
       competitions: {},
       people: {},
       participations: {},
+      team_participations: {},
     };
 
     expect(Object.keys(database.countries)).toHaveLength(0);
     expect(Object.keys(database.competitions)).toHaveLength(0);
     expect(Object.keys(database.people)).toHaveLength(0);
     expect(Object.keys(database.participations)).toHaveLength(0);
+    expect(Object.keys(database.team_participations)).toHaveLength(0);
+  });
+
+  it("accepts database with team participations", () => {
+    const database: Database = {
+      version: "1.0.0",
+      last_updated: "2024-01-15T12:00:00Z",
+      countries: {},
+      competitions: {},
+      people: {},
+      participations: {},
+      team_participations: {
+        "BALTICWAY-2024-country-est": {
+          id: "BALTICWAY-2024-country-est",
+          competition_id: "BALTICWAY-2024",
+          country_id: "country-est",
+          problem_scores: [5, 5, 4, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+          total: 97,
+          rank: 1,
+        },
+      },
+    };
+
+    expect(Object.keys(database.team_participations)).toHaveLength(1);
+  });
+});
+
+describe("isTeamCompetition", () => {
+  it("returns true for BALTICWAY", () => {
+    expect(isTeamCompetition(Source.BALTICWAY)).toBe(true);
+  });
+
+  it("returns false for individual competitions", () => {
+    expect(isTeamCompetition(Source.IMO)).toBe(false);
+    expect(isTeamCompetition(Source.EGMO)).toBe(false);
+    expect(isTeamCompetition(Source.MEMO)).toBe(false);
+    expect(isTeamCompetition(Source.RMM)).toBe(false);
+    expect(isTeamCompetition(Source.APMO)).toBe(false);
+    expect(isTeamCompetition(Source.BMO)).toBe(false);
+    expect(isTeamCompetition(Source.PAMO)).toBe(false);
+  });
+});
+
+describe("TeamParticipation interface", () => {
+  it("accepts valid team participation object", () => {
+    const tp: TeamParticipation = {
+      id: "BALTICWAY-2024-country-est",
+      competition_id: "BALTICWAY-2024",
+      country_id: "country-est",
+      problem_scores: [5, 5, 4, 3, 5],
+      total: 22,
+      rank: 1,
+    };
+
+    expect(tp.id).toBe("BALTICWAY-2024-country-est");
+    expect(tp.competition_id).toBe("BALTICWAY-2024");
+    expect(tp.country_id).toBe("country-est");
+    expect(tp.problem_scores).toHaveLength(5);
+    expect(tp.total).toBe(22);
+    expect(tp.rank).toBe(1);
+  });
+
+  it("accepts team participation with null rank", () => {
+    const tp: TeamParticipation = {
+      id: "BALTICWAY-2024-country-ltu",
+      competition_id: "BALTICWAY-2024",
+      country_id: "country-ltu",
+      problem_scores: [null, 3, 5, null, 2],
+      total: 10,
+      rank: null,
+    };
+
+    expect(tp.rank).toBeNull();
+    expect(tp.problem_scores).toContain(null);
+  });
+
+  it("id format follows convention", () => {
+    const tp: TeamParticipation = {
+      id: "BALTICWAY-2024-country-est",
+      competition_id: "BALTICWAY-2024",
+      country_id: "country-est",
+      problem_scores: [],
+      total: 0,
+      rank: null,
+    };
+
+    expect(tp.id).toBe(`${tp.competition_id}-${tp.country_id}`);
   });
 });

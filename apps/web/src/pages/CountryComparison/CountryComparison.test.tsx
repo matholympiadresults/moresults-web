@@ -35,6 +35,7 @@ beforeAll(() => {
 vi.mock("@/hooks/api", () => ({
   useCountries: vi.fn(),
   useParticipations: vi.fn(),
+  useTeamParticipations: vi.fn(),
   useCompetitions: vi.fn(),
 }));
 
@@ -52,10 +53,16 @@ vi.mock("recharts", () => ({
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-import { useCountries, useParticipations, useCompetitions } from "@/hooks/api";
+import {
+  useCountries,
+  useParticipations,
+  useTeamParticipations,
+  useCompetitions,
+} from "@/hooks/api";
 
 const mockUseCountries = vi.mocked(useCountries);
 const mockUseParticipations = vi.mocked(useParticipations);
+const mockUseTeamParticipations = vi.mocked(useTeamParticipations);
 const mockUseCompetitions = vi.mocked(useCompetitions);
 
 // Test data
@@ -216,6 +223,12 @@ describe("CountryComparison", () => {
     mockUseParticipations.mockReturnValue({
       data: testParticipations,
       participations: testParticipations,
+      loading: false,
+      error: null,
+    });
+    mockUseTeamParticipations.mockReturnValue({
+      data: [],
+      teamParticipations: [],
       loading: false,
       error: null,
     });

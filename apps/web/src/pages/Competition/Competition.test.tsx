@@ -16,6 +16,7 @@ import { Award, Source } from "@/schemas/base";
 vi.mock("@/hooks/api", () => ({
   useCompetition: vi.fn(),
   useParticipationsByCompetition: vi.fn(),
+  useTeamParticipationsByCompetition: vi.fn(),
   useCountries: vi.fn(),
   usePeople: vi.fn(),
 }));
@@ -38,12 +39,14 @@ vi.mock("recharts", () => ({
 import {
   useCompetition,
   useParticipationsByCompetition,
+  useTeamParticipationsByCompetition,
   useCountries,
   usePeople,
 } from "@/hooks/api";
 
 const mockUseCompetition = vi.mocked(useCompetition);
 const mockUseParticipationsByCompetition = vi.mocked(useParticipationsByCompetition);
+const mockUseTeamParticipationsByCompetition = vi.mocked(useTeamParticipationsByCompetition);
 const mockUseCountries = vi.mocked(useCountries);
 const mockUsePeople = vi.mocked(usePeople);
 
@@ -169,6 +172,13 @@ function setupMocks(overrides?: {
   mockUseParticipationsByCompetition.mockReturnValue({
     data: participations,
     participations,
+    loading: overrides?.loading ?? false,
+    error: overrides?.error ?? null,
+  });
+
+  mockUseTeamParticipationsByCompetition.mockReturnValue({
+    data: [],
+    teamParticipations: [],
     loading: overrides?.loading ?? false,
     error: overrides?.error ?? null,
   });

@@ -1,5 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
-import type { Database, Country, Competition, Person, Participation } from "@/schemas/base";
+import type {
+  Database,
+  Country,
+  Competition,
+  Person,
+  Participation,
+  TeamParticipation,
+} from "@/schemas/base";
 
 const DATA_URL = "/data/olympiad_data.json.gz";
 
@@ -89,6 +96,10 @@ export interface UsePersonResult extends UseQueryResult<Person> {
 
 export interface UseParticipationsResult extends UseListResult<Participation> {
   participations: Participation[];
+}
+
+export interface UseTeamParticipationsResult extends UseListResult<TeamParticipation> {
+  teamParticipations: TeamParticipation[];
 }
 
 export function useDatabase(): UseQueryResult<Database> {
@@ -182,4 +193,41 @@ export function useParticipationsByCountry(countryId: string): UseParticipations
     [data, countryId]
   );
   return { data: participations, participations, loading, error };
+}
+
+export function useTeamParticipations(): UseTeamParticipationsResult {
+  const { data, loading, error } = useDatabase();
+  const teamParticipations = useMemo(
+    () => (data?.team_participations ? Object.values(data.team_participations) : []),
+    [data]
+  );
+  return { data: teamParticipations, teamParticipations, loading, error };
+}
+
+export function useTeamParticipationsByCompetition(
+  competitionId: string
+): UseTeamParticipationsResult {
+  const { data, loading, error } = useDatabase();
+  const teamParticipations = useMemo(
+    () =>
+      data?.team_participations
+        ? Object.values(data.team_participations).filter(
+            (tp) => tp.competition_id === competitionId
+          )
+        : [],
+    [data, competitionId]
+  );
+  return { data: teamParticipations, teamParticipations, loading, error };
+}
+
+export function useTeamParticipationsByCountry(countryId: string): UseTeamParticipationsResult {
+  const { data, loading, error } = useDatabase();
+  const teamParticipations = useMemo(
+    () =>
+      data?.team_participations
+        ? Object.values(data.team_participations).filter((tp) => tp.country_id === countryId)
+        : [],
+    [data, countryId]
+  );
+  return { data: teamParticipations, teamParticipations, loading, error };
 }

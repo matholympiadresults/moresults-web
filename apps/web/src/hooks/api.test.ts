@@ -91,6 +91,7 @@ const mockDatabase: Database = {
       source_contestant_id: "12345",
     },
   },
+  team_participations: {},
 };
 
 // Mock DecompressionStream to pass data through unchanged

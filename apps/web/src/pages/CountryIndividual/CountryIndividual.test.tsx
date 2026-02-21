@@ -11,7 +11,9 @@ import { Award, Source } from "@/schemas/base";
 vi.mock("@/hooks/api", () => ({
   useCountry: vi.fn(),
   useParticipationsByCountry: vi.fn(),
+  useTeamParticipationsByCountry: vi.fn(),
   useParticipations: vi.fn(),
+  useTeamParticipations: vi.fn(),
   useCompetitions: vi.fn(),
   usePeople: vi.fn(),
 }));
@@ -38,14 +40,20 @@ vi.mock("recharts", () => ({
 import {
   useCountry,
   useParticipationsByCountry,
+  useTeamParticipationsByCountry,
   useParticipations,
+  useTeamParticipations,
   useCompetitions,
   usePeople,
 } from "@/hooks/api";
 
 const mockUseCountry = useCountry as ReturnType<typeof vi.fn>;
 const mockUseParticipationsByCountry = useParticipationsByCountry as ReturnType<typeof vi.fn>;
+const mockUseTeamParticipationsByCountry = useTeamParticipationsByCountry as ReturnType<
+  typeof vi.fn
+>;
 const mockUseParticipations = useParticipations as ReturnType<typeof vi.fn>;
+const mockUseTeamParticipations = useTeamParticipations as ReturnType<typeof vi.fn>;
 const mockUseCompetitions = useCompetitions as ReturnType<typeof vi.fn>;
 const mockUsePeople = usePeople as ReturnType<typeof vi.fn>;
 
@@ -139,6 +147,19 @@ const renderComponent = (code: string = "usa") => {
 describe("CountryIndividual", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default team participation mocks (empty)
+    mockUseTeamParticipationsByCountry.mockReturnValue({
+      data: [],
+      teamParticipations: [],
+      loading: false,
+      error: null,
+    });
+    mockUseTeamParticipations.mockReturnValue({
+      data: [],
+      teamParticipations: [],
+      loading: false,
+      error: null,
+    });
   });
 
   describe("loading state", () => {

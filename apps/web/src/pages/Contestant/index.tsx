@@ -28,14 +28,8 @@ import {
   Legend,
 } from "recharts";
 import { useParams, Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  createColumnHelper,
-  type SortingState,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import {
   usePerson,
   useParticipationsByPerson,
@@ -68,7 +62,6 @@ export function Contestant() {
   const { participations: allParticipations } = useParticipations();
   const { countries } = useCountries();
   const { competitions } = useCompetitions();
-  const [sorting, setSorting] = useState<SortingState>([{ id: "year", desc: true }]);
   const [minYear, setMinYear] = useState<number | string>("");
   const [maxYear, setMaxYear] = useState<number | string>("");
   const [sourceFilter, setSourceFilter] = useState<Source | null>(null);
@@ -192,17 +185,12 @@ export function Contestant() {
     ];
   }, [maxProblems]);
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: {
-      sorting,
-      columnVisibility: { source: false },
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "year", desc: true }],
+    enableFiltering: true,
+    tableOptions: { state: { columnVisibility: { source: false } } },
   });
 
   const handleMinYearChange = (value: number | string) => {

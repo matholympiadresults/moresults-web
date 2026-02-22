@@ -1,0 +1,63 @@
+import { useState } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  type SortingState,
+  type ColumnDef,
+  type TableOptions,
+  type PaginationState,
+} from "@tanstack/react-table";
+
+interface UseSortedTableOptions<T> {
+  data: T[];
+  columns: ColumnDef<T, any>[];
+  defaultSort?: SortingState;
+  enableFiltering?: boolean;
+  enablePagination?: boolean;
+  tableOptions?: Partial<TableOptions<T>>;
+}
+
+export function useSortedTable<T>({
+  data,
+  columns,
+  defaultSort,
+  enableFiltering,
+  enablePagination,
+  tableOptions,
+}: UseSortedTableOptions<T>) {
+  const [sorting, setSorting] = useState<SortingState>(defaultSort ?? []);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 50,
+  });
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      ...(enablePagination ? { pagination } : {}),
+      ...tableOptions?.state,
+    },
+    onSortingChange: setSorting,
+    ...(enablePagination
+      ? { onPaginationChange: setPagination, autoResetPageIndex: false }
+      : {}),
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    ...(enableFiltering ? { getFilteredRowModel: getFilteredRowModel() } : {}),
+    ...(enablePagination ? { getPaginationRowModel: getPaginationRowModel() } : {}),
+    ...tableOptions,
+    // Ensure state is merged, not overwritten by tableOptions
+    state: {
+      sorting,
+      ...(enablePagination ? { pagination } : {}),
+      ...tableOptions?.state,
+    },
+  } as TableOptions<T>);
+
+  return { table, sorting, setSorting };
+}

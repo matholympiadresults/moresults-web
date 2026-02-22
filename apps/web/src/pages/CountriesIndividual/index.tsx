@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Container,
   Title,
@@ -13,16 +13,8 @@ import {
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  createColumnHelper,
-  type SortingState,
-  type PaginationState,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import { useCountries, useParticipations } from "@/hooks/api";
 import { useTableSearch } from "@/hooks/useTableSearch";
 import { getTableBody, getSortingIcon } from "@/utils/table";
@@ -41,12 +33,6 @@ const PAGE_SIZE_OPTIONS = [
 export function CountriesIndividual() {
   const { countries, loading, error } = useCountries();
   const { participations } = useParticipations();
-  const [sorting, setSorting] = useState<SortingState>([{ id: "totalMedals", desc: true }]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 50,
-  });
-
   const rows: CountryRow[] = useMemo(
     () => buildCountryRows(countries, participations),
     [countries, participations]
@@ -103,17 +89,12 @@ export function CountriesIndividual() {
     [fuzzySearch]
   );
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: { sorting, pagination },
-    onSortingChange: setSorting,
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    autoResetPageIndex: false,
+    defaultSort: [{ id: "totalMedals", desc: true }],
+    enableFiltering: true,
+    enablePagination: true,
   });
 
   const handleSearch = createHandleSearch(table, "name");
@@ -180,7 +161,7 @@ export function CountriesIndividual() {
           <Select
             size="xs"
             data={PAGE_SIZE_OPTIONS}
-            value={String(pagination.pageSize)}
+            value={String(table.getState().pagination.pageSize)}
             onChange={(value) => {
               table.setPageSize(Number(value));
               table.setPageIndex(0);
@@ -190,7 +171,7 @@ export function CountriesIndividual() {
         </Group>
         <Pagination
           total={table.getPageCount()}
-          value={pagination.pageIndex + 1}
+          value={table.getState().pagination.pageIndex + 1}
           onChange={(page) => table.setPageIndex(page - 1)}
           size="sm"
         />

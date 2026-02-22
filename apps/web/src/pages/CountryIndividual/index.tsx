@@ -26,13 +26,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useParams, Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  createColumnHelper,
-  type SortingState,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import {
   useCountry,
   useParticipationsByCountry,
@@ -99,7 +94,6 @@ export function CountryIndividual() {
   const { teamParticipations: allTeamParticipations } = useTeamParticipations();
   const { competitions } = useCompetitions();
   const { people } = usePeople();
-  const [sorting, setSorting] = useState<SortingState>([{ id: "year", desc: true }]);
   const [teamRankMode, setTeamRankMode] = useState<"absolute" | "relative">("absolute");
   const [medalChartMode, setMedalChartMode] = useState<"yearly" | "cumulative">("yearly");
   const { colorScheme } = useMantineColorScheme();
@@ -282,24 +276,16 @@ export function CountryIndividual() {
     ];
   }, [maxProblems]);
 
-  const [teamSorting, setTeamSorting] = useState<SortingState>([{ id: "year", desc: true }]);
-
-  const teamTable = useReactTable({
+  const { table: teamTable } = useSortedTable({
     data: teamRows,
     columns: teamColumns,
-    state: { sorting: teamSorting },
-    onSortingChange: setTeamSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "year", desc: true }],
   });
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: { sorting },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "year", desc: true }],
   });
 
   if (!country && !loading) {

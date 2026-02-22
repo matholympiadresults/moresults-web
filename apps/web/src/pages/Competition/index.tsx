@@ -18,14 +18,8 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { IconSearch } from "@tabler/icons-react";
 import { useParams, Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  createColumnHelper,
-  type SortingState,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import {
   useCompetition,
   useParticipationsByCompetition,
@@ -89,8 +83,6 @@ export function Competition() {
   const { countries } = useCountries();
   const { people } = usePeople();
   const isTeam = competition ? isTeamCompetition(competition.source) : false;
-  const [sorting, setSorting] = useState<SortingState>([{ id: "rank", desc: false }]);
-  const [countrySorting, setCountrySorting] = useState<SortingState>([{ id: "rank", desc: false }]);
   const [activeTab, setActiveTab] = useState<string | null>("individual");
   const { colorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
@@ -199,15 +191,10 @@ export function Competition() {
     ];
   }, [numProblems]);
 
-  const [teamSorting, setTeamSorting] = useState<SortingState>([{ id: "rank", desc: false }]);
-
-  const teamTable = useReactTable({
+  const { table: teamTable } = useSortedTable({
     data: teamRows,
     columns: teamColumns,
-    state: { sorting: teamSorting },
-    onSortingChange: setTeamSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "rank", desc: false }],
   });
 
   const tooltipStyle = getTooltipStyle(isDark);
@@ -358,23 +345,17 @@ export function Competition() {
     ];
   }, [competition]);
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: { sorting },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "rank", desc: false }],
+    enableFiltering: true,
   });
 
-  const countryTable = useReactTable({
+  const { table: countryTable } = useSortedTable({
     data: countryRows,
     columns: countryColumns,
-    state: { sorting: countrySorting },
-    onSortingChange: setCountrySorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "rank", desc: false }],
   });
 
   const handleSearch = createHandleSearch(table, "personName");

@@ -681,7 +681,13 @@ describe("getSharedAvailableSources", () => {
       "country-b"
     );
 
-    const result = getSharedAvailableSources(stats1, stats2, sourceOptionsWithBW, teamStats1, teamStats2);
+    const result = getSharedAvailableSources(
+      stats1,
+      stats2,
+      sourceOptionsWithBW,
+      teamStats1,
+      teamStats2
+    );
 
     expect(result).toHaveLength(2);
     expect(result[0].value).toBe(Source.IMO);

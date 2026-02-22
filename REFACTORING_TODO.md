@@ -16,15 +16,18 @@ Tasks 1–4 are complete. Tasks 5–6 remain.
 Extract team/individual content into separate sub-components so parent pages become: data fetching + computation + `{isTeam ? <TeamContent .../> : <IndividualContent .../>}`.
 
 **Competition page (`pages/Competition/`):**
+
 - Create `TeamContent.tsx` — team score distribution chart + team results table (~60 lines JSX)
 - Create `IndividualContent.tsx` — individual score distribution chart + tabs with individual/country views (~180 lines JSX)
 - Props receive pre-computed data (tables, chart data, styles). All `useMemo` stays in parent.
 
 **CountryIndividual page (`pages/CountryIndividual/`):**
+
 - Create `TeamContent.tsx` — team stats cards + score-over-time chart + team results table
 - Create `IndividualContent.tsx` — medal stats cards + medal progression chart + individual results table
 
 **CountryComparison page (`pages/CountryComparison/`):**
+
 - Create `TeamSection.tsx` — team performance summary + team charts (score, rank)
 - Create `IndividualSection.tsx` — medal summary + individual charts (medals, avg score, total points, team rank)
 
@@ -47,6 +50,7 @@ Each chart goes from ~30 lines to ~5 lines. This is specific to CountryCompariso
 ## Verification
 
 After completing all tasks:
+
 1. `cd apps/web && npx vitest run` — all tests pass
 2. `npm run lint && npm run format:check` — clean
 3. Manual: open IMO competition page — no visual regression

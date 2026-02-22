@@ -44,9 +44,7 @@ export function useSortedTable<T>({
       ...tableOptions?.state,
     },
     onSortingChange: setSorting,
-    ...(enablePagination
-      ? { onPaginationChange: setPagination, autoResetPageIndex: false }
-      : {}),
+    ...(enablePagination ? { onPaginationChange: setPagination, autoResetPageIndex: false } : {}),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     ...(enableFiltering ? { getFilteredRowModel: getFilteredRowModel() } : {}),

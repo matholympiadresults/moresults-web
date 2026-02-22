@@ -59,9 +59,7 @@ export function createParticipation(overrides?: Partial<Participation>): Partici
   };
 }
 
-export function createTeamParticipation(
-  overrides?: Partial<TeamParticipation>
-): TeamParticipation {
+export function createTeamParticipation(overrides?: Partial<TeamParticipation>): TeamParticipation {
   return {
     id: "BALTICWAY-2023-country-usa",
     competition_id: "BALTICWAY-2023",

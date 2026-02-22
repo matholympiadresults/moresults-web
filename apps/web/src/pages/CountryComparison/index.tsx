@@ -732,7 +732,7 @@ export function CountryComparison() {
               </SimpleGrid>
             ) : (
               <Text c="dimmed" ta="center" py="xl">
-                No data available for {selectedSource}
+                No data available for {effectiveSource}
               </Text>
             )}
           </>

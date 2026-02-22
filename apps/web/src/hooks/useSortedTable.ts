@@ -38,11 +38,6 @@ export function useSortedTable<T>({
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      ...(enablePagination ? { pagination } : {}),
-      ...tableOptions?.state,
-    },
     onSortingChange: setSorting,
     ...(enablePagination ? { onPaginationChange: setPagination, autoResetPageIndex: false } : {}),
     getCoreRowModel: getCoreRowModel(),
@@ -50,7 +45,6 @@ export function useSortedTable<T>({
     ...(enableFiltering ? { getFilteredRowModel: getFilteredRowModel() } : {}),
     ...(enablePagination ? { getPaginationRowModel: getPaginationRowModel() } : {}),
     ...tableOptions,
-    // Ensure state is merged, not overwritten by tableOptions
     state: {
       sorting,
       ...(enablePagination ? { pagination } : {}),

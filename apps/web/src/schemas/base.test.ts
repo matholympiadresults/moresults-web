@@ -40,16 +40,21 @@ describe("Source enum", () => {
     expect(Source.PAMO).toBe("PAMO");
   });
 
+  it("has MEMO_TEAM value", () => {
+    expect(Source.MEMO_TEAM).toBe("MEMO_TEAM");
+  });
+
   it("has BALTICWAY value", () => {
     expect(Source.BALTICWAY).toBe("BALTICWAY");
   });
 
   it("contains all expected sources", () => {
     const sources = Object.values(Source);
-    expect(sources).toHaveLength(8);
+    expect(sources).toHaveLength(9);
     expect(sources).toContain("IMO");
     expect(sources).toContain("EGMO");
     expect(sources).toContain("MEMO");
+    expect(sources).toContain("MEMO_TEAM");
     expect(sources).toContain("RMM");
     expect(sources).toContain("APMO");
     expect(sources).toContain("BMO");
@@ -394,6 +399,10 @@ describe("Database interface", () => {
 describe("isTeamCompetition", () => {
   it("returns true for BALTICWAY", () => {
     expect(isTeamCompetition(Source.BALTICWAY)).toBe(true);
+  });
+
+  it("returns true for MEMO_TEAM", () => {
+    expect(isTeamCompetition(Source.MEMO_TEAM)).toBe(true);
   });
 
   it("returns false for individual competitions", () => {

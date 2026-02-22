@@ -288,6 +288,7 @@ export function getCountryAvailableSources(
     Source.IMO,
     Source.EGMO,
     Source.MEMO,
+    Source.MEMO_TEAM,
     Source.RMM,
     Source.APMO,
     Source.BMO,

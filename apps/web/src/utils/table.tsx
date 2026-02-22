@@ -14,6 +14,7 @@ export const sourceColors: Record<Source, string> = {
   [Source.IMO]: "light-dark(var(--mantine-color-blue-1), var(--mantine-color-blue-light))",
   [Source.EGMO]: "light-dark(var(--mantine-color-yellow-1), var(--mantine-color-yellow-light))",
   [Source.MEMO]: "light-dark(var(--mantine-color-green-1), var(--mantine-color-green-light))",
+  [Source.MEMO_TEAM]: "light-dark(var(--mantine-color-lime-1), var(--mantine-color-lime-light))",
   [Source.RMM]: "light-dark(var(--mantine-color-orange-1), var(--mantine-color-orange-light))",
   [Source.APMO]: "light-dark(var(--mantine-color-pink-1), var(--mantine-color-pink-light))",
   [Source.BMO]: "light-dark(var(--mantine-color-violet-1), var(--mantine-color-violet-light))",

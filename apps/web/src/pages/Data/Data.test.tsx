@@ -241,6 +241,7 @@ describe("Data", () => {
       expect(within(sourcesTable).getByText("IMO")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("EGMO")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("MEMO")).toBeInTheDocument();
+      expect(within(sourcesTable).getByText("MEMO Team")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("RMM")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("APMO")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("BMO")).toBeInTheDocument();

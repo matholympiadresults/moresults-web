@@ -7,6 +7,7 @@ export enum Source {
   IMO = "IMO",
   EGMO = "EGMO",
   MEMO = "MEMO",
+  MEMO_TEAM = "MEMO_TEAM",
   RMM = "RMM",
   APMO = "APMO",
   BMO = "BMO",
@@ -18,7 +19,7 @@ export enum Source {
  * Returns true if the given source is a team competition (no individual contestants).
  */
 export function isTeamCompetition(source: Source): boolean {
-  return source === Source.BALTICWAY;
+  return source === Source.BALTICWAY || source === Source.MEMO_TEAM;
 }
 
 export enum Award {

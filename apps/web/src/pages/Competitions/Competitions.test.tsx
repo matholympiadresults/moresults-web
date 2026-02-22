@@ -326,6 +326,9 @@ describe("Competitions", () => {
       // Check other source options are present
       expect(screen.getByText("EGMO", { selector: '[role="option"] span' })).toBeInTheDocument();
       expect(screen.getByText("MEMO", { selector: '[role="option"] span' })).toBeInTheDocument();
+      expect(
+        screen.getByText("MEMO Team", { selector: '[role="option"] span' })
+      ).toBeInTheDocument();
       expect(screen.getByText("RMM", { selector: '[role="option"] span' })).toBeInTheDocument();
       expect(screen.getByText("APMO", { selector: '[role="option"] span' })).toBeInTheDocument();
       expect(screen.getByText("BMO", { selector: '[role="option"] span' })).toBeInTheDocument();

@@ -115,6 +115,14 @@ export function Data() {
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
+                  <Table.Td fw={500}>MEMO Team</Table.Td>
+                  <Table.Td>
+                    <a href="https://www.memo-official.org/" target="_blank" rel="noopener noreferrer">
+                      memo-official.org
+                    </a>
+                  </Table.Td>
+                </Table.Tr>
+                <Table.Tr>
                   <Table.Td fw={500}>RMM</Table.Td>
                   <Table.Td>
                     <a href="https://rmms.lbi.ro/" target="_blank" rel="noopener noreferrer">

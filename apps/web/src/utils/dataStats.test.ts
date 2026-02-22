@@ -43,6 +43,7 @@ describe("countParticipationsBySource", () => {
     expect(result[Source.IMO]).toBe(0);
     expect(result[Source.EGMO]).toBe(0);
     expect(result[Source.MEMO]).toBe(0);
+    expect(result[Source.MEMO_TEAM]).toBe(0);
     expect(result[Source.RMM]).toBe(0);
     expect(result[Source.APMO]).toBe(0);
     expect(result[Source.BMO]).toBe(0);

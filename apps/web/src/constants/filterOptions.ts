@@ -13,6 +13,7 @@ export const SOURCE_OPTIONS: FilterOption<Source>[] = [
   { value: Source.IMO, label: "IMO" },
   { value: Source.EGMO, label: "EGMO" },
   { value: Source.MEMO, label: "MEMO" },
+  { value: Source.MEMO_TEAM, label: "MEMO Team" },
   { value: Source.RMM, label: "RMM" },
   { value: Source.APMO, label: "APMO" },
   { value: Source.BMO, label: "BMO" },

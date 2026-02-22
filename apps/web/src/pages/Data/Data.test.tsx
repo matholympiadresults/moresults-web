@@ -241,6 +241,7 @@ describe("Data", () => {
       expect(within(sourcesTable).getByText("IMO")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("EGMO")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("MEMO")).toBeInTheDocument();
+      expect(within(sourcesTable).getByText("MEMO Team")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("RMM")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("APMO")).toBeInTheDocument();
       expect(within(sourcesTable).getByText("BMO")).toBeInTheDocument();
@@ -258,10 +259,11 @@ describe("Data", () => {
         "href",
         "https://www.egmo.org/"
       );
-      expect(screen.getByRole("link", { name: "memo-official.org" })).toHaveAttribute(
-        "href",
-        "https://www.memo-official.org/"
-      );
+      const memoLinks = screen.getAllByRole("link", { name: "memo-official.org" });
+      expect(memoLinks).toHaveLength(2); // MEMO and MEMO Team
+      memoLinks.forEach((link) => {
+        expect(link).toHaveAttribute("href", "https://www.memo-official.org/");
+      });
     });
   });
 

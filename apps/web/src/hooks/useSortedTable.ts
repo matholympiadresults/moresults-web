@@ -13,6 +13,7 @@ import {
 
 interface UseSortedTableOptions<T> {
   data: T[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<T, any>[];
   defaultSort?: SortingState;
   enableFiltering?: boolean;

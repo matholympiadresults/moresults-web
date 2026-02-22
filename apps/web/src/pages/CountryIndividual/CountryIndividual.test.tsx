@@ -19,23 +19,10 @@ vi.mock("@/hooks/api", () => ({
 }));
 
 // Mock recharts to avoid rendering issues in tests
-vi.mock("recharts", () => ({
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="responsive-container">{children}</div>
-  ),
-  LineChart: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="line-chart">{children}</div>
-  ),
-  AreaChart: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="area-chart">{children}</div>
-  ),
-  Line: () => null,
-  Area: () => null,
-  XAxis: () => null,
-  YAxis: () => null,
-  CartesianGrid: () => null,
-  Tooltip: () => null,
-}));
+vi.mock("recharts", async () => {
+  const { rechartsComponentMocks } = await import("@/test/mocks/recharts");
+  return rechartsComponentMocks;
+});
 
 import {
   useCountry,

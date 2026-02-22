@@ -1,14 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Container, Title, Text, Table, Anchor, Group, Select, ScrollArea } from "@mantine/core";
 import { Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  createColumnHelper,
-  type SortingState,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import { useCompetitions } from "@/hooks/api";
 import { getTableBody, getSortingIcon, sourceColors } from "@/utils/table";
 import { ROUTES } from "@/constants/routes";
@@ -26,8 +20,6 @@ const columnHelper = createColumnHelper<CompetitionRow>();
 
 export function Competitions() {
   const { competitions, loading, error } = useCompetitions();
-  const [sorting, setSorting] = useState<SortingState>([{ id: "year", desc: true }]);
-
   const rows: CompetitionRow[] = useMemo(
     () =>
       competitions.map((comp) => ({
@@ -64,14 +56,11 @@ export function Competitions() {
     []
   );
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: { sorting },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    defaultSort: [{ id: "year", desc: true }],
+    enableFiltering: true,
   });
 
   return (

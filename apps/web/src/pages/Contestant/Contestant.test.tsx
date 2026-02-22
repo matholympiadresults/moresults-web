@@ -17,21 +17,10 @@ vi.mock("@/hooks/api", () => ({
 }));
 
 // Mock recharts to avoid rendering issues in tests
-vi.mock("recharts", () => ({
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="chart-container">{children}</div>
-  ),
-  ComposedChart: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="composed-chart">{children}</div>
-  ),
-  Bar: () => <div data-testid="chart-bar" />,
-  Line: () => <div data-testid="chart-line" />,
-  XAxis: () => null,
-  YAxis: () => null,
-  CartesianGrid: () => null,
-  Tooltip: () => null,
-  Legend: () => null,
-}));
+vi.mock("recharts", async () => {
+  const { rechartsComponentMocks } = await import("@/test/mocks/recharts");
+  return rechartsComponentMocks;
+});
 
 import {
   usePerson,
@@ -389,7 +378,7 @@ describe("Contestant", () => {
       setupMocks();
       renderContestant();
 
-      expect(screen.getByTestId("chart-container")).toBeInTheDocument();
+      expect(screen.getByTestId("responsive-container")).toBeInTheDocument();
     });
 
     it("renders chart source selector when chart data exists", () => {

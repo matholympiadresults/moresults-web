@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Container,
   Title,
@@ -15,16 +15,8 @@ import {
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  createColumnHelper,
-  type SortingState,
-  type PaginationState,
-} from "@tanstack/react-table";
+import { createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import { usePeople, useCountries } from "@/hooks/api";
 import { useTableSearch } from "@/hooks/useTableSearch";
 import { getTableBody, getSortingIcon } from "@/utils/table";
@@ -45,11 +37,7 @@ const DEFAULT_SORTING: SortingState = [{ id: "name", desc: false }];
 export function Contestants() {
   const { people, loading, error } = usePeople();
   const { countries } = useCountries();
-  const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 50,
-  });
+  // (sorting and pagination managed by useSortedTable)
 
   const countryMap = useMemo(
     () => Object.fromEntries(countries.map((c) => [c.id, c])),
@@ -113,17 +101,12 @@ export function Contestants() {
     [fuzzySearch]
   );
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: { sorting, pagination },
-    onSortingChange: setSorting,
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    autoResetPageIndex: false,
+    defaultSort: DEFAULT_SORTING,
+    enableFiltering: true,
+    enablePagination: true,
   });
 
   const handleSearch = createHandleSearch(table, "name");
@@ -200,7 +183,7 @@ export function Contestants() {
           <Select
             size="xs"
             data={PAGE_SIZE_OPTIONS}
-            value={String(pagination.pageSize)}
+            value={String(table.getState().pagination.pageSize)}
             onChange={(value) => {
               table.setPageSize(Number(value));
               table.setPageIndex(0);
@@ -210,7 +193,7 @@ export function Contestants() {
         </Group>
         <Pagination
           total={table.getPageCount()}
-          value={pagination.pageIndex + 1}
+          value={table.getState().pagination.pageIndex + 1}
           onChange={(page) => table.setPageIndex(page - 1)}
           size="sm"
         />

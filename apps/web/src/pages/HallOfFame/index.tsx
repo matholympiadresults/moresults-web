@@ -13,15 +13,8 @@ import {
   SimpleGrid,
 } from "@mantine/core";
 import { Link } from "react-router";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  createColumnHelper,
-  type SortingState,
-  type PaginationState,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useSortedTable } from "@/hooks/useSortedTable";
 import { usePeople, useParticipations, useCompetitions, useCountries } from "@/hooks/api";
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { getTableBody, getSortingIcon } from "@/utils/table";
@@ -45,11 +38,7 @@ export function HallOfFame() {
   const { countries } = useCountries();
   const [selectedSource, setSelectedSource] = useState<string>("all");
   const [selectedCountry, setSelectedCountry] = useState<string>("all");
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 50,
-  });
+  // (sorting and pagination managed by useSortedTable)
 
   const countryMap = useEntityMap(countries);
   const competitionMap = useEntityMap(competitions);
@@ -143,26 +132,20 @@ export function HallOfFame() {
     []
   );
 
-  const table = useReactTable({
+  const { table } = useSortedTable({
     data: rows,
     columns,
-    state: { sorting, pagination },
-    onSortingChange: setSorting,
-    onPaginationChange: setPagination,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    autoResetPageIndex: false,
+    enablePagination: true,
   });
 
   const handleSourceChange = (value: string | null) => {
     setSelectedSource(value ?? "all");
-    setPagination({ ...pagination, pageIndex: 0 });
+    table.setPageIndex(0);
   };
 
   const handleCountryChange = (value: string | null) => {
     setSelectedCountry(value ?? "all");
-    setPagination({ ...pagination, pageIndex: 0 });
+    table.setPageIndex(0);
   };
 
   return (
@@ -238,7 +221,7 @@ export function HallOfFame() {
           <Select
             size="xs"
             data={PAGE_SIZE_OPTIONS}
-            value={String(pagination.pageSize)}
+            value={String(table.getState().pagination.pageSize)}
             onChange={(value) => {
               table.setPageSize(Number(value));
               table.setPageIndex(0);
@@ -248,7 +231,7 @@ export function HallOfFame() {
         </Group>
         <Pagination
           total={table.getPageCount()}
-          value={pagination.pageIndex + 1}
+          value={table.getState().pagination.pageIndex + 1}
           onChange={(page) => table.setPageIndex(page - 1)}
           size="sm"
         />

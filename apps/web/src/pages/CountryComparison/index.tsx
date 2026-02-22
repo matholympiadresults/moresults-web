@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Container,
   Title,
@@ -8,7 +8,6 @@ import {
   Paper,
   Group,
   Stack,
-  Tabs,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useSearchParams } from "react-router";
@@ -31,13 +30,14 @@ import {
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { CountryFlag } from "@/utils/flags";
 import { getTooltipStyle, getAxisStyle } from "@/utils/chartStyles";
-import { Source, isTeamCompetition } from "@/schemas/base";
+import { useSourceSelection } from "@/hooks/useSourceSelection";
+import { SourceTabs } from "@/components/SourceTabs";
 import { SOURCE_OPTIONS } from "@/constants/filterOptions";
 import {
   calculateStats,
   filterStatsBySource,
   calculateTeamRanks,
-  getAvailableSources,
+  getSharedAvailableSources,
   calculateTeamStats,
   filterTeamStatsBySource,
   calculateTeamRanksFromTeamParticipations,
@@ -51,8 +51,6 @@ export function CountryComparison() {
   const { competitions } = useCompetitions();
   const { colorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
-
-  const [selectedSource, setSelectedSource] = useState<Source>(Source.IMO);
 
   const country1Code = searchParams.get("c1");
   const country2Code = searchParams.get("c2");
@@ -99,20 +97,14 @@ export function CountryComparison() {
   );
 
   // Get sources where both countries have participated (intersection)
-  const availableSources = useMemo(
-    () => getAvailableSources(stats1, stats2, SOURCE_OPTIONS, teamStats1, teamStats2),
+  const computedSources = useMemo(
+    () => getSharedAvailableSources(stats1, stats2, SOURCE_OPTIONS, teamStats1, teamStats2),
     [stats1, stats2, teamStats1, teamStats2]
   );
 
-  // If current selectedSource is not available, use first available
-  const effectiveSource = useMemo(() => {
-    if (availableSources.some((s) => s.value === selectedSource)) {
-      return selectedSource;
-    }
-    return availableSources[0]?.value ?? Source.IMO;
-  }, [availableSources, selectedSource]);
-
-  const isTeam = isTeamCompetition(effectiveSource);
+  const { effectiveSource, setSelectedSource, isTeam, availableSources } = useSourceSelection({
+    availableSources: computedSources,
+  });
 
   // Calculate stats filtered by selected source
   const filteredStats1 = useMemo(
@@ -294,19 +286,11 @@ export function CountryComparison() {
         (stats2 || teamStats2) &&
         availableSources.length > 0 && (
           <>
-            <Tabs
-              value={effectiveSource}
-              onChange={(value) => value && setSelectedSource(value as Source)}
-              mb="xl"
-            >
-              <Tabs.List>
-                {availableSources.map((opt) => (
-                  <Tabs.Tab key={opt.value} value={opt.value} fz="lg" py="sm">
-                    {opt.label}
-                  </Tabs.Tab>
-                ))}
-              </Tabs.List>
-            </Tabs>
+            <SourceTabs
+              availableSources={availableSources}
+              effectiveSource={effectiveSource}
+              onSourceChange={setSelectedSource}
+            />
 
             {isTeam ? (
               <>
@@ -748,7 +732,7 @@ export function CountryComparison() {
               </SimpleGrid>
             ) : (
               <Text c="dimmed" ta="center" py="xl">
-                No data available for {selectedSource}
+                No data available for {effectiveSource}
               </Text>
             )}
           </>

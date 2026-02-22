@@ -7,6 +7,14 @@ import type { Country, Competition, Participation, TeamParticipation } from "@/s
 import { Award, Source } from "@/schemas/base";
 import { createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
 
+function createEmptySourceCounts(): Record<Source, number> {
+  const counts = {} as Record<Source, number>;
+  for (const source of Object.values(Source)) {
+    counts[source] = 0;
+  }
+  return counts;
+}
+
 export interface CountryStats {
   participations: number;
   gold: number;
@@ -256,7 +264,7 @@ export function calculateMedalProgression(
 /**
  * Get which sources a country has participated in.
  */
-export function getAvailableSources(
+export function getCountryAvailableSources(
   participations: Participation[],
   competitionMap: Record<string, Competition>,
   teamParticipations?: TeamParticipation[]
@@ -359,4 +367,75 @@ export function calculateTeamScoreOverTime(
       };
     })
     .sort((a, b) => a.year - b.year);
+}
+
+export interface TeamYearStats {
+  totalScore: number;
+  rank: number | null;
+  source: Source;
+}
+
+export interface TeamCountryStats {
+  byYearAndSource: Map<string, TeamYearStats>;
+  bySource: Record<Source, number>;
+}
+
+export function calculateTeamStats(
+  teamParticipations: TeamParticipation[],
+  competitionMap: Record<string, Competition>,
+  countryId: string
+): TeamCountryStats {
+  const stats: TeamCountryStats = {
+    byYearAndSource: new Map(),
+    bySource: createEmptySourceCounts(),
+  };
+
+  teamParticipations
+    .filter((tp) => tp.country_id === countryId)
+    .forEach((tp) => {
+      const comp = competitionMap[tp.competition_id];
+      if (!comp) return;
+
+      stats.bySource[comp.source]++;
+      const key = `${comp.year}-${comp.source}`;
+      stats.byYearAndSource.set(key, {
+        totalScore: tp.total,
+        rank: tp.rank,
+        source: comp.source,
+      });
+    });
+
+  return stats;
+}
+
+export function filterTeamStatsBySource(
+  stats: TeamCountryStats | null,
+  source: Source
+): {
+  participations: number;
+  bestRank: number | null;
+  avgRank: number | null;
+  avgScore: number | null;
+} {
+  if (!stats) return { participations: 0, bestRank: null, avgRank: null, avgScore: null };
+
+  const entries: TeamYearStats[] = [];
+  stats.byYearAndSource.forEach((yearStats) => {
+    if (yearStats.source === source) entries.push(yearStats);
+  });
+
+  if (entries.length === 0)
+    return { participations: 0, bestRank: null, avgRank: null, avgScore: null };
+
+  const ranks = entries.map((e) => e.rank).filter((r): r is number => r !== null);
+  return {
+    participations: entries.length,
+    bestRank: ranks.length > 0 ? Math.min(...ranks) : null,
+    avgRank:
+      ranks.length > 0
+        ? Math.round((ranks.reduce((a, b) => a + b, 0) / ranks.length) * 10) / 10
+        : null,
+    avgScore:
+      Math.round((entries.reduce((a, e) => a + e.totalScore, 0) / entries.length) * 10) / 10,
+  };
 }

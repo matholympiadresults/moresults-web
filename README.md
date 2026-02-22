@@ -6,7 +6,7 @@ A high-performance web application providing a consolidated view of internationa
 
 ## About
 
-This project aggregates and displays results from major international mathematical olympiads including IMO, EGMO, APMO, RMM, MEMO, BMO, and PAMO. It provides:
+This project aggregates and displays results from major international mathematical olympiads including IMO, EGMO, APMO, RMM, MEMO, BMO, PAMO, and team competitions Baltic Way and MEMO Team. It provides:
 
 - **Contestant profiles** - View individual participation history and rankings
 - **Competition results** - Browse results by olympiad and year
@@ -16,7 +16,16 @@ This project aggregates and displays results from major international mathematic
 
 All data is mirrored from official olympiad websites.
 
-> **Note:** There is a private `moresults-data` repo that contains the data preparation code. If you need access, please contact us.
+## Updating Data
+
+The dataset is maintained in the [moresults-data](https://github.com/matholympiadresults/moresults-data) repository. To update:
+
+1. Get the latest `data/olympiad_results.json` from `moresults-data`
+2. Compress and copy it:
+   ```bash
+   gzip -c data/olympiad_results.json > apps/web/public/data/olympiad_data.json.gz
+   ```
+3. Commit and push
 
 ## Prerequisites
 

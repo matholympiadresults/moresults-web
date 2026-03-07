@@ -61,7 +61,8 @@ export function IndividualContent({
   const [teamRankMode, setTeamRankMode] = useState<"absolute" | "relative">("absolute");
   const [medalChartMode, setMedalChartMode] = useState<"yearly" | "cumulative">("yearly");
   const medalProgressionData = useMemo(
-    () => calculateMedalProgression(participations, competitionMap, effectiveSource, medalChartMode),
+    () =>
+      calculateMedalProgression(participations, competitionMap, effectiveSource, medalChartMode),
     [participations, competitionMap, effectiveSource, medalChartMode]
   );
   const tooltipStyle = getTooltipStyle(isDark);

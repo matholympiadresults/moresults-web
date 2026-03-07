@@ -38,3 +38,6 @@ ENV/
 # Node
 node_modules/
 .turbo/
+
+# Generated files
+apps/web/public/sitemap.xml

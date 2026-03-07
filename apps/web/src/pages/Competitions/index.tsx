@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { Container, Title, Text, Table, Anchor, Group, Select, ScrollArea } from "@mantine/core";
 import { Link } from "react-router";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -6,6 +7,7 @@ import { useSortedTable } from "@/hooks/useSortedTable";
 import { useCompetitions } from "@/hooks/api";
 import { getTableBody, getSortingIcon, sourceColors } from "@/utils/table";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle } from "@/constants/seo";
 import { Source } from "@/schemas/base";
 import { SOURCE_OPTIONS } from "@/constants/filterOptions";
 
@@ -65,6 +67,13 @@ export function Competitions() {
 
   return (
     <Container>
+      <Helmet>
+        <title>{pageTitle("All Competitions")}</title>
+        <meta
+          name="description"
+          content="Browse all international math olympiad competitions including IMO, EGMO, MEMO, RMM, APMO, BMO, PAMO, and Baltic Way."
+        />
+      </Helmet>
       <Title>Competitions</Title>
       <Text c="dimmed" mb="md">
         {table.getFilteredRowModel().rows.length} of {competitions.length} competitions

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Container,
   Title,
@@ -22,6 +23,7 @@ import { useTableSearch } from "@/hooks/useTableSearch";
 import { getTableBody, getSortingIcon } from "@/utils/table";
 import { CountryFlag } from "@/utils/flags";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle } from "@/constants/seo";
 import { aggregateContestants, type ContestantRow } from "./aggregation";
 
 const columnHelper = createColumnHelper<ContestantRow>();
@@ -113,6 +115,13 @@ export function Contestants() {
 
   return (
     <Container>
+      <Helmet>
+        <title>{pageTitle("All Contestants")}</title>
+        <meta
+          name="description"
+          content="Browse all math olympiad contestants and their participation history across IMO, EGMO, MEMO, RMM, APMO, and more."
+        />
+      </Helmet>
       <Title>Contestants</Title>
       <Text c="dimmed" mb="md">
         {table.getFilteredRowModel().rows.length === rows.length

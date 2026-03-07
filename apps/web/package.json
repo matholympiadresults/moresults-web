@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "webpack serve --mode development",
-    "build": "webpack --mode production",
+    "build": "node scripts/generate-sitemap.mjs && webpack --mode production",
+    "generate-sitemap": "node scripts/generate-sitemap.mjs",
     "start": "webpack serve --mode development",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
@@ -21,6 +22,7 @@
     "fuse.js": "^7.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-helmet-async": "^3.0.0",
     "react-is": "^19.2.3",
     "react-router": "^7.6.3",
     "recharts": "^3.6.0"

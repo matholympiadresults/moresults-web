@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Container, Title, Text, Badge, Group, Anchor, useMantineColorScheme } from "@mantine/core";
 import { useParams, Link } from "react-router";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -15,6 +16,7 @@ import { useTableSearch } from "@/hooks/useTableSearch";
 import { generateProblemColumns, type ProblemScoreRow } from "@/utils/table";
 import { CountryFlag } from "@/utils/flags";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle, SOURCE_FULL_NAMES } from "@/constants/seo";
 import { Award, isTeamCompetition } from "@/schemas/base";
 import { AWARD_COLORS } from "@/constants/filterOptions";
 import {
@@ -347,6 +349,13 @@ export function Competition() {
     <Container size={numProblems > 10 ? "xl" : undefined}>
       {competition && (
         <>
+          <Helmet>
+            <title>{pageTitle(`${competition.source} ${competition.year} Results`)}</title>
+            <meta
+              name="description"
+              content={`${SOURCE_FULL_NAMES[competition.source] ?? competition.source} ${competition.year} results - individual rankings, country standings, and score distributions.`}
+            />
+          </Helmet>
           <Title>
             {competition.source} {competition.year}
           </Title>

@@ -1,6 +1,8 @@
+import { Helmet } from "react-helmet-async";
 import { useDatabase } from "@/hooks/api";
 import { Award } from "@/schemas/base";
 import { calculateDataStats } from "@/utils/dataStats";
+import { pageTitle } from "@/constants/seo";
 import {
   Container,
   Title,
@@ -60,6 +62,13 @@ export function Data() {
 
   return (
     <Container size="lg">
+      <Helmet>
+        <title>{pageTitle("Data & Sources")}</title>
+        <meta
+          name="description"
+          content="About our data sources, methodology, and database statistics for Math Olympiad Results. Data mirrored from official olympiad websites."
+        />
+      </Helmet>
       <Stack gap="xl">
         <Stack gap="xs">
           <Title>Data</Title>

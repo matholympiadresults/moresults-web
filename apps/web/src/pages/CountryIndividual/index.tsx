@@ -18,7 +18,6 @@ import { CountryFlag } from "@/utils/flags";
 import {
   calculateMedalsBySource,
   calculateTeamRankOverTime,
-  calculateMedalProgression,
   getCountryAvailableSources,
   calculateTeamRankFromTeamParticipations,
   calculateTeamScoreOverTime,
@@ -117,12 +116,6 @@ export function CountryIndividual() {
     () =>
       isTeam ? calculateTeamScoreOverTime(teamParticipations, competitionMap, effectiveSource) : [],
     [isTeam, teamParticipations, competitionMap, effectiveSource]
-  );
-
-  // Calculate medal progression over time for the selected source
-  const medalProgressionData = useMemo(
-    () => calculateMedalProgression(participations, competitionMap, effectiveSource, "yearly"),
-    [participations, competitionMap, effectiveSource]
   );
 
   const rows: ParticipationRow[] = useMemo(
@@ -300,7 +293,8 @@ export function CountryIndividual() {
         <IndividualContent
           medals={stats.medals}
           teamRankData={teamRankData}
-          medalProgressionData={medalProgressionData}
+          participations={participations}
+          competitionMap={competitionMap}
           table={table}
           columnCount={columns.length}
           rowCount={rows.length}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Title,
   Text,
@@ -26,12 +26,15 @@ import { getTableBody, getTableHead } from "@/utils/table";
 import { getTooltipStyle, getAxisStyle, getTooltipContentStyle } from "@/utils/chartStyles";
 import { Award } from "@/schemas/base";
 import type { Source } from "@/schemas/base";
-import type { MedalCounts, TeamRankData, YearlyMedalData } from "@/utils/countryStats";
+import type { Participation, Competition } from "@/schemas/base";
+import { calculateMedalProgression } from "@/utils/countryStats";
+import type { MedalCounts, TeamRankData } from "@/utils/countryStats";
 
 interface IndividualContentProps {
   medals: MedalCounts;
   teamRankData: TeamRankData[];
-  medalProgressionData: YearlyMedalData[];
+  participations: Participation[];
+  competitionMap: Record<string, Competition>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   table: TanstackTable<any>;
   columnCount: number;
@@ -45,7 +48,8 @@ interface IndividualContentProps {
 export function IndividualContent({
   medals,
   teamRankData,
-  medalProgressionData,
+  participations,
+  competitionMap,
   table,
   columnCount,
   rowCount,
@@ -56,6 +60,10 @@ export function IndividualContent({
 }: IndividualContentProps) {
   const [teamRankMode, setTeamRankMode] = useState<"absolute" | "relative">("absolute");
   const [medalChartMode, setMedalChartMode] = useState<"yearly" | "cumulative">("yearly");
+  const medalProgressionData = useMemo(
+    () => calculateMedalProgression(participations, competitionMap, effectiveSource, medalChartMode),
+    [participations, competitionMap, effectiveSource, medalChartMode]
+  );
   const tooltipStyle = getTooltipStyle(isDark);
   const axisStyle = getAxisStyle(isDark);
 

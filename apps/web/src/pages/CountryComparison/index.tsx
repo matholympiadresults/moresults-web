@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Container,
   Title,
@@ -19,6 +20,7 @@ import { useEntityMap } from "@/hooks/useEntityMap";
 import { useSourceSelection } from "@/hooks/useSourceSelection";
 import { SourceTabs } from "@/components/SourceTabs";
 import { SOURCE_OPTIONS } from "@/constants/filterOptions";
+import { pageTitle } from "@/constants/seo";
 import {
   calculateStats,
   filterStatsBySource,
@@ -237,8 +239,21 @@ export function CountryComparison() {
     setSearchParams(params);
   };
 
+  const comparisonTitle =
+    country1 && country2
+      ? pageTitle(`${country1.name} vs ${country2.name}`)
+      : pageTitle("Compare Countries");
+  const comparisonDesc =
+    country1 && country2
+      ? `Compare ${country1.name} vs ${country2.name} math olympiad performance - medals, scores, and rankings.`
+      : "Compare math olympiad performance between two countries side by side.";
+
   return (
     <Container size="lg">
+      <Helmet>
+        <title>{comparisonTitle}</title>
+        <meta name="description" content={comparisonDesc} />
+      </Helmet>
       <Title>Compare Countries</Title>
       <Text c="dimmed" mb="lg">
         Compare olympiad performance between two countries

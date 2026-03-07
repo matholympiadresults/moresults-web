@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Container,
   Title,
@@ -21,6 +22,7 @@ import {
 import { isTeamCompetition } from "@/schemas/base";
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle, SOURCE_FULL_NAMES } from "@/constants/seo";
 import {
   calculateMean,
   calculateStdDev,
@@ -174,6 +176,13 @@ export function CompetitionStatistics() {
 
   return (
     <Container size={isCompact ? "xl" : "lg"}>
+      <Helmet>
+        <title>{pageTitle(`${competition.source} ${competition.year} Statistics`)}</title>
+        <meta
+          name="description"
+          content={`${SOURCE_FULL_NAMES[competition.source] ?? competition.source} ${competition.year} problem statistics - score distributions, difficulty analysis, and correlations.`}
+        />
+      </Helmet>
       <Title>
         {competition.source} {competition.year} - Statistics
       </Title>

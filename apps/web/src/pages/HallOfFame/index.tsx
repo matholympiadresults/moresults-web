@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Container,
   Title,
@@ -20,6 +21,7 @@ import { useEntityMap } from "@/hooks/useEntityMap";
 import { getTableBody, getSortingIcon } from "@/utils/table";
 import { CountryFlag } from "@/utils/flags";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle } from "@/constants/seo";
 import { SOURCE_OPTIONS_WITH_ALL } from "@/constants/filterOptions";
 import { aggregateHallOfFame, type HallOfFameRow } from "./aggregation";
 
@@ -150,6 +152,13 @@ export function HallOfFame() {
 
   return (
     <Container>
+      <Helmet>
+        <title>{pageTitle("Hall of Fame")}</title>
+        <meta
+          name="description"
+          content="Top math olympiad performers ranked by medals across IMO, EGMO, MEMO, RMM, APMO, and more international competitions."
+        />
+      </Helmet>
       <Title>Hall of Fame</Title>
       <Text c="dimmed" mb="md">
         Top contestants ranked by medals (gold, then silver, then bronze)

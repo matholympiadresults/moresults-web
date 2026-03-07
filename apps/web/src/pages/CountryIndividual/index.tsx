@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { Container, Title, Text, Badge, Group, Anchor, useMantineColorScheme } from "@mantine/core";
 import { useParams, Link } from "react-router";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -25,6 +26,7 @@ import {
   filterTeamStatsBySource,
 } from "@/utils/countryStats";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle } from "@/constants/seo";
 import { useSourceSelection } from "@/hooks/useSourceSelection";
 import { SourceTabs } from "@/components/SourceTabs";
 import { Award, Source } from "@/schemas/base";
@@ -263,6 +265,13 @@ export function CountryIndividual() {
     <Container>
       {country && (
         <>
+          <Helmet>
+            <title>{pageTitle(`${country.name} - Country Statistics`)}</title>
+            <meta
+              name="description"
+              content={`${country.name} math olympiad history - medal counts, contestant results, and performance over time across IMO, EGMO, APMO, and more.`}
+            />
+          </Helmet>
           <Group gap={12} mb="xs">
             <CountryFlag code={country.code} size="xl" />
             <Title>{country.name}</Title>

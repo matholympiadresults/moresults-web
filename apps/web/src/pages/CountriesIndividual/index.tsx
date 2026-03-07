@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Container,
   Title,
@@ -21,6 +22,7 @@ import { getTableBody, getSortingIcon } from "@/utils/table";
 import { CountryFlag } from "@/utils/flags";
 import { buildCountryRows, type CountryRow } from "@/utils/countryStats";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle } from "@/constants/seo";
 
 const columnHelper = createColumnHelper<CountryRow>();
 
@@ -101,6 +103,13 @@ export function CountriesIndividual() {
 
   return (
     <Container>
+      <Helmet>
+        <title>{pageTitle("Countries")}</title>
+        <meta
+          name="description"
+          content="Country rankings and medal counts across international math olympiads including IMO, EGMO, APMO, and more."
+        />
+      </Helmet>
       <Title>Countries (Individual)</Title>
       <Text c="dimmed" mb="md">
         {table.getFilteredRowModel().rows.length === countries.length

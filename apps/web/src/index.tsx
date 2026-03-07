@@ -1,6 +1,7 @@
 import { MantineProvider, createTheme } from "@mantine/core";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { HelmetProvider } from "react-helmet-async";
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
 import "@mantine/core/styles.css";
@@ -16,8 +17,10 @@ const theme = createTheme({
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
   <StrictMode>
-    <MantineProvider theme={theme}>
-      <RouterProvider router={router} />
-    </MantineProvider>
+    <HelmetProvider>
+      <MantineProvider theme={theme}>
+        <RouterProvider router={router} />
+      </MantineProvider>
+    </HelmetProvider>
   </StrictMode>
 );

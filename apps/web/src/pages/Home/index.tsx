@@ -1,4 +1,6 @@
+import { Helmet } from "react-helmet-async";
 import { ROUTES } from "@/constants/routes";
+import { SITE_NAME } from "@/constants/seo";
 import {
   Container,
   Title,
@@ -58,6 +60,13 @@ function QuickLink({ to, icon, title, description }: QuickLinkProps) {
 export function Home() {
   return (
     <Container size="lg">
+      <Helmet>
+        <title>{SITE_NAME} - IMO, EGMO, APMO & More</title>
+        <meta
+          name="description"
+          content="Explore consolidated results from international math olympiads including IMO, EGMO, MEMO, RMM, APMO, BMO, PAMO, and Baltic Way. Search contestants, competitions, and country statistics."
+        />
+      </Helmet>
       <Stack gap="xl">
         <Stack gap="xs">
           <Title>Explore Consolidated Math Olympiad Results</Title>

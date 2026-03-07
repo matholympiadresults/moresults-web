@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import {
   Container,
   Title,
@@ -42,6 +43,7 @@ import { getTableBody, getSortingIcon, sourceColors, generateProblemColumns } fr
 import { getTooltipStyle, getAxisStyle, getTooltipContentStyle } from "@/utils/chartStyles";
 import { CountryFlag } from "@/utils/flags";
 import { ROUTES } from "@/constants/routes";
+import { pageTitle } from "@/constants/seo";
 import { Award, Source } from "@/schemas/base";
 import { SOURCE_OPTIONS, AWARD_OPTIONS, AWARD_COLORS } from "@/constants/filterOptions";
 import {
@@ -225,6 +227,13 @@ export function Contestant() {
     <Container>
       {contestantInfo && (
         <>
+          <Helmet>
+            <title>{pageTitle(contestantInfo.name)}</title>
+            <meta
+              name="description"
+              content={`${contestantInfo.name} from ${contestantInfo.countryName} - math olympiad participation history, rankings, and results.`}
+            />
+          </Helmet>
           <Title>{contestantInfo.name}</Title>
           <Group gap={8} mb="md">
             <CountryFlag code={contestantInfo.countryCode} size="md" />

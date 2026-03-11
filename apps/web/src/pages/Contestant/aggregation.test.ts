@@ -640,6 +640,7 @@ describe("getContestantInfo", () => {
 
     expect(result).toEqual({
       name: "Alice Johnson",
+      countryId: "country-usa",
       countryCode: "USA",
       countryName: "United States",
     });
@@ -655,6 +656,7 @@ describe("getContestantInfo", () => {
 
     expect(result).toEqual({
       name: "Alice Johnson",
+      countryId: "country-unknown",
       countryCode: null,
       countryName: "country-unknown",
     });
@@ -670,6 +672,7 @@ describe("getContestantInfo", () => {
 
     expect(result).toEqual({
       name: "Alice Johnson",
+      countryId: "country-usa",
       countryCode: null,
       countryName: "country-usa",
     });

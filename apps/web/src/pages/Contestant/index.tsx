@@ -237,7 +237,17 @@ export function Contestant() {
           <Title>{contestantInfo.name}</Title>
           <Group gap={8} mb="md">
             <CountryFlag code={contestantInfo.countryCode} size="md" />
-            <Text c="dimmed">{contestantInfo.countryName}</Text>
+            {contestantInfo.countryId ? (
+              <Anchor
+                component={Link}
+                to={ROUTES.COUNTRY_INDIVIDUAL(contestantInfo.countryId.replace("country-", ""))}
+                c="dimmed"
+              >
+                {contestantInfo.countryName}
+              </Anchor>
+            ) : (
+              <Text c="dimmed">{contestantInfo.countryName}</Text>
+            )}
           </Group>
         </>
       )}

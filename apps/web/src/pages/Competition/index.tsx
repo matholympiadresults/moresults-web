@@ -216,12 +216,21 @@ export function Competition() {
       }),
       columnHelper.accessor("countryId", {
         header: "Country",
-        cell: (info) => (
-          <Group gap={6} wrap="nowrap">
-            <CountryFlag code={info.row.original.countryCode} />
-            {info.row.original.countryName}
-          </Group>
-        ),
+        cell: (info) => {
+          const countryId = info.row.original.countryId;
+          if (!countryId) return info.row.original.countryName;
+          return (
+            <Anchor
+              component={Link}
+              to={ROUTES.COUNTRY_INDIVIDUAL(countryId.replace("country-", ""))}
+            >
+              <Group gap={6} wrap="nowrap">
+                <CountryFlag code={info.row.original.countryCode} />
+                {info.row.original.countryName}
+              </Group>
+            </Anchor>
+          );
+        },
         filterFn: (row, columnId, filterValue: string[]) => {
           if (!filterValue || filterValue.length === 0) return true;
           return filterValue.includes(row.getValue(columnId));

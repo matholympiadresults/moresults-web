@@ -292,6 +292,24 @@ describe("Competition", () => {
       );
     });
 
+    it("displays country names as links to country pages", () => {
+      setupMocks();
+      renderCompetition();
+
+      expect(screen.getByRole("link", { name: /United States/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/usa"
+      );
+      expect(screen.getByRole("link", { name: /China/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/chn"
+      );
+      expect(screen.getByRole("link", { name: /United Kingdom/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/gbr"
+      );
+    });
+
     it("displays ranks correctly", () => {
       setupMocks();
       renderCompetition();
@@ -441,6 +459,24 @@ describe("Competition", () => {
       // Should display the country ID as fallback - may appear multiple times
       // (in table and possibly in filter options)
       expect(screen.getAllByText("country-unknown").length).toBeGreaterThan(0);
+    });
+
+    it("links unknown country to country page using the country ID", () => {
+      const participationsWithUnknownCountry: Participation[] = [
+        {
+          ...mockParticipations[0],
+          country_id: "country-unknown",
+        },
+      ];
+
+      setupMocks({ participations: participationsWithUnknownCountry });
+      renderCompetition();
+
+      // Even with an unknown country, the link should still be generated from the country ID
+      expect(screen.getByRole("link", { name: /country-unknown/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/unknown"
+      );
     });
 
     it("handles missing person gracefully", () => {

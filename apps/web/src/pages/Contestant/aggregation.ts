@@ -166,6 +166,7 @@ export interface ContestantInfoInput {
 
 export interface ContestantInfo {
   name: string;
+  countryId: string;
   countryCode: string | null;
   countryName: string;
 }
@@ -181,6 +182,7 @@ export function getContestantInfo({
 
   return {
     name: person.name,
+    countryId: person.country_id,
     countryCode: countryMap[person.country_id]?.code ?? null,
     countryName: countryMap[person.country_id]?.name ?? person.country_id,
   };

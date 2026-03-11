@@ -203,11 +203,12 @@ describe("Contestant", () => {
       expect(screen.getByRole("heading", { name: "Alice Johnson" })).toBeInTheDocument();
     });
 
-    it("renders the country name", () => {
+    it("renders the country name as a link to the country page", () => {
       setupMocks();
       renderContestant();
 
-      expect(screen.getByText("United States")).toBeInTheDocument();
+      const countryLink = screen.getByRole("link", { name: "United States" });
+      expect(countryLink).toHaveAttribute("href", "/countries/individual/usa");
     });
 
     it("renders Individual Ranking section title", () => {
@@ -471,7 +472,7 @@ describe("Contestant", () => {
   });
 
   describe("missing country handling", () => {
-    it("handles missing country gracefully", () => {
+    it("handles missing country gracefully and still links to country page", () => {
       const personWithUnknownCountry: Person = {
         ...mockPerson,
         country_id: "country-unknown",
@@ -480,7 +481,8 @@ describe("Contestant", () => {
       setupMocks({ person: personWithUnknownCountry });
       renderContestant();
 
-      expect(screen.getByText("country-unknown")).toBeInTheDocument();
+      const countryLink = screen.getByRole("link", { name: "country-unknown" });
+      expect(countryLink).toHaveAttribute("href", "/countries/individual/unknown");
     });
   });
 

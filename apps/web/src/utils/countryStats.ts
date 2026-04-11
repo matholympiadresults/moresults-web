@@ -177,6 +177,7 @@ export function calculateTeamRankOverTime(
     // Sum scores by country
     const countryTotals = new Map<string, number>();
     compParticipations.forEach((p) => {
+      if (!p.country_id) return;
       const current = countryTotals.get(p.country_id) ?? 0;
       countryTotals.set(p.country_id, current + p.total);
     });

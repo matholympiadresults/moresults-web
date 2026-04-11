@@ -75,6 +75,7 @@ describe("aggregateParticipations", () => {
     it("returns empty array when no participations", () => {
       const result = aggregateParticipations({
         participations: [],
+        allParticipations: [],
         competitionMap: competitions,
       });
 
@@ -94,8 +95,14 @@ describe("aggregateParticipations", () => {
         ),
       ];
 
+      const allParticipations = [
+        ...participations,
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.SILVER, 2, 38),
+      ];
+
       const result = aggregateParticipations({
         participations,
+        allParticipations,
         competitionMap: competitions,
       });
 
@@ -107,6 +114,7 @@ describe("aggregateParticipations", () => {
         source: Source.IMO,
         year: 2020,
         rank: 1,
+        totalParticipants: 2,
         problemScores: [7, 7, 7, 7, 7, 7],
         numProblems: 6,
         total: 42,
@@ -123,6 +131,7 @@ describe("aggregateParticipations", () => {
 
       const result = aggregateParticipations({
         participations,
+        allParticipations: participations,
         competitionMap: competitions,
       });
 
@@ -141,6 +150,7 @@ describe("aggregateParticipations", () => {
 
       const result = aggregateParticipations({
         participations,
+        allParticipations: participations,
         competitionMap: competitions,
       });
 
@@ -158,6 +168,7 @@ describe("aggregateParticipations", () => {
 
       const result = aggregateParticipations({
         participations,
+        allParticipations: participations,
         competitionMap: competitions,
       });
 
@@ -184,6 +195,7 @@ describe("aggregateParticipations", () => {
 
       const result = aggregateParticipations({
         participations,
+        allParticipations: participations,
         competitionMap: competitions,
       });
 
@@ -197,6 +209,7 @@ describe("aggregateParticipations", () => {
 
       const result = aggregateParticipations({
         participations,
+        allParticipations: participations,
         competitionMap: competitions,
       });
 
@@ -212,6 +225,7 @@ describe("aggregateParticipations", () => {
 
       const result = aggregateParticipations({
         participations,
+        allParticipations: participations,
         competitionMap: competitions,
       });
 
@@ -539,6 +553,7 @@ describe("getMaxProblems", () => {
         source: Source.IMO,
         year: 2020,
         rank: 1,
+        totalParticipants: 0,
         problemScores: [],
         numProblems: 6,
         total: 42,
@@ -551,6 +566,7 @@ describe("getMaxProblems", () => {
         source: Source.MEMO,
         year: 2019,
         rank: 1,
+        totalParticipants: 0,
         problemScores: [],
         numProblems: 8,
         total: 56,
@@ -571,6 +587,7 @@ describe("getMaxProblems", () => {
         source: Source.IMO,
         year: 2020,
         rank: 1,
+        totalParticipants: 0,
         problemScores: [],
         numProblems: 6,
         total: 42,
@@ -583,6 +600,7 @@ describe("getMaxProblems", () => {
         source: Source.MEMO,
         year: 2019,
         rank: 1,
+        totalParticipants: 0,
         problemScores: [],
         numProblems: 8,
         total: 56,
@@ -603,6 +621,7 @@ describe("getMaxProblems", () => {
         source: Source.IMO,
         year: 2020,
         rank: 1,
+        totalParticipants: 0,
         problemScores: [],
         numProblems: 6,
         total: 42,

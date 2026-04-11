@@ -42,6 +42,7 @@ import { useEntityMap } from "@/hooks/useEntityMap";
 import { getTableBody, getSortingIcon, sourceColors, generateProblemColumns } from "@/utils/table";
 import { getTooltipStyle, getAxisStyle, getTooltipContentStyle } from "@/utils/chartStyles";
 import { CountryFlag } from "@/utils/flags";
+import { RelativeRankCell } from "@/components/RelativeRankCell";
 import { ROUTES } from "@/constants/routes";
 import { pageTitle } from "@/constants/seo";
 import { Award, Source } from "@/schemas/base";
@@ -76,8 +77,13 @@ export function Contestant() {
   const competitionMap = useEntityMap(competitions);
 
   const rows: ParticipationRow[] = useMemo(
-    () => aggregateParticipations({ participations: personParticipations, competitionMap }),
-    [personParticipations, competitionMap]
+    () =>
+      aggregateParticipations({
+        participations: personParticipations,
+        allParticipations,
+        competitionMap,
+      }),
+    [personParticipations, allParticipations, competitionMap]
   );
 
   // Find max number of problems across filtered participations (based on source filter)
@@ -158,7 +164,12 @@ export function Contestant() {
       }),
       columnHelper.accessor("rank", {
         header: "Rank",
-        cell: (info) => info.getValue() ?? "-",
+        cell: (info) => (
+          <RelativeRankCell
+            rank={info.getValue()}
+            total={info.row.original.totalParticipants}
+          />
+        ),
         sortingFn: (rowA, rowB) => {
           const a = rowA.original.rank ?? 9999;
           const b = rowB.original.rank ?? 9999;

@@ -165,10 +165,7 @@ export function Contestant() {
       columnHelper.accessor("rank", {
         header: "Rank",
         cell: (info) => (
-          <RelativeRankCell
-            rank={info.getValue()}
-            total={info.row.original.totalParticipants}
-          />
+          <RelativeRankCell rank={info.getValue()} total={info.row.original.totalParticipants} />
         ),
         sortingFn: (rowA, rowB) => {
           const a = rowA.original.rank ?? 9999;

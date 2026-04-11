@@ -9,6 +9,7 @@ export interface ParticipationRow {
   source: Source;
   year: number;
   rank: number | null;
+  totalParticipants: number;
   problemScores: (number | null)[];
   numProblems: number;
   total: number;
@@ -28,6 +29,7 @@ export interface RankingChartDataPoint {
 
 export interface AggregateParticipationsInput {
   participations: Participation[];
+  allParticipations: Participation[];
   competitionMap: Record<string, Competition>;
 }
 
@@ -48,8 +50,14 @@ export interface GetPersonSourcesInput {
  */
 export function aggregateParticipations({
   participations,
+  allParticipations,
   competitionMap,
 }: AggregateParticipationsInput): ParticipationRow[] {
+  const participantCounts = new Map<string, number>();
+  for (const p of allParticipations) {
+    participantCounts.set(p.competition_id, (participantCounts.get(p.competition_id) ?? 0) + 1);
+  }
+
   return participations.map((p) => {
     const comp = competitionMap[p.competition_id];
     return {
@@ -59,6 +67,7 @@ export function aggregateParticipations({
       source: comp?.source ?? Source.IMO,
       year: comp?.year ?? 0,
       rank: p.rank,
+      totalParticipants: participantCounts.get(p.competition_id) ?? 0,
       problemScores: p.problem_scores,
       numProblems: comp?.num_problems ?? 0,
       total: p.total,

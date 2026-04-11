@@ -16,6 +16,7 @@ import {
 import { useEntityMap } from "@/hooks/useEntityMap";
 import { generateProblemColumns } from "@/utils/table";
 import { CountryFlag } from "@/utils/flags";
+import { RelativeRankCell } from "@/components/RelativeRankCell";
 import {
   calculateMedalsBySource,
   calculateTeamRankOverTime,
@@ -44,6 +45,7 @@ interface ParticipationRow {
   source: Source;
   year: number;
   rank: number | null;
+  totalParticipants: number;
   problemScores: (number | null)[];
   numProblems: number;
   total: number;
@@ -55,6 +57,7 @@ interface TeamParticipationRow extends ProblemScoreRow {
   competitionId: string;
   year: number;
   rank: number | null;
+  totalTeams: number;
   total: number;
 }
 
@@ -120,6 +123,22 @@ export function CountryIndividual() {
     [isTeam, teamParticipations, competitionMap, effectiveSource]
   );
 
+  const participantCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const p of allParticipations) {
+      counts.set(p.competition_id, (counts.get(p.competition_id) ?? 0) + 1);
+    }
+    return counts;
+  }, [allParticipations]);
+
+  const teamCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const tp of allTeamParticipations) {
+      counts.set(tp.competition_id, (counts.get(tp.competition_id) ?? 0) + 1);
+    }
+    return counts;
+  }, [allTeamParticipations]);
+
   const rows: ParticipationRow[] = useMemo(
     () =>
       participations
@@ -139,13 +158,14 @@ export function CountryIndividual() {
             source: comp?.source ?? Source.IMO,
             year: comp?.year ?? 0,
             rank: p.rank,
+            totalParticipants: participantCounts.get(p.competition_id) ?? 0,
             problemScores: p.problem_scores,
             numProblems: comp?.num_problems ?? 0,
             total: p.total,
             award: p.award,
           };
         }),
-    [participations, competitionMap, peopleMap, effectiveSource]
+    [participations, competitionMap, peopleMap, effectiveSource, participantCounts]
   );
 
   // Team competition rows
@@ -163,12 +183,13 @@ export function CountryIndividual() {
             competitionId: tp.competition_id,
             year: comp?.year ?? 0,
             rank: tp.rank,
+            totalTeams: teamCounts.get(tp.competition_id) ?? 0,
             problemScores: tp.problem_scores,
             numProblems: comp?.num_problems ?? 0,
             total: tp.total,
           };
         }),
-    [teamParticipations, competitionMap, effectiveSource]
+    [teamParticipations, competitionMap, effectiveSource, teamCounts]
   );
 
   // Find max number of problems across participations for the selected source
@@ -196,7 +217,9 @@ export function CountryIndividual() {
       }),
       columnHelper.accessor("rank", {
         header: "Rank",
-        cell: (info) => info.getValue() ?? "-",
+        cell: (info) => (
+          <RelativeRankCell rank={info.getValue()} total={info.row.original.totalParticipants} />
+        ),
         sortingFn: (rowA, rowB) => {
           const a = rowA.original.rank ?? 9999;
           const b = rowB.original.rank ?? 9999;
@@ -227,7 +250,9 @@ export function CountryIndividual() {
       }),
       teamColumnHelper.accessor("rank", {
         header: "Rank",
-        cell: (info) => info.getValue() ?? "-",
+        cell: (info) => (
+          <RelativeRankCell rank={info.getValue()} total={info.row.original.totalTeams} />
+        ),
         sortingFn: (rowA, rowB) => {
           const a = rowA.original.rank ?? 9999;
           const b = rowB.original.rank ?? 9999;

@@ -15,6 +15,7 @@ import { useEntityMap } from "@/hooks/useEntityMap";
 import { useTableSearch } from "@/hooks/useTableSearch";
 import { generateProblemColumns, type ProblemScoreRow } from "@/utils/table";
 import { CountryFlag } from "@/utils/flags";
+import { RelativeRankCell } from "@/components/RelativeRankCell";
 import { ROUTES } from "@/constants/routes";
 import { pageTitle, SOURCE_FULL_NAMES } from "@/constants/seo";
 import { Award, isTeamCompetition } from "@/schemas/base";
@@ -140,7 +141,7 @@ export function Competition() {
     return [
       teamColumnHelper.accessor("rank", {
         header: "Rank",
-        cell: (info) => info.getValue() ?? "-",
+        cell: (info) => <RelativeRankCell rank={info.getValue()} total={teamRows.length} />,
         sortingFn: (rowA, rowB) => {
           const a = rowA.original.rank ?? 9999;
           const b = rowB.original.rank ?? 9999;
@@ -169,7 +170,7 @@ export function Competition() {
         header: "Total",
       }),
     ];
-  }, [numProblems]);
+  }, [numProblems, teamRows.length]);
 
   const { table: teamTable } = useSortedTable({
     data: teamRows,
@@ -189,7 +190,7 @@ export function Competition() {
     return [
       columnHelper.accessor("rank", {
         header: "Rank",
-        cell: (info) => info.getValue() ?? "-",
+        cell: (info) => <RelativeRankCell rank={info.getValue()} total={rows.length} />,
         sortingFn: (rowA, rowB) => {
           const a = rowA.original.rank ?? 9999;
           const b = rowB.original.rank ?? 9999;
@@ -256,7 +257,7 @@ export function Competition() {
         },
       }),
     ];
-  }, [fuzzySearch, numProblems]);
+  }, [fuzzySearch, numProblems, rows.length]);
 
   const countryColumns = useMemo(() => {
     const numProblems = competition?.num_problems ?? 0;
@@ -273,7 +274,7 @@ export function Competition() {
     return [
       countryColumnHelper.accessor("rank", {
         header: "Rank",
-        cell: (info) => info.getValue(),
+        cell: (info) => <RelativeRankCell rank={info.getValue()} total={countryRows.length} />,
       }),
       countryColumnHelper.accessor("countryName", {
         header: "Country",
@@ -329,7 +330,7 @@ export function Competition() {
         },
       }),
     ];
-  }, [competition]);
+  }, [competition, countryRows.length]);
 
   const { table } = useSortedTable({
     data: rows,

@@ -61,6 +61,8 @@ describe("aggregateHallOfFame", () => {
     "person-2": createPerson("person-2", "Bob", "country-chn"),
     "person-3": createPerson("person-3", "Charlie", "country-usa"),
     "person-4": createPerson("person-4", "David", "country-rus"),
+    "person-5": createPerson("person-5", "Eve", "country-usa"),
+    "person-6": createPerson("person-6", "Frank", "country-chn"),
   };
 
   const competitions: Record<string, Competition> = {
@@ -286,6 +288,132 @@ describe("aggregateHallOfFame", () => {
       expect(result[0].rank).toBe(1);
       expect(result[1].rank).toBe(2);
       expect(result[2].rank).toBe(3);
+    });
+
+    it("assigns same rank to people with identical medal counts", () => {
+      const participations = [
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.SILVER),
+      ];
+
+      const result = aggregateHallOfFame({
+        participations,
+        competitionMap: competitions,
+        personMap: people,
+        countryMap: countries,
+        selectedSource: "all",
+        selectedCountry: "all",
+      });
+
+      // Alice and Bob both have 1 gold — they should be tied at rank 1
+      expect(result[0].rank).toBe(1);
+      expect(result[1].rank).toBe(1);
+      // Charlie has 1 silver — rank 3 (not 2), since two people share rank 1
+      expect(result[2].rank).toBe(3);
+    });
+
+    it("handles three-way tie (ranks: 1,1,1,4)", () => {
+      const participations = [
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-4", "country-rus", Award.SILVER),
+      ];
+
+      const result = aggregateHallOfFame({
+        participations,
+        competitionMap: competitions,
+        personMap: people,
+        countryMap: countries,
+        selectedSource: "all",
+        selectedCountry: "all",
+      });
+
+      expect(result.map((r) => r.rank)).toEqual([1, 1, 1, 4]);
+    });
+
+    it("handles four-way tie (ranks: 1,1,1,1,5)", () => {
+      const participations = [
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-4", "country-rus", Award.GOLD),
+        createParticipation("IMO-2020", "person-5", "country-usa", Award.SILVER),
+      ];
+
+      const result = aggregateHallOfFame({
+        participations,
+        competitionMap: competitions,
+        personMap: people,
+        countryMap: countries,
+        selectedSource: "all",
+        selectedCountry: "all",
+      });
+
+      expect(result.map((r) => r.rank)).toEqual([1, 1, 1, 1, 5]);
+    });
+
+    it("handles tie in the middle (ranks: 1,2,2,4)", () => {
+      const participations = [
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2021", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-4", "country-rus", Award.SILVER),
+      ];
+
+      const result = aggregateHallOfFame({
+        participations,
+        competitionMap: competitions,
+        personMap: people,
+        countryMap: countries,
+        selectedSource: "all",
+        selectedCountry: "all",
+      });
+
+      // Alice: 2 gold, Bob: 1 gold, Charlie: 1 gold, David: 1 silver
+      expect(result.map((r) => r.rank)).toEqual([1, 2, 2, 4]);
+    });
+
+    it("handles multiple tie groups (ranks: 1,1,3,3,3)", () => {
+      const participations = [
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.SILVER),
+        createParticipation("IMO-2020", "person-4", "country-rus", Award.SILVER),
+        createParticipation("IMO-2020", "person-5", "country-usa", Award.SILVER),
+      ];
+
+      const result = aggregateHallOfFame({
+        participations,
+        competitionMap: competitions,
+        personMap: people,
+        countryMap: countries,
+        selectedSource: "all",
+        selectedCountry: "all",
+      });
+
+      expect(result.map((r) => r.rank)).toEqual([1, 1, 3, 3, 3]);
+    });
+
+    it("handles all tied (ranks: 1,1,1)", () => {
+      const participations = [
+        createParticipation("IMO-2020", "person-1", "country-usa", Award.GOLD),
+        createParticipation("IMO-2020", "person-2", "country-chn", Award.GOLD),
+        createParticipation("IMO-2020", "person-3", "country-usa", Award.GOLD),
+      ];
+
+      const result = aggregateHallOfFame({
+        participations,
+        competitionMap: competitions,
+        personMap: people,
+        countryMap: countries,
+        selectedSource: "all",
+        selectedCountry: "all",
+      });
+
+      expect(result.map((r) => r.rank)).toEqual([1, 1, 1]);
     });
   });
 

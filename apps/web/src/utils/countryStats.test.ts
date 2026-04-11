@@ -312,6 +312,40 @@ describe("calculateTeamRankOverTime", () => {
     expect(result[0].year).toBe(2023);
     expect(result[1].year).toBe(2024);
   });
+
+  it("assigns same rank to countries with equal total scores", () => {
+    const participations = [
+      // USA team: total = 42
+      createParticipation("imo-2024", "country-usa", "person-1", 42),
+      // GBR team: total = 42 (tied with USA)
+      createParticipation("imo-2024", "country-gbr", "person-2", 42),
+      // CHN team: total = 30
+      createParticipation("imo-2024", "country-chn", "person-3", 30),
+    ];
+
+    const usaResult = calculateTeamRankOverTime(
+      participations,
+      competitions,
+      "country-usa",
+      Source.IMO
+    );
+    const gbrResult = calculateTeamRankOverTime(
+      participations,
+      competitions,
+      "country-gbr",
+      Source.IMO
+    );
+    const chnResult = calculateTeamRankOverTime(
+      participations,
+      competitions,
+      "country-chn",
+      Source.IMO
+    );
+
+    expect(usaResult[0].teamRank).toBe(1);
+    expect(gbrResult[0].teamRank).toBe(1);
+    expect(chnResult[0].teamRank).toBe(3);
+  });
 });
 
 describe("calculateMedalProgression", () => {

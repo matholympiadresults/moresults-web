@@ -1,5 +1,5 @@
 import type { Person, Participation, Competition, Country } from "@/schemas/base";
-import { createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
+import { assignRanks, createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
 
 export interface HallOfFameRow {
   rank: number;
@@ -100,10 +100,14 @@ export function aggregateHallOfFame({
     return b.hm - a.hm;
   });
 
-  // Assign ranks
-  result.forEach((row, index) => {
-    row.rank = index + 1;
-  });
+  // Assign ranks (tied entries get the same rank)
+  assignRanks(
+    result,
+    (a, b) => a.gold === b.gold && a.silver === b.silver && a.bronze === b.bronze && a.hm === b.hm,
+    (item, rank) => {
+      item.rank = rank;
+    }
+  );
 
   return result;
 }

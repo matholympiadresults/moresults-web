@@ -68,6 +68,28 @@ export function calculateCorrelation(x: number[], y: number[]): number {
 }
 
 /**
+ * Assign standard competition ranks (1224 ranking) to a pre-sorted array.
+ * Items at equal positions (determined by `areTied`) share the same rank,
+ * and the next distinct rank is offset by the number of tied items.
+ *
+ * The array must already be sorted in the desired ranking order.
+ * Mutates items in place via `setRank`.
+ */
+export function assignRanks<T>(
+  items: T[],
+  areTied: (a: T, b: T) => boolean,
+  setRank: (item: T, rank: number) => void
+): void {
+  let currentRank = 1;
+  items.forEach((item, index) => {
+    if (index > 0 && !areTied(items[index - 1], item)) {
+      currentRank = index + 1;
+    }
+    setRank(item, currentRank);
+  });
+}
+
+/**
  * Get a background color for a correlation value (for heatmaps).
  * Positive correlations are green, negative are red.
  */

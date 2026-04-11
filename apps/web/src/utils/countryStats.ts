@@ -69,6 +69,7 @@ export function calculateCountryStatsMap(
   const statsMap = new Map<string, CountryStats>();
 
   participations.forEach((p) => {
+    if (!p.country_id) return;
     const existing = statsMap.get(p.country_id) ?? {
       ...createEmptyAwardCounts(),
       participations: 0,

@@ -116,6 +116,19 @@ describe("calculateCountryStatsMap", () => {
     expect(result.get("country-gbr")?.gold).toBe(1);
     expect(result.get("country-chn")?.silver).toBe(1);
   });
+
+  it("skips participations without country_id", () => {
+    const participations = [
+      createParticipation("imo-2024", "country-usa", "person-1", 42, Award.GOLD),
+      createParticipation("imo-2024", "", "person-2", 35, Award.SILVER),
+    ];
+
+    const result = calculateCountryStatsMap(participations);
+
+    expect(result.size).toBe(1);
+    expect(result.has("")).toBe(false);
+    expect(result.get("country-usa")?.participations).toBe(1);
+  });
 });
 
 describe("buildCountryRows", () => {

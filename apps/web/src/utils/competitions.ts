@@ -99,7 +99,9 @@ export function calculateCountryStandings(
   assignRanks(
     result,
     (a, b) => a.totalScore === b.totalScore,
-    (item, rank) => { item.rank = rank; }
+    (item, rank) => {
+      item.rank = rank;
+    }
   );
 
   return result;

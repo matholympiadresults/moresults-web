@@ -140,7 +140,9 @@ export function calculateTeamRanks(
     assignRanks(
       sorted,
       (a, b) => a[1] === b[1],
-      (item, rank) => { ranks.set(item[0], rank); }
+      (item, rank) => {
+        ranks.set(item[0], rank);
+      }
     );
 
     ranksByYearSource.set(key, ranks);

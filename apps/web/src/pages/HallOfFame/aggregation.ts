@@ -103,9 +103,10 @@ export function aggregateHallOfFame({
   // Assign ranks (tied entries get the same rank)
   assignRanks(
     result,
-    (a, b) =>
-      a.gold === b.gold && a.silver === b.silver && a.bronze === b.bronze && a.hm === b.hm,
-    (item, rank) => { item.rank = rank; }
+    (a, b) => a.gold === b.gold && a.silver === b.silver && a.bronze === b.bronze && a.hm === b.hm,
+    (item, rank) => {
+      item.rank = rank;
+    }
   );
 
   return result;

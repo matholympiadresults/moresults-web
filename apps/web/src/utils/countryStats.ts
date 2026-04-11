@@ -187,7 +187,9 @@ export function calculateTeamRankOverTime(
     assignRanks(
       sorted,
       (a, b) => a[1] === b[1],
-      (item, rank) => { rankMap.set(item[0], rank); }
+      (item, rank) => {
+        rankMap.set(item[0], rank);
+      }
     );
 
     const totalTeams = sorted.length;
@@ -199,9 +201,7 @@ export function calculateTeamRankOverTime(
       totalTeams,
       // Percentile: 100% = best, 0% = worst (inverted so higher is better)
       percentile:
-        teamRank !== null
-          ? Math.round((1 - (teamRank - 1) / (totalTeams - 1 || 1)) * 100)
-          : null,
+        teamRank !== null ? Math.round((1 - (teamRank - 1) / (totalTeams - 1 || 1)) * 100) : null,
     });
   });
 

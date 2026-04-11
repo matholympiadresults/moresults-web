@@ -1,5 +1,6 @@
 import type { Competition, Participation, Country } from "@/schemas/base";
 import { Award } from "@/schemas/base";
+import { assignRanks } from "@/utils/statistics";
 
 export interface CountryStanding {
   countryId: string;
@@ -95,9 +96,11 @@ export function calculateCountryStandings(
   });
 
   result.sort((a, b) => b.totalScore - a.totalScore);
-  result.forEach((row, index) => {
-    row.rank = index + 1;
-  });
+  assignRanks(
+    result,
+    (a, b) => a.totalScore === b.totalScore,
+    (item, rank) => { item.rank = rank; }
+  );
 
   return result;
 }

@@ -38,6 +38,8 @@ const createCountryMap = (): Record<string, Country> => ({
   "country-gbr": { id: "country-gbr", code: "gbr", name: "United Kingdom" },
   "country-usa": { id: "country-usa", code: "usa", name: "United States" },
   "country-chn": { id: "country-chn", code: "chn", name: "China" },
+  "country-kor": { id: "country-kor", code: "kor", name: "South Korea" },
+  "country-jpn": { id: "country-jpn", code: "jpn", name: "Japan" },
 });
 
 describe("calculateCountryStandings", () => {
@@ -188,6 +190,97 @@ describe("calculateCountryStandings", () => {
     const result = calculateCountryStandings(participations, createCountryMap(), 6);
 
     expect(result[0].problemTotals).toEqual([7, 0, 7, 0, 0, 0]);
+  });
+
+  it("assigns same rank to countries with equal total scores", () => {
+    const participations = [
+      createParticipation({
+        person_id: "person-1",
+        country_id: "country-usa",
+        total: 42,
+      }),
+      createParticipation({
+        person_id: "person-2",
+        country_id: "country-chn",
+        total: 42,
+      }),
+      createParticipation({
+        person_id: "person-3",
+        country_id: "country-gbr",
+        total: 30,
+      }),
+    ];
+
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
+
+    expect(result).toHaveLength(3);
+    // USA and China both have 42 — they should be tied at rank 1
+    expect(result[0].rank).toBe(1);
+    expect(result[1].rank).toBe(1);
+    // GBR should be rank 3 (not 2), since two countries share rank 1
+    expect(result[2].rank).toBe(3);
+  });
+
+  it("handles three-way tie at rank 1 (ranks: 1,1,1,4)", () => {
+    const participations = [
+      createParticipation({ person_id: "p1", country_id: "country-usa", total: 42 }),
+      createParticipation({ person_id: "p2", country_id: "country-chn", total: 42 }),
+      createParticipation({ person_id: "p3", country_id: "country-gbr", total: 42 }),
+      createParticipation({ person_id: "p4", country_id: "country-kor", total: 30 }),
+    ];
+
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
+    expect(result.map((r) => r.rank)).toEqual([1, 1, 1, 4]);
+  });
+
+  it("handles four-way tie at rank 1 (ranks: 1,1,1,1,5)", () => {
+    const participations = [
+      createParticipation({ person_id: "p1", country_id: "country-usa", total: 42 }),
+      createParticipation({ person_id: "p2", country_id: "country-chn", total: 42 }),
+      createParticipation({ person_id: "p3", country_id: "country-gbr", total: 42 }),
+      createParticipation({ person_id: "p4", country_id: "country-kor", total: 42 }),
+      createParticipation({ person_id: "p5", country_id: "country-jpn", total: 30 }),
+    ];
+
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
+    expect(result.map((r) => r.rank)).toEqual([1, 1, 1, 1, 5]);
+  });
+
+  it("handles tie in the middle (ranks: 1,2,2,4)", () => {
+    const participations = [
+      createParticipation({ person_id: "p1", country_id: "country-usa", total: 42 }),
+      createParticipation({ person_id: "p2", country_id: "country-chn", total: 35 }),
+      createParticipation({ person_id: "p3", country_id: "country-gbr", total: 35 }),
+      createParticipation({ person_id: "p4", country_id: "country-kor", total: 30 }),
+    ];
+
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
+    expect(result.map((r) => r.rank)).toEqual([1, 2, 2, 4]);
+  });
+
+  it("handles multiple tie groups (ranks: 1,2,2,2,5)", () => {
+    // 1st alone, then three tied, then one alone
+    const participations = [
+      createParticipation({ person_id: "p1", country_id: "country-usa", total: 42 }),
+      createParticipation({ person_id: "p2", country_id: "country-chn", total: 35 }),
+      createParticipation({ person_id: "p3", country_id: "country-gbr", total: 35 }),
+      createParticipation({ person_id: "p4", country_id: "country-kor", total: 35 }),
+      createParticipation({ person_id: "p5", country_id: "country-jpn", total: 30 }),
+    ];
+
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
+    expect(result.map((r) => r.rank)).toEqual([1, 2, 2, 2, 5]);
+  });
+
+  it("handles all countries tied (ranks: 1,1,1)", () => {
+    const participations = [
+      createParticipation({ person_id: "p1", country_id: "country-usa", total: 42 }),
+      createParticipation({ person_id: "p2", country_id: "country-chn", total: 42 }),
+      createParticipation({ person_id: "p3", country_id: "country-gbr", total: 42 }),
+    ];
+
+    const result = calculateCountryStandings(participations, createCountryMap(), 6);
+    expect(result.map((r) => r.rank)).toEqual([1, 1, 1]);
   });
 
   it("uses country ID as name when country not in map", () => {

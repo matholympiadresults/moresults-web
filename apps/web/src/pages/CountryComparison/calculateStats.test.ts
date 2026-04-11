@@ -471,6 +471,43 @@ describe("calculateTeamRanks", () => {
 
     expect(ranks.size).toBe(0);
   });
+
+  it("assigns same rank to countries with equal total scores", () => {
+    const competitions: Record<string, Competition> = {
+      "IMO-2023": createCompetition({ id: "IMO-2023", source: Source.IMO, year: 2023 }),
+    };
+
+    const participations: Participation[] = [
+      // Country A: total = 42
+      createParticipation({
+        competition_id: "IMO-2023",
+        country_id: "country-a",
+        person_id: "person-1",
+        total: 42,
+      }),
+      // Country B: total = 42 (tied with A)
+      createParticipation({
+        competition_id: "IMO-2023",
+        country_id: "country-b",
+        person_id: "person-2",
+        total: 42,
+      }),
+      // Country C: total = 30
+      createParticipation({
+        competition_id: "IMO-2023",
+        country_id: "country-c",
+        person_id: "person-3",
+        total: 30,
+      }),
+    ];
+
+    const ranks = calculateTeamRanks(participations, competitions);
+    const imo2023Ranks = ranks.get("2023-IMO")!;
+
+    expect(imo2023Ranks.get("country-a")).toBe(1);
+    expect(imo2023Ranks.get("country-b")).toBe(1);
+    expect(imo2023Ranks.get("country-c")).toBe(3);
+  });
 });
 
 describe("getSharedAvailableSources", () => {

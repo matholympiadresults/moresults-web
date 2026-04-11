@@ -4,7 +4,7 @@ import {
   type Competition,
   type TeamParticipation,
 } from "@/schemas/base";
-import { createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
+import { assignRanks, createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
 
 // Re-export team stats from shared module
 export {
@@ -137,9 +137,11 @@ export function calculateTeamRanks(
     // Sort and assign ranks
     const sorted = Array.from(countryTotals.entries()).sort((a, b) => b[1] - a[1]);
     const ranks = new Map<string, number>();
-    sorted.forEach(([countryId], index) => {
-      ranks.set(countryId, index + 1);
-    });
+    assignRanks(
+      sorted,
+      (a, b) => a[1] === b[1],
+      (item, rank) => { ranks.set(item[0], rank); }
+    );
 
     ranksByYearSource.set(key, ranks);
   });

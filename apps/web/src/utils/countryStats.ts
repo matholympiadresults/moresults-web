@@ -5,7 +5,7 @@
 
 import type { Country, Competition, Participation, TeamParticipation } from "@/schemas/base";
 import { Award, Source } from "@/schemas/base";
-import { createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
+import { assignRanks, createEmptyAwardCounts, incrementAwardCounts } from "@/utils/statistics";
 
 function createEmptySourceCounts(): Record<Source, number> {
   const counts = {} as Record<Source, number>;
@@ -181,19 +181,26 @@ export function calculateTeamRankOverTime(
       countryTotals.set(p.country_id, current + p.total);
     });
 
-    // Sort and find this country's rank
+    // Sort and assign ranks with tie handling
     const sorted = Array.from(countryTotals.entries()).sort((a, b) => b[1] - a[1]);
-    const thisCountryIndex = sorted.findIndex(([cId]) => cId === countryId);
+    const rankMap = new Map<string, number>();
+    assignRanks(
+      sorted,
+      (a, b) => a[1] === b[1],
+      (item, rank) => { rankMap.set(item[0], rank); }
+    );
+
     const totalTeams = sorted.length;
+    const teamRank = rankMap.get(countryId) ?? null;
 
     data.push({
       year,
-      teamRank: thisCountryIndex >= 0 ? thisCountryIndex + 1 : null,
+      teamRank,
       totalTeams,
       // Percentile: 100% = best, 0% = worst (inverted so higher is better)
       percentile:
-        thisCountryIndex >= 0
-          ? Math.round((1 - thisCountryIndex / (totalTeams - 1 || 1)) * 100)
+        teamRank !== null
+          ? Math.round((1 - (teamRank - 1) / (totalTeams - 1 || 1)) * 100)
           : null,
     });
   });

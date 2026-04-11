@@ -152,7 +152,9 @@ describe("assignRanks", () => {
     assignRanks(
       items,
       (a, b) => a.score === b.score,
-      (item, rank) => { item.rank = rank; }
+      (item, rank) => {
+        item.rank = rank;
+      }
     );
     return items.map((i) => i.rank);
   };
@@ -166,27 +168,39 @@ describe("assignRanks", () => {
   });
 
   it("assigns sequential ranks when no ties", () => {
-    const items = [{ score: 42, rank: 0 }, { score: 35, rank: 0 }, { score: 30, rank: 0 }];
+    const items = [
+      { score: 42, rank: 0 },
+      { score: 35, rank: 0 },
+      { score: 30, rank: 0 },
+    ];
     expect(rankByScore(items)).toEqual([1, 2, 3]);
   });
 
   it("handles two-way tie at top (1,1,3)", () => {
-    const items = [{ score: 42, rank: 0 }, { score: 42, rank: 0 }, { score: 30, rank: 0 }];
+    const items = [
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 30, rank: 0 },
+    ];
     expect(rankByScore(items)).toEqual([1, 1, 3]);
   });
 
   it("handles three-way tie at top (1,1,1,4)", () => {
     const items = [
-      { score: 42, rank: 0 }, { score: 42, rank: 0 },
-      { score: 42, rank: 0 }, { score: 30, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 30, rank: 0 },
     ];
     expect(rankByScore(items)).toEqual([1, 1, 1, 4]);
   });
 
   it("handles four-way tie at top (1,1,1,1,5)", () => {
     const items = [
-      { score: 42, rank: 0 }, { score: 42, rank: 0 },
-      { score: 42, rank: 0 }, { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
       { score: 30, rank: 0 },
     ];
     expect(rankByScore(items)).toEqual([1, 1, 1, 1, 5]);
@@ -194,35 +208,51 @@ describe("assignRanks", () => {
 
   it("handles tie in the middle (1,2,2,4)", () => {
     const items = [
-      { score: 42, rank: 0 }, { score: 35, rank: 0 },
-      { score: 35, rank: 0 }, { score: 30, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 35, rank: 0 },
+      { score: 35, rank: 0 },
+      { score: 30, rank: 0 },
     ];
     expect(rankByScore(items)).toEqual([1, 2, 2, 4]);
   });
 
   it("handles tie at the end (1,2,2)", () => {
-    const items = [{ score: 42, rank: 0 }, { score: 35, rank: 0 }, { score: 35, rank: 0 }];
+    const items = [
+      { score: 42, rank: 0 },
+      { score: 35, rank: 0 },
+      { score: 35, rank: 0 },
+    ];
     expect(rankByScore(items)).toEqual([1, 2, 2]);
   });
 
   it("handles multiple tie groups (1,1,3,3,3)", () => {
     const items = [
-      { score: 42, rank: 0 }, { score: 42, rank: 0 },
-      { score: 35, rank: 0 }, { score: 35, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 35, rank: 0 },
+      { score: 35, rank: 0 },
       { score: 35, rank: 0 },
     ];
     expect(rankByScore(items)).toEqual([1, 1, 3, 3, 3]);
   });
 
   it("handles all tied (1,1,1)", () => {
-    const items = [{ score: 42, rank: 0 }, { score: 42, rank: 0 }, { score: 42, rank: 0 }];
+    const items = [
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+    ];
     expect(rankByScore(items)).toEqual([1, 1, 1]);
   });
 
   it("handles alternating ties and singles (1,2,2,4,5,5,7)", () => {
     const items = [
-      { score: 50, rank: 0 }, { score: 42, rank: 0 }, { score: 42, rank: 0 },
-      { score: 35, rank: 0 }, { score: 30, rank: 0 }, { score: 30, rank: 0 },
+      { score: 50, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 42, rank: 0 },
+      { score: 35, rank: 0 },
+      { score: 30, rank: 0 },
+      { score: 30, rank: 0 },
       { score: 20, rank: 0 },
     ];
     expect(rankByScore(items)).toEqual([1, 2, 2, 4, 5, 5, 7]);

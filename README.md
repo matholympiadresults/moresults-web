@@ -42,7 +42,11 @@ yarn install
 yarn dev
 ```
 
-The app will be available at `http://localhost:3001`.
+The app will be available at `http://localhost:3001`. Set `DEV_SERVER_PORT` to use a different port:
+
+```bash
+DEV_SERVER_PORT=4000 yarn dev
+```
 
 ## Scripts
 

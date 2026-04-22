@@ -18,6 +18,7 @@ export const sourceColors: Record<Source, string> = {
   [Source.RMM]: "light-dark(var(--mantine-color-orange-1), var(--mantine-color-orange-light))",
   [Source.APMO]: "light-dark(var(--mantine-color-pink-1), var(--mantine-color-pink-light))",
   [Source.BMO]: "light-dark(var(--mantine-color-violet-1), var(--mantine-color-violet-light))",
+  [Source.JBMO]: "light-dark(var(--mantine-color-grape-1), var(--mantine-color-grape-light))",
   [Source.PAMO]: "light-dark(var(--mantine-color-teal-1), var(--mantine-color-teal-light))",
   [Source.BALTICWAY]: "light-dark(var(--mantine-color-cyan-1), var(--mantine-color-cyan-light))",
 };

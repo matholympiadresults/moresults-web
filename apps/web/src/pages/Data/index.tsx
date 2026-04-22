@@ -154,6 +154,12 @@ export function Data() {
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
+                  <Table.Td fw={500}>JBMO</Table.Td>
+                  <Table.Td c="dimmed">
+                    No single website (hosted on different sites each year)
+                  </Table.Td>
+                </Table.Tr>
+                <Table.Tr>
                   <Table.Td fw={500}>PAMO</Table.Td>
                   <Table.Td>
                     <a href="https://www.pamoofficial.org/" target="_blank" rel="noopener noreferrer">

@@ -64,7 +64,7 @@ export function Home() {
         <title>{SITE_NAME} - IMO, EGMO, APMO & More</title>
         <meta
           name="description"
-          content="Explore consolidated results from international math olympiads including IMO, EGMO, MEMO, RMM, APMO, BMO, PAMO, and Baltic Way. Search contestants, competitions, and country statistics."
+          content="Explore consolidated results from international math olympiads including IMO, EGMO, MEMO, RMM, APMO, BMO, JBMO, PAMO, and Baltic Way. Search contestants, competitions, and country statistics."
         />
       </Helmet>
       <Stack gap="xl">

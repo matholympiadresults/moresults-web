@@ -9,6 +9,7 @@ export const SOURCE_FULL_NAMES: Record<string, string> = {
   RMM: "Romanian Masters of Mathematics",
   APMO: "Asian Pacific Mathematics Olympiad",
   BMO: "Balkan Mathematical Olympiad",
+  JBMO: "Junior Balkan Mathematical Olympiad",
   PAMO: "Pan African Mathematical Olympiad",
   BALTICWAY: "Baltic Way",
 };

@@ -11,6 +11,7 @@ export enum Source {
   RMM = "RMM",
   APMO = "APMO",
   BMO = "BMO",
+  JBMO = "JBMO",
   PAMO = "PAMO",
   BALTICWAY = "BALTICWAY",
 }

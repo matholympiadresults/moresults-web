@@ -71,7 +71,7 @@ export function Competitions() {
         <title>{pageTitle("All Competitions")}</title>
         <meta
           name="description"
-          content="Browse all international math olympiad competitions including IMO, EGMO, MEMO, RMM, APMO, BMO, PAMO, and Baltic Way."
+          content="Browse all international math olympiad competitions including IMO, EGMO, MEMO, RMM, APMO, BMO, JBMO, PAMO, and Baltic Way."
         />
       </Helmet>
       <Title>Competitions</Title>

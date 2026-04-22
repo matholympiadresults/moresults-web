@@ -47,6 +47,7 @@ describe("countParticipationsBySource", () => {
     expect(result[Source.RMM]).toBe(0);
     expect(result[Source.APMO]).toBe(0);
     expect(result[Source.BMO]).toBe(0);
+    expect(result[Source.JBMO]).toBe(0);
     expect(result[Source.PAMO]).toBe(0);
     expect(result[Source.BALTICWAY]).toBe(0);
   });

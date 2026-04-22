@@ -36,6 +36,10 @@ describe("Source enum", () => {
     expect(Source.BMO).toBe("BMO");
   });
 
+  it("has JBMO value", () => {
+    expect(Source.JBMO).toBe("JBMO");
+  });
+
   it("has PAMO value", () => {
     expect(Source.PAMO).toBe("PAMO");
   });
@@ -50,7 +54,7 @@ describe("Source enum", () => {
 
   it("contains all expected sources", () => {
     const sources = Object.values(Source);
-    expect(sources).toHaveLength(9);
+    expect(sources).toHaveLength(10);
     expect(sources).toContain("IMO");
     expect(sources).toContain("EGMO");
     expect(sources).toContain("MEMO");
@@ -58,6 +62,7 @@ describe("Source enum", () => {
     expect(sources).toContain("RMM");
     expect(sources).toContain("APMO");
     expect(sources).toContain("BMO");
+    expect(sources).toContain("JBMO");
     expect(sources).toContain("PAMO");
     expect(sources).toContain("BALTICWAY");
   });
@@ -412,6 +417,7 @@ describe("isTeamCompetition", () => {
     expect(isTeamCompetition(Source.RMM)).toBe(false);
     expect(isTeamCompetition(Source.APMO)).toBe(false);
     expect(isTeamCompetition(Source.BMO)).toBe(false);
+    expect(isTeamCompetition(Source.JBMO)).toBe(false);
     expect(isTeamCompetition(Source.PAMO)).toBe(false);
   });
 });

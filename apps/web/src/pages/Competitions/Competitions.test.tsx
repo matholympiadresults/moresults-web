@@ -332,6 +332,7 @@ describe("Competitions", () => {
       expect(screen.getByText("RMM", { selector: '[role="option"] span' })).toBeInTheDocument();
       expect(screen.getByText("APMO", { selector: '[role="option"] span' })).toBeInTheDocument();
       expect(screen.getByText("BMO", { selector: '[role="option"] span' })).toBeInTheDocument();
+      expect(screen.getByText("JBMO", { selector: '[role="option"] span' })).toBeInTheDocument();
       expect(screen.getByText("PAMO", { selector: '[role="option"] span' })).toBeInTheDocument();
     });
   });

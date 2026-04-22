@@ -301,6 +301,7 @@ export function getCountryAvailableSources(
     Source.RMM,
     Source.APMO,
     Source.BMO,
+    Source.JBMO,
     Source.PAMO,
     Source.BALTICWAY,
   ];

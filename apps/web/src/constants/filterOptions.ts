@@ -17,6 +17,7 @@ export const SOURCE_OPTIONS: FilterOption<Source>[] = [
   { value: Source.RMM, label: "RMM" },
   { value: Source.APMO, label: "APMO" },
   { value: Source.BMO, label: "BMO" },
+  { value: Source.JBMO, label: "JBMO" },
   { value: Source.PAMO, label: "PAMO" },
   { value: Source.BALTICWAY, label: "Baltic Way" },
 ];

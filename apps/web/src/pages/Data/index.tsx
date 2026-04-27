@@ -116,6 +116,14 @@ export function Data() {
                   </Table.Td>
                 </Table.Tr>
                 <Table.Tr>
+                  <Table.Td fw={500}>EMO</Table.Td>
+                  <Table.Td>
+                    <a href="https://emo2026.lt/" target="_blank" rel="noopener noreferrer">
+                      emo2026.lt
+                    </a>
+                  </Table.Td>
+                </Table.Tr>
+                <Table.Tr>
                   <Table.Td fw={500}>MEMO</Table.Td>
                   <Table.Td>
                     <a href="https://www.memo-official.org/" target="_blank" rel="noopener noreferrer">

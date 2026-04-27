@@ -6,7 +6,7 @@ A high-performance web application providing a consolidated view of internationa
 
 ## About
 
-This project aggregates and displays results from major international mathematical olympiads including IMO, EGMO, APMO, RMM, MEMO, BMO, PAMO, and team competitions Baltic Way and MEMO Team. It provides:
+This project aggregates and displays results from major international mathematical olympiads including IMO, EGMO, EMO, APMO, RMM, MEMO, BMO, PAMO, and team competitions Baltic Way and MEMO Team. It provides:
 
 - **Contestant profiles** - View individual participation history and rankings
 - **Competition results** - Browse results by olympiad and year

@@ -6,6 +6,7 @@
 export enum Source {
   IMO = "IMO",
   EGMO = "EGMO",
+  EMO = "EMO",
   MEMO = "MEMO",
   MEMO_TEAM = "MEMO_TEAM",
   RMM = "RMM",

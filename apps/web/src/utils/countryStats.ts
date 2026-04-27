@@ -296,6 +296,7 @@ export function getCountryAvailableSources(
   const sourceOrder = [
     Source.IMO,
     Source.EGMO,
+    Source.EMO,
     Source.MEMO,
     Source.MEMO_TEAM,
     Source.RMM,

@@ -1,6 +1,15 @@
 const path = require("path");
+const fs = require("fs");
+const crypto = require("crypto");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+
+function hashDataFile() {
+  const file = path.resolve(__dirname, "public/data/olympiad_data.json.gz");
+  const buf = fs.readFileSync(file);
+  return crypto.createHash("md5").update(buf).digest("hex").slice(0, 12);
+}
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -35,6 +44,9 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [{ from: "public", to: "." }],
+    }),
+    new webpack.DefinePlugin({
+      "process.env.DATA_HASH": JSON.stringify(hashDataFile()),
     }),
   ],
   devServer: {

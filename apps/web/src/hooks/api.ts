@@ -8,7 +8,10 @@ import type {
   TeamParticipation,
 } from "@/schemas/base";
 
-const DATA_URL = "/data/olympiad_data.json.gz";
+const DATA_HASH = process.env.DATA_HASH;
+const DATA_URL = DATA_HASH
+  ? `/data/olympiad_data.json.gz?v=${DATA_HASH}`
+  : "/data/olympiad_data.json.gz";
 
 let cachedDatabase: Database | null = null;
 let fetchPromise: Promise<Database> | null = null;

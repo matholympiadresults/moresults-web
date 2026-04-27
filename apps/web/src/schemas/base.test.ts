@@ -20,6 +20,10 @@ describe("Source enum", () => {
     expect(Source.EGMO).toBe("EGMO");
   });
 
+  it("has EMO value", () => {
+    expect(Source.EMO).toBe("EMO");
+  });
+
   it("has MEMO value", () => {
     expect(Source.MEMO).toBe("MEMO");
   });
@@ -54,9 +58,10 @@ describe("Source enum", () => {
 
   it("contains all expected sources", () => {
     const sources = Object.values(Source);
-    expect(sources).toHaveLength(10);
+    expect(sources).toHaveLength(11);
     expect(sources).toContain("IMO");
     expect(sources).toContain("EGMO");
+    expect(sources).toContain("EMO");
     expect(sources).toContain("MEMO");
     expect(sources).toContain("MEMO_TEAM");
     expect(sources).toContain("RMM");
@@ -413,6 +418,7 @@ describe("isTeamCompetition", () => {
   it("returns false for individual competitions", () => {
     expect(isTeamCompetition(Source.IMO)).toBe(false);
     expect(isTeamCompetition(Source.EGMO)).toBe(false);
+    expect(isTeamCompetition(Source.EMO)).toBe(false);
     expect(isTeamCompetition(Source.MEMO)).toBe(false);
     expect(isTeamCompetition(Source.RMM)).toBe(false);
     expect(isTeamCompetition(Source.APMO)).toBe(false);

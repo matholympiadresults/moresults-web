@@ -4,6 +4,7 @@ export const SITE_URL = "https://moresults.org";
 export const SOURCE_FULL_NAMES: Record<string, string> = {
   IMO: "International Mathematical Olympiad",
   EGMO: "European Girls Mathematical Olympiad",
+  EMO: "European Mathematical Olympiad",
   MEMO: "Middle European Mathematical Olympiad",
   MEMO_TEAM: "MEMO Team Competition",
   RMM: "Romanian Masters of Mathematics",

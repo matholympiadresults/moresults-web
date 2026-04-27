@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useSortedTable } from "@/hooks/useSortedTable";
 import { useCompetitions } from "@/hooks/api";
-import { getTableBody, getSortingIcon, sourceColors } from "@/utils/table";
+import { getTableBody, getSortingIcon } from "@/utils/table";
 import { ROUTES } from "@/constants/routes";
 import { pageTitle } from "@/constants/seo";
 import { Source } from "@/schemas/base";
@@ -123,9 +123,6 @@ export function Competitions() {
               tableRows: table.getRowModel().rows,
               columnCount: columns.length,
               noDataMessage: "No competitions found",
-              getRowStyle: (row) => ({
-                backgroundColor: sourceColors[row.original.source],
-              }),
             })}
           </Table.Tbody>
         </Table>

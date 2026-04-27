@@ -1,29 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { getSortingIcon, getTableBody, sourceColors } from "./table";
+import { getSortingIcon, getTableBody } from "./table";
 import { MantineProvider, Table } from "@mantine/core";
-import { Source } from "@/schemas/base";
 import type { Row } from "@tanstack/react-table";
 
 const renderWithMantine = (ui: React.ReactNode) => {
   return render(<MantineProvider>{ui}</MantineProvider>);
 };
-
-describe("sourceColors", () => {
-  it("has color for all Source values", () => {
-    const sources = Object.values(Source);
-    sources.forEach((source) => {
-      expect(sourceColors[source]).toBeDefined();
-      expect(typeof sourceColors[source]).toBe("string");
-    });
-  });
-
-  it("returns light-dark color format", () => {
-    Object.values(sourceColors).forEach((color) => {
-      expect(color).toMatch(/^light-dark\(/);
-    });
-  });
-});
 
 describe("getSortingIcon", () => {
   it("returns null when column cannot be sorted", () => {
@@ -154,40 +137,6 @@ describe("getTableBody", () => {
 
     const tableRows = screen.getAllByRole("row");
     expect(tableRows).toHaveLength(2);
-  });
-
-  it("applies row style when getRowStyle is provided", () => {
-    const rows = [createMockRow("1", "Alice")];
-
-    const body = getTableBody({
-      isLoading: false,
-      error: null,
-      tableRows: rows,
-      columnCount: 2,
-      getRowStyle: () => ({ backgroundColor: "rgb(255, 0, 0)" }),
-    });
-
-    renderTableBody(body);
-
-    const row = screen.getByRole("row");
-    expect(row).toHaveStyle({ backgroundColor: "rgb(255, 0, 0)" });
-  });
-
-  it("handles undefined row style gracefully", () => {
-    const rows = [createMockRow("1", "Alice")];
-
-    const body = getTableBody({
-      isLoading: false,
-      error: null,
-      tableRows: rows,
-      columnCount: 2,
-      getRowStyle: () => undefined,
-    });
-
-    renderTableBody(body);
-
-    const row = screen.getByRole("row");
-    expect(row).toBeInTheDocument();
   });
 
   it("prioritizes loading state over error", () => {

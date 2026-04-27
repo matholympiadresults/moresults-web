@@ -39,7 +39,7 @@ import {
   useCompetitions,
 } from "@/hooks/api";
 import { useEntityMap } from "@/hooks/useEntityMap";
-import { getTableBody, getSortingIcon, sourceColors, generateProblemColumns } from "@/utils/table";
+import { getTableBody, getSortingIcon, generateProblemColumns } from "@/utils/table";
 import { getTooltipStyle, getAxisStyle, getTooltipContentStyle } from "@/utils/chartStyles";
 import { CountryFlag } from "@/utils/flags";
 import { RelativeRankCell } from "@/components/RelativeRankCell";
@@ -447,9 +447,6 @@ export function Contestant() {
               tableRows: table.getRowModel().rows,
               columnCount: table.getVisibleLeafColumns().length,
               noDataMessage: "No participations found",
-              getRowStyle: (row) => ({
-                backgroundColor: sourceColors[row.original.source],
-              }),
             })}
           </Table.Tbody>
         </Table>

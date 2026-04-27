@@ -8,20 +8,6 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import type { CSSProperties, JSX } from "react";
-import { Source } from "@/schemas/base";
-
-export const sourceColors: Record<Source, string> = {
-  [Source.IMO]: "light-dark(var(--mantine-color-blue-1), var(--mantine-color-blue-light))",
-  [Source.EGMO]: "light-dark(var(--mantine-color-yellow-1), var(--mantine-color-yellow-light))",
-  [Source.MEMO]: "light-dark(var(--mantine-color-green-1), var(--mantine-color-green-light))",
-  [Source.MEMO_TEAM]: "light-dark(var(--mantine-color-lime-1), var(--mantine-color-lime-light))",
-  [Source.RMM]: "light-dark(var(--mantine-color-orange-1), var(--mantine-color-orange-light))",
-  [Source.APMO]: "light-dark(var(--mantine-color-pink-1), var(--mantine-color-pink-light))",
-  [Source.BMO]: "light-dark(var(--mantine-color-violet-1), var(--mantine-color-violet-light))",
-  [Source.JBMO]: "light-dark(var(--mantine-color-grape-1), var(--mantine-color-grape-light))",
-  [Source.PAMO]: "light-dark(var(--mantine-color-teal-1), var(--mantine-color-teal-light))",
-  [Source.BALTICWAY]: "light-dark(var(--mantine-color-cyan-1), var(--mantine-color-cyan-light))",
-};
 
 export function getSortingIcon(
   direction: false | "asc" | "desc",
@@ -97,7 +83,6 @@ export interface GetTableBodyParams<T> {
   tableRows: Row<T>[];
   columnCount: number;
   noDataMessage?: string;
-  getRowStyle?: (row: Row<T>) => CSSProperties | undefined;
   /** Optional: show separator rows between groups of rows */
   rowGroupSeparator?: RowGroupSeparator<T>;
 }
@@ -109,7 +94,6 @@ export function getTableBody<T>(params: GetTableBodyParams<T>) {
     tableRows,
     columnCount,
     noDataMessage = "No data available",
-    getRowStyle,
     rowGroupSeparator,
   } = params;
   let tableBody: JSX.Element[] | JSX.Element;
@@ -161,9 +145,8 @@ export function getTableBody<T>(params: GetTableBodyParams<T>) {
         prevGroupKey = currentGroupKey;
       }
 
-      const rowStyle = getRowStyle?.(row);
       result.push(
-        <Table.Tr key={row.id} style={rowStyle}>
+        <Table.Tr key={row.id}>
           {row.getVisibleCells().map((cell) => {
             const isCompact = (cell.column.columnDef.meta as { compact?: boolean })?.compact;
             return (

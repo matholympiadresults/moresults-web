@@ -94,6 +94,7 @@ const mockParticipations: Participation[] = [
     competition_id: "IMO-2023",
     person_id: "person-1",
     country_id: "country-usa",
+    team_label: null,
     problem_scores: [7, 7, 7, 7, 7, 7],
     total: 42,
     rank: 1,
@@ -107,6 +108,7 @@ const mockParticipations: Participation[] = [
     competition_id: "IMO-2023",
     person_id: "person-2",
     country_id: "country-chn",
+    team_label: null,
     problem_scores: [7, 7, 6, 7, 5, 7],
     total: 39,
     rank: 2,
@@ -120,6 +122,7 @@ const mockParticipations: Participation[] = [
     competition_id: "IMO-2023",
     person_id: "person-3",
     country_id: "country-gbr",
+    team_label: null,
     problem_scores: [7, 5, 4, 6, 3, 5],
     total: 30,
     rank: 3,
@@ -525,6 +528,132 @@ describe("Competition", () => {
       const table = screen.getByRole("table");
       const dashCells = within(table).getAllByText("-");
       expect(dashCells.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("team_label rendering", () => {
+    const teamLabelCountries: Country[] = [
+      { id: "country-ukr", code: "UKR", name: "Ukraine" },
+      { id: "country-ltu", code: "LTU", name: "Lithuania" },
+    ];
+
+    const teamLabelPeople: Person[] = [
+      {
+        id: "person-ukr-1",
+        name: "Ukrainian Main",
+        given_name: "Ukrainian",
+        family_name: "Main",
+        country_id: "country-ukr",
+        aliases: [],
+        source_ids: {},
+      },
+      {
+        id: "person-ukr-2",
+        name: "Ukrainian Backup",
+        given_name: "Ukrainian",
+        family_name: "Backup",
+        country_id: "country-ukr",
+        aliases: [],
+        source_ids: {},
+      },
+      {
+        id: "person-ltu-1",
+        name: "Lithuanian Backup",
+        given_name: "Lithuanian",
+        family_name: "Backup",
+        country_id: "country-ltu",
+        aliases: [],
+        source_ids: {},
+      },
+    ];
+
+    const teamLabelParticipations: Participation[] = [
+      {
+        id: "EMO-2026-person-ukr-1",
+        competition_id: "EMO-2026",
+        person_id: "person-ukr-1",
+        country_id: "country-ukr",
+        team_label: null,
+        problem_scores: [7, 7, 7, 7, 7, 7],
+        total: 42,
+        rank: 1,
+        regional_rank: null,
+        award: Award.GOLD,
+        extra_awards: null,
+        source_contestant_id: null,
+      },
+      {
+        id: "EMO-2026-person-ukr-2",
+        competition_id: "EMO-2026",
+        person_id: "person-ukr-2",
+        country_id: "country-ukr",
+        team_label: "B",
+        problem_scores: [7, 7, 5, 5, 1, 1],
+        total: 26,
+        rank: 10,
+        regional_rank: null,
+        award: Award.BRONZE,
+        extra_awards: null,
+        source_contestant_id: null,
+      },
+      {
+        id: "EMO-2026-person-ltu-1",
+        competition_id: "EMO-2026",
+        person_id: "person-ltu-1",
+        country_id: "country-ltu",
+        team_label: "B",
+        problem_scores: [5, 5, 4, 2, 1, 1],
+        total: 18,
+        rank: 20,
+        regional_rank: null,
+        award: Award.HONOURABLE_MENTION,
+        extra_awards: null,
+        source_contestant_id: null,
+      },
+    ];
+
+    it("appends team_label to country name in the individual contestants table", () => {
+      setupMocks({
+        countries: teamLabelCountries,
+        people: teamLabelPeople,
+        participations: teamLabelParticipations,
+      });
+      renderCompetition();
+
+      // Main team is shown as plain country name
+      expect(screen.getByRole("link", { name: /Ukraine$/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/ukr"
+      );
+      // B-team contestants get the "- B" suffix
+      expect(screen.getByRole("link", { name: /Ukraine - B/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/ukr"
+      );
+      expect(screen.getByRole("link", { name: /Lithuania - B/ })).toHaveAttribute(
+        "href",
+        "/countries/individual/ltu"
+      );
+    });
+
+    it("groups by country + team_label in the country standings tab", async () => {
+      const user = userEvent.setup();
+      setupMocks({
+        countries: teamLabelCountries,
+        people: teamLabelPeople,
+        participations: teamLabelParticipations,
+      });
+      renderCompetition();
+
+      const countryTab = screen.getByRole("tab", { name: /Country/ });
+      await user.click(countryTab);
+
+      // Three rows: Ukraine, Ukraine - B, Lithuania - B
+      expect(screen.getByText(/3 countries/)).toBeInTheDocument();
+      const table = screen.getByRole("table");
+      expect(within(table).getByRole("link", { name: /Ukraine$/ })).toBeInTheDocument();
+      expect(within(table).getByRole("link", { name: /Ukraine - B/ })).toBeInTheDocument();
+      expect(within(table).getByRole("link", { name: /Lithuania - B/ })).toBeInTheDocument();
     });
   });
 });

@@ -27,6 +27,7 @@ const createParticipation = (competitionId: string, award: Award | null = null):
   competition_id: competitionId,
   person_id: "person-1",
   country_id: "country-usa",
+  team_label: null,
   problem_scores: [7, 7, 7, 7, 7, 7],
   total: 42,
   rank: null,

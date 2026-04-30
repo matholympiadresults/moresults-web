@@ -34,6 +34,7 @@ const createParticipation = (
   competition_id: "imo-2024",
   person_id: personId,
   country_id: countryId,
+  team_label: null,
   problem_scores: [7, 7, 7, 7, 7, 7],
   total: 42,
   rank: 1,

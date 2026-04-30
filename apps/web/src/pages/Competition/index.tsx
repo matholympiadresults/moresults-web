@@ -80,19 +80,22 @@ export function Competition() {
 
   const rows: ParticipationRow[] = useMemo(
     () =>
-      participations.map((p) => ({
-        id: p.id,
-        personId: p.person_id,
-        personName: personMap[p.person_id]?.name ?? p.person_id,
-        countryId: p.country_id,
-        countryCode: countryMap[p.country_id]?.code ?? null,
-        countryName: countryMap[p.country_id]?.name ?? p.country_id,
-        rank: p.rank,
-        problemScores: p.problem_scores,
-        numProblems,
-        total: p.total,
-        award: p.award,
-      })),
+      participations.map((p) => {
+        const baseName = countryMap[p.country_id]?.name ?? p.country_id;
+        return {
+          id: p.id,
+          personId: p.person_id,
+          personName: personMap[p.person_id]?.name ?? p.person_id,
+          countryId: p.country_id,
+          countryCode: countryMap[p.country_id]?.code ?? null,
+          countryName: p.team_label ? `${baseName} - ${p.team_label}` : baseName,
+          rank: p.rank,
+          problemScores: p.problem_scores,
+          numProblems,
+          total: p.total,
+          award: p.award,
+        };
+      }),
     [participations, personMap, countryMap, numProblems]
   );
 

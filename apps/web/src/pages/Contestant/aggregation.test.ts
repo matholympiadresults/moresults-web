@@ -54,6 +54,7 @@ const createParticipation = (
   competition_id: competitionId,
   person_id: personId,
   country_id: countryId,
+  team_label: null,
   problem_scores: problemScores,
   total,
   rank,

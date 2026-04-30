@@ -62,6 +62,7 @@ export interface Participation {
   competition_id: string;
   person_id: string;
   country_id: string;
+  team_label: string | null;
   problem_scores: (number | null)[];
   total: number;
   rank: number | null;

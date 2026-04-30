@@ -13,6 +13,7 @@ const createParticipation = (
   id: `comp-${overrides.person_id}`,
   competition_id: "imo-2024",
   country_id: "country-gbr",
+  team_label: null,
   problem_scores: [7, 7, 7, 7, 7, 7],
   total: 42,
   rank: null,
@@ -297,6 +298,337 @@ describe("calculateCountryStandings", () => {
     expect(result[0].countryId).toBe("country-xyz");
     expect(result[0].countryName).toBe("country-xyz");
     expect(result[0].countryCode).toBeNull();
+  });
+
+  describe("team_label aggregation", () => {
+    const teamCountryMap: Record<string, Country> = {
+      "country-ukr": { id: "country-ukr", code: "ukr", name: "Ukraine" },
+      "country-ltu": { id: "country-ltu", code: "ltu", name: "Lithuania" },
+    };
+
+    it("splits a country into separate standings per team_label", () => {
+      const participations = [
+        createParticipation({
+          person_id: "p1",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 42,
+          award: Award.GOLD,
+        }),
+        createParticipation({
+          person_id: "p2",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 26,
+          award: Award.BRONZE,
+        }),
+      ];
+
+      const result = calculateCountryStandings(participations, teamCountryMap, 6);
+
+      expect(result).toHaveLength(2);
+      const main = result.find((r) => r.teamLabel === null)!;
+      const teamB = result.find((r) => r.teamLabel === "B")!;
+      expect(main.countryName).toBe("Ukraine");
+      expect(main.countryId).toBe("country-ukr");
+      expect(main.totalScore).toBe(42);
+      expect(main.gold).toBe(1);
+      expect(teamB.countryName).toBe("Ukraine - B");
+      expect(teamB.countryId).toBe("country-ukr");
+      expect(teamB.totalScore).toBe(26);
+      expect(teamB.bronze).toBe(1);
+    });
+
+    it("aggregates EMO 2026 Ukraine and Lithuania with B teams (UKR, UKR-B, LTU, LTU-B)", () => {
+      // Reflects actual EMO 2026 data: each country has both a main team and a B team.
+      const participations = [
+        // Ukraine main team
+        createParticipation({
+          person_id: "u1",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 42,
+          award: Award.GOLD,
+        }),
+        createParticipation({
+          person_id: "u2",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 39,
+          award: Award.GOLD,
+        }),
+        createParticipation({
+          person_id: "u3",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 39,
+          award: Award.GOLD,
+        }),
+        createParticipation({
+          person_id: "u4",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 26,
+          award: Award.BRONZE,
+        }),
+        createParticipation({
+          person_id: "u5",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 25,
+          award: Award.BRONZE,
+        }),
+        createParticipation({
+          person_id: "u6",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 23,
+          award: Award.BRONZE,
+        }),
+        // Ukraine B team
+        createParticipation({
+          person_id: "u7",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 26,
+          award: Award.BRONZE,
+        }),
+        createParticipation({
+          person_id: "u8",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 22,
+          award: Award.BRONZE,
+        }),
+        createParticipation({
+          person_id: "u9",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 18,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "u10",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 18,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "u11",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 15,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "u12",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 13,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        // Lithuania main team
+        createParticipation({
+          person_id: "l1",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 32,
+          award: Award.SILVER,
+        }),
+        createParticipation({
+          person_id: "l2",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 25,
+          award: Award.BRONZE,
+        }),
+        createParticipation({
+          person_id: "l3",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 24,
+          award: Award.BRONZE,
+        }),
+        createParticipation({
+          person_id: "l4",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 21,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l5",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 19,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l6",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 18,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        // Lithuania B team
+        createParticipation({
+          person_id: "l7",
+          country_id: "country-ltu",
+          team_label: "B",
+          total: 18,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l8",
+          country_id: "country-ltu",
+          team_label: "B",
+          total: 17,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l9",
+          country_id: "country-ltu",
+          team_label: "B",
+          total: 17,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l10",
+          country_id: "country-ltu",
+          team_label: "B",
+          total: 16,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l11",
+          country_id: "country-ltu",
+          team_label: "B",
+          total: 16,
+          award: Award.HONOURABLE_MENTION,
+        }),
+        createParticipation({
+          person_id: "l12",
+          country_id: "country-ltu",
+          team_label: "B",
+          total: 12,
+          award: null,
+        }),
+      ];
+
+      const result = calculateCountryStandings(participations, teamCountryMap, 6);
+
+      expect(result).toHaveLength(4);
+      const ukrMain = result.find((r) => r.countryId === "country-ukr" && r.teamLabel === null)!;
+      const ukrB = result.find((r) => r.countryId === "country-ukr" && r.teamLabel === "B")!;
+      const ltuMain = result.find((r) => r.countryId === "country-ltu" && r.teamLabel === null)!;
+      const ltuB = result.find((r) => r.countryId === "country-ltu" && r.teamLabel === "B")!;
+
+      expect(ukrMain.countryName).toBe("Ukraine");
+      expect(ukrMain.totalScore).toBe(42 + 39 + 39 + 26 + 25 + 23);
+      expect(ukrMain.participants).toBe(6);
+      expect(ukrMain.gold).toBe(3);
+      expect(ukrMain.bronze).toBe(3);
+
+      expect(ukrB.countryName).toBe("Ukraine - B");
+      expect(ukrB.totalScore).toBe(26 + 22 + 18 + 18 + 15 + 13);
+      expect(ukrB.participants).toBe(6);
+      expect(ukrB.bronze).toBe(2);
+      expect(ukrB.hm).toBe(4);
+
+      expect(ltuMain.countryName).toBe("Lithuania");
+      expect(ltuMain.totalScore).toBe(32 + 25 + 24 + 21 + 19 + 18);
+      expect(ltuMain.silver).toBe(1);
+      expect(ltuMain.bronze).toBe(2);
+      expect(ltuMain.hm).toBe(3);
+
+      expect(ltuB.countryName).toBe("Lithuania - B");
+      expect(ltuB.totalScore).toBe(18 + 17 + 17 + 16 + 16 + 12);
+      expect(ltuB.hm).toBe(5);
+      expect(ltuB.gold).toBe(0);
+    });
+
+    it("preserves the underlying countryId so links still go to the country page", () => {
+      const participations = [
+        createParticipation({
+          person_id: "p1",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 26,
+          award: Award.BRONZE,
+        }),
+      ];
+
+      const result = calculateCountryStandings(participations, teamCountryMap, 6);
+
+      expect(result[0].countryId).toBe("country-ukr");
+      expect(result[0].countryCode).toBe("ukr");
+      expect(result[0].teamLabel).toBe("B");
+      expect(result[0].countryName).toBe("Ukraine - B");
+    });
+
+    it("treats different team labels for the same country as separate standings", () => {
+      const participations = [
+        createParticipation({
+          person_id: "p1",
+          country_id: "country-ukr",
+          team_label: "A",
+          total: 30,
+        }),
+        createParticipation({
+          person_id: "p2",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 20,
+        }),
+        createParticipation({
+          person_id: "p3",
+          country_id: "country-ukr",
+          team_label: "C",
+          total: 10,
+        }),
+      ];
+
+      const result = calculateCountryStandings(participations, teamCountryMap, 6);
+
+      expect(result).toHaveLength(3);
+      expect(result.map((r) => r.countryName).sort()).toEqual([
+        "Ukraine - A",
+        "Ukraine - B",
+        "Ukraine - C",
+      ]);
+    });
+
+    it("ranks team-labelled standings independently by total score", () => {
+      const participations = [
+        createParticipation({
+          person_id: "p1",
+          country_id: "country-ukr",
+          team_label: null,
+          total: 100,
+        }),
+        createParticipation({
+          person_id: "p2",
+          country_id: "country-ukr",
+          team_label: "B",
+          total: 50,
+        }),
+        createParticipation({
+          person_id: "p3",
+          country_id: "country-ltu",
+          team_label: null,
+          total: 75,
+        }),
+      ];
+
+      const result = calculateCountryStandings(participations, teamCountryMap, 6);
+
+      expect(result.map((r) => ({ name: r.countryName, rank: r.rank }))).toEqual([
+        { name: "Ukraine", rank: 1 },
+        { name: "Lithuania", rank: 2 },
+        { name: "Ukraine - B", rank: 3 },
+      ]);
+    });
   });
 });
 

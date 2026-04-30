@@ -42,6 +42,7 @@ const mockParticipations: Participation[] = [
     competition_id: "imo-2023",
     person_id: "person-1",
     country_id: "country-usa",
+    team_label: null,
     problem_scores: [7, 7, 7, 7, 7, 7],
     total: 42,
     rank: 1,

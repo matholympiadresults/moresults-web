@@ -6,6 +6,7 @@ export interface CountryStanding {
   countryId: string;
   countryCode: string | null;
   countryName: string;
+  teamLabel: string | null;
   rank: number;
   problemTotals: number[];
   totalScore: number;
@@ -38,6 +39,8 @@ export function calculateCountryStandings(
   const countryStats = new Map<
     string,
     {
+      countryId: string;
+      teamLabel: string | null;
       problemTotals: number[];
       totalScore: number;
       participants: number;
@@ -51,7 +54,10 @@ export function calculateCountryStandings(
   participations.forEach((p) => {
     if (!p.country_id) return;
 
-    const stats = countryStats.get(p.country_id) ?? {
+    const key = `${p.country_id}|${p.team_label ?? ""}`;
+    const stats = countryStats.get(key) ?? {
+      countryId: p.country_id,
+      teamLabel: p.team_label,
       problemTotals: Array(numProblems).fill(0) as number[],
       totalScore: 0,
       participants: 0,
@@ -75,15 +81,18 @@ export function calculateCountryStandings(
     else if (p.award === Award.BRONZE) stats.bronze++;
     else if (p.award === Award.HONOURABLE_MENTION) stats.hm++;
 
-    countryStats.set(p.country_id, stats);
+    countryStats.set(key, stats);
   });
 
   const result: CountryStanding[] = [];
-  countryStats.forEach((stats, countryId) => {
+  countryStats.forEach((stats) => {
+    const baseName = countryMap[stats.countryId]?.name ?? stats.countryId;
+    const countryName = stats.teamLabel ? `${baseName} - ${stats.teamLabel}` : baseName;
     result.push({
-      countryId,
-      countryCode: countryMap[countryId]?.code ?? null,
-      countryName: countryMap[countryId]?.name ?? countryId,
+      countryId: stats.countryId,
+      countryCode: countryMap[stats.countryId]?.code ?? null,
+      countryName,
+      teamLabel: stats.teamLabel,
       rank: 0,
       problemTotals: stats.problemTotals,
       totalScore: stats.totalScore,

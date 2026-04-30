@@ -83,6 +83,7 @@ const createParticipation = (
   competition_id: competitionId,
   person_id: personId,
   country_id: countryId,
+  team_label: null,
   problem_scores: [7, 7, 7, 7, 7, 7].slice(0, Math.ceil(total / 7)),
   total,
   rank,

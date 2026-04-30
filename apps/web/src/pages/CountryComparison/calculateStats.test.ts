@@ -37,6 +37,7 @@ function createParticipation(
 ): Participation {
   return {
     id: `${overrides.competition_id}-${overrides.person_id}`,
+    team_label: null,
     problem_scores: [],
     total: 0,
     rank: null,

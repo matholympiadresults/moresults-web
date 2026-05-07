@@ -75,6 +75,10 @@ describe("Layout", () => {
         "href",
         "/competitions"
       );
+      expect(screen.getByRole("link", { name: "Compare Competitions" })).toHaveAttribute(
+        "href",
+        "/competitions/compare"
+      );
       expect(screen.getByRole("link", { name: "Countries" })).toHaveAttribute(
         "href",
         "/countries/individual"
@@ -125,6 +129,16 @@ describe("Layout", () => {
         const navLink = screen.getByRole("link", { name: link.label });
         expect(navLink).not.toHaveAttribute("data-active", "true");
       });
+    });
+
+    it("marks only Compare Competitions active on /competitions/compare", () => {
+      renderLayout("/competitions/compare");
+
+      const compareLink = screen.getByRole("link", { name: "Compare Competitions" });
+      const competitionsLink = screen.getByRole("link", { name: "Competitions" });
+
+      expect(compareLink).toHaveAttribute("data-active", "true");
+      expect(competitionsLink).not.toHaveAttribute("data-active", "true");
     });
   });
 

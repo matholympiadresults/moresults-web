@@ -7,6 +7,7 @@ import {
   Competitions,
   Competition,
   CompetitionStatistics,
+  CompareCompetitions,
   CountriesIndividual,
   CountryIndividual,
   CountryComparison,
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.COMPETITIONS,
         element: <Competitions />,
+      },
+      {
+        path: ROUTES.COMPETITIONS_COMPARE,
+        element: <CompareCompetitions />,
       },
       {
         path: ROUTES.COMPETITION_PATTERN,

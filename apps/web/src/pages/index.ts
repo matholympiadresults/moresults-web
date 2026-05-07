@@ -4,6 +4,7 @@ export { Contestant } from "./Contestant";
 export { Competitions } from "./Competitions";
 export { Competition } from "./Competition";
 export { CompetitionStatistics } from "./CompetitionStatistics";
+export { CompareCompetitions } from "./CompareCompetitions";
 export { CountriesIndividual } from "./CountriesIndividual";
 export { CountryIndividual } from "./CountryIndividual";
 export { CountryComparison } from "./CountryComparison";

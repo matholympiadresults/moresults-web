@@ -27,6 +27,10 @@ function HeaderNavLink({ link, isActive, onClick }: HeaderNavLinkProps) {
       key={link.path}
       component={NavLink}
       to={link.path}
+      // Disable react-router NavLink's automatic prefix-match active state;
+      // we drive the highlight ourselves via Mantine's `active` prop so that
+      // /competitions/compare doesn't also light up "Competitions".
+      end
       label={link.label}
       active={isActive}
       noWrap
@@ -40,6 +44,16 @@ export function Layout() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
 
+  // Pick the most specific (longest-prefix) nav link for the current path so
+  // that /competitions/compare highlights "Compare Competitions" and not
+  // also "Competitions".
+  const activeNavPath = NAV_LINKS.filter(
+    (link) => location.pathname === link.path || location.pathname.startsWith(link.path + "/")
+  ).reduce<string | null>(
+    (best, link) => (best === null || link.path.length > best.length ? link.path : best),
+    null
+  );
+
   return (
     <AppShell header={{ height: 60 }} padding="md">
       <AppShell.Header p="xs">
@@ -52,11 +66,7 @@ export function Layout() {
 
           <Group wrap="nowrap" visibleFrom="md">
             {NAV_LINKS.map((link) => (
-              <HeaderNavLink
-                key={link.path}
-                link={link}
-                isActive={location.pathname.startsWith(link.path)}
-              />
+              <HeaderNavLink key={link.path} link={link} isActive={activeNavPath === link.path} />
             ))}
           </Group>
 
@@ -88,7 +98,7 @@ export function Layout() {
             <HeaderNavLink
               key={link.path}
               link={link}
-              isActive={location.pathname.startsWith(link.path)}
+              isActive={activeNavPath === link.path}
               onClick={closeDrawer}
             />
           ))}

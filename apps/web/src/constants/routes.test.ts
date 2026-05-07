@@ -15,6 +15,10 @@ describe("ROUTES", () => {
       expect(ROUTES.COMPETITIONS).toBe("/competitions");
     });
 
+    it("has correct COMPETITIONS_COMPARE route", () => {
+      expect(ROUTES.COMPETITIONS_COMPARE).toBe("/competitions/compare");
+    });
+
     it("has correct COUNTRIES_INDIVIDUAL route", () => {
       expect(ROUTES.COUNTRIES_INDIVIDUAL).toBe("/countries/individual");
     });
@@ -118,8 +122,8 @@ describe("NAV_LINKS", () => {
     expect(NAV_LINKS.length).toBeGreaterThan(0);
   });
 
-  it("contains 6 navigation links", () => {
-    expect(NAV_LINKS.length).toBe(6);
+  it("contains 7 navigation links", () => {
+    expect(NAV_LINKS.length).toBe(7);
   });
 
   it("each link has path and label properties", () => {
@@ -141,6 +145,12 @@ describe("NAV_LINKS", () => {
     const competitionsLink = NAV_LINKS.find((link) => link.label === "Competitions");
     expect(competitionsLink).toBeDefined();
     expect(competitionsLink?.path).toBe(ROUTES.COMPETITIONS);
+  });
+
+  it("has Compare Competitions link", () => {
+    const compareCompsLink = NAV_LINKS.find((link) => link.label === "Compare Competitions");
+    expect(compareCompsLink).toBeDefined();
+    expect(compareCompsLink?.path).toBe(ROUTES.COMPETITIONS_COMPARE);
   });
 
   it("has Countries link", () => {
@@ -176,9 +186,10 @@ describe("NAV_LINKS", () => {
   it("maintains correct order", () => {
     expect(NAV_LINKS[0].label).toBe("Contestants");
     expect(NAV_LINKS[1].label).toBe("Competitions");
-    expect(NAV_LINKS[2].label).toBe("Countries");
-    expect(NAV_LINKS[3].label).toBe("Compare Countries");
-    expect(NAV_LINKS[4].label).toBe("Hall of Fame");
-    expect(NAV_LINKS[5].label).toBe("Data");
+    expect(NAV_LINKS[2].label).toBe("Compare Competitions");
+    expect(NAV_LINKS[3].label).toBe("Countries");
+    expect(NAV_LINKS[4].label).toBe("Compare Countries");
+    expect(NAV_LINKS[5].label).toBe("Hall of Fame");
+    expect(NAV_LINKS[6].label).toBe("Data");
   });
 });

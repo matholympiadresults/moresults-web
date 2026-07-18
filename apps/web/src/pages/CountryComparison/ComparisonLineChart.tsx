@@ -48,6 +48,7 @@ export function ComparisonLineChart({
           strokeWidth={2}
           dot={{ r: 4 }}
           connectNulls
+          isAnimationActive={false}
         />
         <Line
           type="monotone"
@@ -56,6 +57,7 @@ export function ComparisonLineChart({
           strokeWidth={2}
           dot={{ r: 4 }}
           connectNulls
+          isAnimationActive={false}
         />
       </LineChart>
     </ResponsiveContainer>

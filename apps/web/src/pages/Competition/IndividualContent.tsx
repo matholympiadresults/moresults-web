@@ -157,11 +157,17 @@ export function IndividualContent({
                   }}
                   labelFormatter={(score) => `Score: ${score}`}
                 />
-                <Bar dataKey="none" stackId="a" fill="#87CEEB" />
-                <Bar dataKey="hm" stackId="a" fill="#40c057" />
-                <Bar dataKey="bronze" stackId="a" fill="#CD7F32" />
-                <Bar dataKey="silver" stackId="a" fill="#C0C0C0" />
-                <Bar dataKey="gold" stackId="a" fill="#FFD700" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="none" stackId="a" fill="#87CEEB" isAnimationActive={false} />
+                <Bar dataKey="hm" stackId="a" fill="#40c057" isAnimationActive={false} />
+                <Bar dataKey="bronze" stackId="a" fill="#CD7F32" isAnimationActive={false} />
+                <Bar dataKey="silver" stackId="a" fill="#C0C0C0" isAnimationActive={false} />
+                <Bar
+                  dataKey="gold"
+                  stackId="a"
+                  fill="#FFD700"
+                  radius={[2, 2, 0, 0]}
+                  isAnimationActive={false}
+                />
               </BarChart>
             </ResponsiveContainer>
           </Paper>

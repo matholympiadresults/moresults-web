@@ -153,6 +153,7 @@ export function TeamContent({
                 strokeWidth={2}
                 dot={{ r: 4, fill: "#228be6" }}
                 connectNulls={false}
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -200,6 +201,7 @@ export function TeamContent({
                 stroke="#228be6"
                 strokeWidth={2}
                 dot={{ r: 4, fill: "#228be6" }}
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>

@@ -351,15 +351,34 @@ export function Contestant() {
                   }}
                 />
                 <Legend content={() => null} />
-                <Bar dataKey="noMedal" stackId="medals" fill="#87CEEB" name="No medal" />
-                <Bar dataKey="bronze" stackId="medals" fill="#CD7F32" name="Bronze" />
-                <Bar dataKey="silver" stackId="medals" fill="#C0C0C0" name="Silver" />
+                <Bar
+                  dataKey="noMedal"
+                  stackId="medals"
+                  fill="#87CEEB"
+                  name="No medal"
+                  isAnimationActive={false}
+                />
+                <Bar
+                  dataKey="bronze"
+                  stackId="medals"
+                  fill="#CD7F32"
+                  name="Bronze"
+                  isAnimationActive={false}
+                />
+                <Bar
+                  dataKey="silver"
+                  stackId="medals"
+                  fill="#C0C0C0"
+                  name="Silver"
+                  isAnimationActive={false}
+                />
                 <Bar
                   dataKey="gold"
                   stackId="medals"
                   fill="#FFD700"
                   name="Gold"
                   radius={[4, 4, 0, 0]}
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -369,6 +388,7 @@ export function Contestant() {
                   dot={{ r: 5, fill: "#000", stroke: "#fff", strokeWidth: 2 }}
                   connectNulls={false}
                   name="This contestant"
+                  isAnimationActive={false}
                 />
               </ComposedChart>
             </ResponsiveContainer>

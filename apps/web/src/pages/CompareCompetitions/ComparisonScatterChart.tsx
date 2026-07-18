@@ -140,7 +140,7 @@ export function ComparisonScatterChart({
               { x: lineEnd, y: lineEnd },
             ]}
           />
-          <Scatter data={data} fill="#228be6" />
+          <Scatter data={data} fill="#228be6" isAnimationActive={false} />
         </ScatterChart>
       </ResponsiveContainer>
     </div>

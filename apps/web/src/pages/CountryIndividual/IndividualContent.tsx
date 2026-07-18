@@ -162,6 +162,7 @@ export function IndividualContent({
                 strokeWidth={2}
                 dot={{ r: 4, fill: "#228be6" }}
                 connectNulls={false}
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -277,10 +278,38 @@ export function IndividualContent({
                   );
                 }}
               />
-              <Area type="monotone" dataKey="hm" stackId="1" stroke="#228be6" fill="#228be6" />
-              <Area type="monotone" dataKey="bronze" stackId="1" stroke="#CD7F32" fill="#CD7F32" />
-              <Area type="monotone" dataKey="silver" stackId="1" stroke="#C0C0C0" fill="#C0C0C0" />
-              <Area type="monotone" dataKey="gold" stackId="1" stroke="#FFD700" fill="#FFD700" />
+              <Area
+                type="monotone"
+                dataKey="hm"
+                stackId="1"
+                stroke="#228be6"
+                fill="#228be6"
+                isAnimationActive={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="bronze"
+                stackId="1"
+                stroke="#CD7F32"
+                fill="#CD7F32"
+                isAnimationActive={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="silver"
+                stackId="1"
+                stroke="#C0C0C0"
+                fill="#C0C0C0"
+                isAnimationActive={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="gold"
+                stackId="1"
+                stroke="#FFD700"
+                fill="#FFD700"
+                isAnimationActive={false}
+              />
             </AreaChart>
           </ResponsiveContainer>
         ) : (

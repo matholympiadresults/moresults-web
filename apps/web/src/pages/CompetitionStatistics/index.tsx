@@ -211,7 +211,12 @@ export function CompetitionStatistics() {
                 <XAxis dataKey="score" interval={0} {...axisStyle} />
                 <YAxis {...axisStyle} width={40} domain={[0, stats.maxCount]} />
                 <Tooltip {...tooltipStyle} />
-                <Bar dataKey="count" fill="#228be6" radius={[2, 2, 0, 0]} />
+                <Bar
+                  dataKey="count"
+                  fill="#228be6"
+                  radius={[2, 2, 0, 0]}
+                  isAnimationActive={false}
+                />
               </BarChart>
             </ResponsiveContainer>
           </Paper>

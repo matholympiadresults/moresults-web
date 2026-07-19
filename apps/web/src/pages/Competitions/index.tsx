@@ -9,7 +9,7 @@ import { getTableBody, getSortingIcon } from "@/utils/table";
 import { ROUTES } from "@/constants/routes";
 import { pageTitle } from "@/constants/seo";
 import { Source } from "@/schemas/base";
-import { SOURCE_OPTIONS } from "@/constants/filterOptions";
+import { SOURCE_OPTIONS, SOURCE_ORDER } from "@/constants/filterOptions";
 
 interface CompetitionRow {
   id: string;
@@ -46,6 +46,11 @@ export function Competitions() {
           if (!filterValue) return true;
           return row.getValue(columnId) === filterValue;
         },
+        sortingFn: (rowA, rowB, columnId) => {
+          const a = SOURCE_ORDER[rowA.getValue(columnId) as string] ?? Number.MAX_SAFE_INTEGER;
+          const b = SOURCE_ORDER[rowB.getValue(columnId) as string] ?? Number.MAX_SAFE_INTEGER;
+          return a - b;
+        },
       }),
       columnHelper.accessor("edition", {
         header: "Edition",
@@ -61,7 +66,10 @@ export function Competitions() {
   const { table } = useSortedTable({
     data: rows,
     columns,
-    defaultSort: [{ id: "year", desc: true }],
+    defaultSort: [
+      { id: "year", desc: true },
+      { id: "source", desc: true },
+    ],
     enableFiltering: true,
   });
 

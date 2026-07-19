@@ -25,6 +25,14 @@ export const SOURCE_OPTIONS: FilterOption<Source>[] = [
 ];
 
 /**
+ * Chronological rank of each source, derived from SOURCE_OPTIONS order.
+ * Used to sort competitions by when they typically occur during the year.
+ */
+export const SOURCE_ORDER: Record<string, number> = Object.fromEntries(
+  SOURCE_OPTIONS.map((option, index) => [option.value, index])
+);
+
+/**
  * Source options with an "All" option for pages that support it.
  */
 export const SOURCE_OPTIONS_WITH_ALL: FilterOption<Source | "all">[] = [

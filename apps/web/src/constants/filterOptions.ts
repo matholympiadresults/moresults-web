@@ -9,17 +9,18 @@ export interface FilterOption<T> {
  * Standard source filter options for competition dropdowns.
  * Used across Competitions, Contestant, CountryIndividual, CountryComparison pages.
  */
+// Ordered chronologically by when each competition is typically held during the year.
 export const SOURCE_OPTIONS: FilterOption<Source>[] = [
-  { value: Source.IMO, label: "IMO" },
-  { value: Source.EGMO, label: "EGMO" },
-  { value: Source.EMO, label: "EMO" },
-  { value: Source.MEMO, label: "MEMO" },
-  { value: Source.MEMO_TEAM, label: "MEMO Team" },
   { value: Source.RMM, label: "RMM" },
   { value: Source.APMO, label: "APMO" },
+  { value: Source.EGMO, label: "EGMO" },
+  { value: Source.EMO, label: "EMO" },
   { value: Source.BMO, label: "BMO" },
   { value: Source.JBMO, label: "JBMO" },
   { value: Source.PAMO, label: "PAMO" },
+  { value: Source.IMO, label: "IMO" },
+  { value: Source.MEMO, label: "MEMO" },
+  { value: Source.MEMO_TEAM, label: "MEMO Team" },
   { value: Source.BALTICWAY, label: "Baltic Way" },
 ];
 

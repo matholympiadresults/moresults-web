@@ -6,9 +6,12 @@ import {
   CartesianGrid,
   ReferenceLine,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 import { Tooltip as MantineTooltip } from "@mantine/core";
-import { getAxisStyle } from "@/utils/chartStyles";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@/constants/routes";
+import { getAxisStyle, getTooltipContentStyle } from "@/utils/chartStyles";
 
 const PEARSON_TOOLTIP =
   "Pearson correlation coefficient (−1 to +1). +1 = perfect positive linear relationship, 0 = no linear relationship, −1 = perfect negative.";
@@ -38,6 +41,7 @@ export interface ScatterPoint {
   x: number;
   y: number;
   name: string;
+  personId: string;
 }
 
 interface ComparisonScatterChartProps {
@@ -45,8 +49,46 @@ interface ComparisonScatterChartProps {
   xLabel: string;
   yLabel: string;
   isDark: boolean;
+  valueSuffix?: string;
   xDomain?: [number, number];
   yDomain?: [number, number];
+}
+
+interface ScatterTooltipProps {
+  active?: boolean;
+  payload?: { payload: ScatterPoint }[];
+  xLabel: string;
+  yLabel: string;
+  valueSuffix: string;
+  isDark: boolean;
+}
+
+function ScatterTooltip({
+  active,
+  payload,
+  xLabel,
+  yLabel,
+  valueSuffix,
+  isDark,
+}: ScatterTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  const point = payload[0].payload;
+  const labelFill = isDark ? "#c1c2c5" : "#495057";
+  const dimFill = isDark ? "#909296" : "#868e96";
+  const formatValue = (v: number) => `${Number.isInteger(v) ? v : v.toFixed(1)}${valueSuffix}`;
+
+  return (
+    <div style={{ ...getTooltipContentStyle(isDark), fontSize: 12 }}>
+      <div style={{ fontWeight: 600, color: labelFill, marginBottom: 4 }}>{point.name}</div>
+      <div style={{ color: labelFill }}>
+        {xLabel}: {formatValue(point.x)}
+      </div>
+      <div style={{ color: labelFill }}>
+        {yLabel}: {formatValue(point.y)}
+      </div>
+      <div style={{ color: dimFill, marginTop: 4 }}>Click to view contestant</div>
+    </div>
+  );
 }
 
 export function ComparisonScatterChart({
@@ -54,9 +96,11 @@ export function ComparisonScatterChart({
   xLabel,
   yLabel,
   isDark,
+  valueSuffix = "",
   xDomain,
   yDomain,
 }: ComparisonScatterChartProps) {
+  const navigate = useNavigate();
   const axisStyle = getAxisStyle(isDark);
   const labelFill = isDark ? "#c1c2c5" : "#495057";
 
@@ -140,7 +184,27 @@ export function ComparisonScatterChart({
               { x: lineEnd, y: lineEnd },
             ]}
           />
-          <Scatter data={data} fill="#228be6" isAnimationActive={false} />
+          <Tooltip
+            isAnimationActive={false}
+            cursor={{ strokeDasharray: "3 3" }}
+            content={
+              <ScatterTooltip
+                xLabel={xLabel}
+                yLabel={yLabel}
+                valueSuffix={valueSuffix}
+                isDark={isDark}
+              />
+            }
+          />
+          <Scatter
+            data={data}
+            fill="#228be6"
+            isAnimationActive={false}
+            cursor="pointer"
+            onClick={(point: { personId?: string }) => {
+              if (point?.personId) navigate(ROUTES.CONTESTANT(point.personId));
+            }}
+          />
         </ScatterChart>
       </ResponsiveContainer>
     </div>

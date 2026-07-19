@@ -46,7 +46,12 @@ import { RelativeRankCell } from "@/components/RelativeRankCell";
 import { ROUTES } from "@/constants/routes";
 import { pageTitle } from "@/constants/seo";
 import { Award, Source } from "@/schemas/base";
-import { SOURCE_OPTIONS, AWARD_OPTIONS, AWARD_COLORS } from "@/constants/filterOptions";
+import {
+  SOURCE_OPTIONS,
+  SOURCE_ORDER,
+  AWARD_OPTIONS,
+  AWARD_COLORS,
+} from "@/constants/filterOptions";
 import {
   aggregateParticipations,
   aggregateRankingChartData,
@@ -143,6 +148,12 @@ export function Contestant() {
             {info.getValue()}
           </Anchor>
         ),
+        sortingFn: (rowA, rowB) => {
+          const a = SOURCE_ORDER[rowA.original.source] ?? Number.MAX_SAFE_INTEGER;
+          const b = SOURCE_ORDER[rowB.original.source] ?? Number.MAX_SAFE_INTEGER;
+          if (a !== b) return a - b;
+          return rowB.original.year - rowA.original.year;
+        },
       }),
       columnHelper.accessor("source", {
         header: "Source",
@@ -150,6 +161,11 @@ export function Contestant() {
         filterFn: (row, columnId, filterValue: string | null) => {
           if (!filterValue) return true;
           return row.getValue(columnId) === filterValue;
+        },
+        sortingFn: (rowA, rowB, columnId) => {
+          const a = SOURCE_ORDER[rowA.getValue(columnId) as string] ?? Number.MAX_SAFE_INTEGER;
+          const b = SOURCE_ORDER[rowB.getValue(columnId) as string] ?? Number.MAX_SAFE_INTEGER;
+          return a - b;
         },
       }),
       columnHelper.accessor("year", {
@@ -198,7 +214,10 @@ export function Contestant() {
   const { table } = useSortedTable({
     data: rows,
     columns,
-    defaultSort: [{ id: "year", desc: true }],
+    defaultSort: [
+      { id: "year", desc: true },
+      { id: "source", desc: true },
+    ],
     enableFiltering: true,
     tableOptions: { state: { columnVisibility: { source: false } } },
   });

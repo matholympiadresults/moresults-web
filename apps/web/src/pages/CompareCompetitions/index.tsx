@@ -44,6 +44,7 @@ function buildScatterPoints(
         x: pA.total,
         y: pB.total,
         name: personNameById[pB.person_id] ?? pB.person_id,
+        personId: pB.person_id,
       });
     } else {
       if (pA.rank === null || pB.rank === null) continue;
@@ -52,6 +53,7 @@ function buildScatterPoints(
         x: (pA.rank / totalA) * 100,
         y: (pB.rank / totalB) * 100,
         name: personNameById[pB.person_id] ?? pB.person_id,
+        personId: pB.person_id,
       });
     }
   }
@@ -141,7 +143,7 @@ export function CompareCompetitions() {
   const labelA = compA ? formatCompetitionLabel(compA) : "Competition A";
   const labelB = compB ? formatCompetitionLabel(compB) : "Competition B";
 
-  const [activeMetric, setActiveMetric] = useState<string | null>("points");
+  const [activeMetric, setActiveMetric] = useState<string | null>("percentile");
 
   return (
     <Container size="lg">
@@ -213,6 +215,7 @@ export function CompareCompetitions() {
                     xLabel={`${labelA} percentile`}
                     yLabel={`${labelB} percentile`}
                     isDark={isDark}
+                    valueSuffix="%"
                     xDomain={[0, 100]}
                     yDomain={[0, 100]}
                   />

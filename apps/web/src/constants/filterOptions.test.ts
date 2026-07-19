@@ -25,8 +25,8 @@ describe("SOURCE_OPTIONS", () => {
     }
   });
 
-  it("IMO is first (most common competition)", () => {
-    expect(SOURCE_OPTIONS[0].value).toBe(Source.IMO);
+  it("is ordered chronologically by time of year (RMM first)", () => {
+    expect(SOURCE_OPTIONS[0].value).toBe(Source.RMM);
   });
 });
 
